@@ -489,13 +489,26 @@ a.rating:hover b { text-decoration: underline; }
 
 /* slides over the bay: a fixed photo behind floating section panels */
 .bg-fixed { position: fixed; inset: 0; z-index: -1; }
-.bg-fixed img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.05); }
+.bg-fixed { overflow: hidden; }
+.bg-fixed img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.05); transform-origin: 35% 30%; will-change: transform; }
 .bg-fixed::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,24,46,.55), rgba(10,24,46,.7)); }
 .panel { position: relative; margin: clamp(12px, 2.2vw, 30px) clamp(10px, 2.2vw, 30px); border-radius: clamp(22px, 3vw, 38px); overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.3); }
 .hotels.panel, .salinas.panel, .faq.panel { background: var(--sand); }
 .story.panel, .book.panel { border: 1px solid rgba(255,255,255,.1); }
 .panel .wave-top { display: none; }
 @media (min-width: 1100px) { .panel { margin-inline: 70px; } }
+/* see-through panels: the bay photo shows behind every section, frosted so the text stays easy to read */
+.hotels.panel, .salinas.panel, .faq.panel { background: rgba(250, 246, 239, .78); }
+.rooms.panel { background: rgba(255, 255, 255, .78); }
+.mapsec.panel { background: rgba(224, 241, 241, .8); }
+.story.panel, .book.panel { background: rgba(20, 40, 74, .66); border-color: rgba(255,255,255,.18); }
+.panel { -webkit-backdrop-filter: blur(16px) saturate(1.15); backdrop-filter: blur(16px) saturate(1.15); }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .hotels.panel, .salinas.panel, .faq.panel { background: rgba(250, 246, 239, .94); }
+  .rooms.panel { background: rgba(255, 255, 255, .94); }
+  .mapsec.panel { background: rgba(224, 241, 241, .95); }
+  .story.panel, .book.panel { background: rgba(20, 40, 74, .9); }
+}
 .doors-sec { padding: 3rem var(--gutter); background: var(--ink); }
 .motion .doors-sec { padding: 0; background: transparent; }
 .dots { position: fixed; right: 16px; top: 50%; translate: 0 -50%; z-index: 40; display: none; flex-direction: column; gap: 6px; }
@@ -529,7 +542,8 @@ a.rating:hover b { text-decoration: underline; }
 .motion .doors-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; perspective: 1400px; }
 .motion .doors-back { display: block; position: absolute; inset: 0; }
 .motion .doors-back img { width: 100%; height: 100%; object-fit: cover; }
-.motion .doors-back::after { content: ""; position: absolute; inset: 0; background: rgba(8,20,40,.62); }
+/* no photo of its own: the page's one bay photo shows through, so there is no seam when the scene ends */
+.motion .doors-back::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,20,40,.4) 0%, rgba(8,20,40,.4) 78%, rgba(8,20,40,0) 100%); }
 .motion .doors-copy { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: center; padding: calc(var(--bar-h) + 1rem) var(--gutter) 2rem; color: #fff; margin: 0; max-width: 1100px; margin-inline: auto; }
 .motion .doors-copy .kicker { color: #ffd59a; }
 .motion .doors-copy h2 { color: #fff; }
@@ -666,7 +680,7 @@ a.rating:hover b { text-decoration: underline; }
   <section class="doors-sec" aria-labelledby="que-hacer-title">
       <div class="doors" id="doors">
         <div class="doors-stage">
-          <figure class="doors-back"><img src="img/hero-playa.jpg" alt="" loading="lazy"></figure>
+          <figure class="doors-back"></figure>
           <div class="doors-copy" id="que-hacer">
             <p class="kicker">Qué hacer en Salinas</p>
             <h2 id="que-hacer-title">Todo esto, <em>a una cuadra</em></h2>
@@ -1176,6 +1190,9 @@ a.rating:hover b { text-decoration: underline; }
       .from(".hero h1 .line > span", { yPercent: 110, duration: 1.15, stagger: 0.12 }, 0.2)
       .from(".hero-in", { y: 22, opacity: 0, duration: 0.85, stagger: 0.09 }, 0.6);
     gsap.to(".hero-media", { yPercent: 16, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+    // The bay photo behind the panels drifts slowly sideways and closer as you scroll, so the sky and clouds glide past.
+    gsap.fromTo(".bg-fixed img", { xPercent: 0, scale: 1.1 }, { xPercent: -5, scale: 1.18, ease: "none",
+      scrollTrigger: { trigger: document.documentElement, start: "top top", end: "bottom bottom", scrub: 1.2 } });
 
     // Headings rise line by line.
     $$("h2.lines").forEach(function (h) {
