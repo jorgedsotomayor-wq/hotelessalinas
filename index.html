@@ -160,6 +160,9 @@ p { margin: 0; }
 .chip i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); flex: none; }
 .rating { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .7rem; font-size: .95rem; color: rgba(255,255,255,.94); }
 .rating .stars { color: #ffd59a; letter-spacing: .1em; }
+.weather { display: flex; align-items: center; flex-wrap: wrap; gap: .2rem .55rem; margin: -.8rem 0 0; font-size: .95rem; color: rgba(255,255,255,.94); }
+.weather svg { width: 22px; height: 22px; flex: none; }
+.weather b { font-weight: 700; }
 
 /* marquee */
 .ticker { background: var(--ink); color: var(--paper); display: flex; align-items: center; overflow: hidden; }
@@ -654,6 +657,7 @@ a.rating:hover b { text-decoration: underline; }
         </div>
       </div>
       <a class="rating hero-in" href="https://www.google.com/maps/search/?api=1&amp;query=Hoteles+Salinas+Gral+Enrique+Gallo+Salinas+Ecuador" target="_blank" rel="noopener"><span class="stars" aria-hidden="true">★★★★☆</span><span><b>4,1 en Google</b> · 803 opiniones<span class="sr"> (se abre en Google Maps)</span></span></a>
+      <p class="weather" id="weather" hidden></p>
     </div>
   </section>
 
@@ -1028,6 +1032,45 @@ a.rating:hover b { text-decoration: underline; }
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+/* Live weather in Salinas from Open-Meteo (free, no key). If it cannot load, the line stays hidden. */
+(function () {
+  var box = document.getElementById("weather"); if (!box || !window.fetch) return;
+  var LAT = -2.2063, LON = -80.9707, TZ = "America%2FGuayaquil";
+  var ICON = {
+    sun: '<svg viewBox="0 0 24 24" fill="none" stroke="#ffd59a" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="#ffd59a"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>',
+    moon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="#ffd59a"/></svg>',
+    partly: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8.5" cy="8.5" r="4" fill="#ffd59a"/><path d="M8 19h9.5a3.5 3.5 0 0 0 0-7 5 5 0 0 0-9.6 1.4A2.8 2.8 0 0 0 8 19z" fill="#ffffff"/></svg>',
+    cloud: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 19h10.5a4 4 0 0 0 0-8 5.5 5.5 0 0 0-10.6 1.6A3.2 3.2 0 0 0 7 19z" fill="#ffffff"/></svg>',
+    rain: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 15h10.5a4 4 0 0 0 0-8 5.5 5.5 0 0 0-10.6 1.6A3.2 3.2 0 0 0 7 15z" fill="#ffffff"/><path d="M9 18l-1 3M13 18l-1 3M17 18l-1 3" stroke="#9fd8ea" stroke-width="2" stroke-linecap="round"/></svg>'
+  };
+  function describe(code, day) {
+    if (code === 0) return [day ? ICON.sun : ICON.moon, "despejado"];
+    if (code <= 2) return [day ? ICON.partly : ICON.cloud, "parcialmente nublado"];
+    if (code === 3) return [ICON.cloud, "nublado"];
+    if (code === 45 || code === 48) return [ICON.cloud, "con neblina"];
+    if (code >= 51 && code <= 57) return [ICON.rain, "con garúa"];
+    if ((code >= 61 && code <= 67) || (code >= 80 && code <= 82)) return [ICON.rain, "con lluvia"];
+    if (code >= 95) return [ICON.rain, "con tormenta"];
+    return [ICON.cloud, "nublado"];
+  }
+  function get(url) {
+    var ctl = window.AbortController ? new AbortController() : null;
+    if (ctl) setTimeout(function () { ctl.abort(); }, 6000);
+    return fetch(url, ctl ? { signal: ctl.signal } : {}).then(function (r) { if (!r.ok) throw 0; return r.json(); });
+  }
+  var air = get("https://api.open-meteo.com/v1/forecast?latitude=" + LAT + "&longitude=" + LON + "&current=temperature_2m,weather_code,is_day&timezone=" + TZ);
+  var sea = get("https://marine-api.open-meteo.com/v1/marine?latitude=" + LAT + "&longitude=" + LON + "&current=sea_surface_temperature&timezone=" + TZ).catch(function () { return null; });
+  Promise.all([air, sea]).then(function (res) {
+    var c = res[0] && res[0].current; if (!c || typeof c.temperature_2m !== "number") return;
+    var d = describe(c.weather_code, c.is_day === 1);
+    var html = d[0] + '<span>Ahora en Salinas: <b>' + Math.round(c.temperature_2m) + ' °C</b>, ' + d[1] + '</span>';
+    var w = res[1] && res[1].current && res[1].current.sea_surface_temperature;
+    if (typeof w === "number") html += '<span aria-hidden="true">·</span><span>Agua del mar: <b>' + Math.round(w) + ' °C</b></span>';
+    box.innerHTML = html; box.hidden = false;
+  }).catch(function () {});
+})();
+</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://hotelessalinas.com/#empresa", "name": "Hoteles Salinas", "legalName": "Empresa de Turismo Salinas S.A. (EMTURISA)", "url": "https://hotelessalinas.com/", "email": "reservas@hotelessalinas.com", "telephone": "+593995755979", "sameAs": ["https://www.instagram.com/hoteles.salinas/", "https://www.facebook.com/profile.php?id=100057365242051"]}, {"@type": "Hotel", "@id": "https://hotelessalinas.com/#hotel-salinas", "name": "Hotel Salinas", "url": "https://hotelessalinas.com/#hotel-salinas", "image": "https://hotelessalinas.com/img/hotel-salinas-edificio.jpg", "description": "El primer hotel de la familia, a una cuadra del malecón de Salinas.", "address": {"@type": "PostalAddress", "streetAddress": "Gral. Enríquez Gallo y Calle 27", "addressLocality": "Salinas", "addressRegion": "Santa Elena", "addressCountry": "EC"}, "geo": {"@type": "GeoCoordinates", "latitude": -2.2063, "longitude": -80.9707}, "telephone": "+593995755979", "email": "reservas@hotelessalinas.com", "checkinTime": "13:00", "checkoutTime": "12:00", "parentOrganization": {"@id": "https://hotelessalinas.com/#empresa"}}, {"@type": "Hotel", "@id": "https://hotelessalinas.com/#costa-azul", "name": "Hotel Salinas Costa Azul", "url": "https://hotelessalinas.com/#costa-azul", "image": "https://hotelessalinas.com/img/costa-azul-edificio.jpg", "description": "Hotel con la piscina que comparten los huéspedes de los tres hoteles, a una cuadra del mar.", "address": {"@type": "PostalAddress", "streetAddress": "Gral. Enríquez Gallo y Calle 27", "addressLocality": "Salinas", "addressRegion": "Santa Elena", "addressCountry": "EC"}, "geo": {"@type": "GeoCoordinates", "latitude": -2.2063, "longitude": -80.9707}, "telephone": "+593995755979", "email": "reservas@hotelessalinas.com", "checkinTime": "13:00", "checkoutTime": "12:00", "parentOrganization": {"@id": "https://hotelessalinas.com/#empresa"}}, {"@type": "Hotel", "@id": "https://hotelessalinas.com/#suites-salinas", "name": "Suite Salinas", "url": "https://hotelessalinas.com/#suites-salinas", "image": "https://hotelessalinas.com/img/suites-salinas-edificio.jpg", "description": "Habitaciones para familias y grupos, a una cuadra del malecón de Salinas.", "address": {"@type": "PostalAddress", "streetAddress": "Gral. Enríquez Gallo y Calle 27", "addressLocality": "Salinas", "addressRegion": "Santa Elena", "addressCountry": "EC"}, "geo": {"@type": "GeoCoordinates", "latitude": -2.2063, "longitude": -80.9707}, "telephone": "+593995755979", "email": "reservas@hotelessalinas.com", "checkinTime": "13:00", "checkoutTime": "12:00", "parentOrganization": {"@id": "https://hotelessalinas.com/#empresa"}}]}</script>
 <script>
 (function () {
