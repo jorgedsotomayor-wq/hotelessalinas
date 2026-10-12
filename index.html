@@ -105,27 +105,27 @@ p { margin: 0; }
 @keyframes kid-run { to { background-position: -104px 0; } }
 @keyframes kid-run-lg { to { background-position: -156px 0; } }
 @keyframes kid-dive { to { background-position: -168px 0; } }
-.nav .nav-game { display: inline-flex; align-items: center; gap: .4rem; }
-.bar-game { display: none; align-items: center; justify-content: center; min-width: 48px; min-height: 48px; border-radius: 999px; background: rgba(255,255,255,.16); text-decoration: none; }
-.bar.solid .bar-game { background: #fde7c9; }
-@media (max-width: 860px) { .bar-game { display: inline-flex; margin-left: auto; } .bar-in { gap: .5rem; } }
-.play { display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; justify-self: start; padding: .55rem .6rem .55rem .9rem; border-radius: 22px; background: rgba(250,246,239,.96); color: var(--ink); box-shadow: 0 12px 30px rgba(8,20,40,.25); max-width: 100%; }
-.play-kids { display: flex; align-items: center; gap: .5rem; }
-.play-txt { display: grid; line-height: 1.15; margin: 0; }
-.play-txt b { font-family: var(--display); font-weight: 600; font-size: 1.12rem; }
-.play-txt small { font-size: .82rem; font-weight: 700; color: var(--muted); }
+.play { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: .3rem 1rem; justify-self: start; width: min(100%, 560px); padding: .2rem 1rem .9rem; border-radius: 22px; border: 1.5px solid rgba(255,255,255,.55); background: rgba(8,24,46,.18); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: #fff; text-shadow: 0 1px 6px rgba(8,20,40,.45); }
+.play-run { grid-column: 1 / -1; position: relative; height: 62px; overflow: hidden; border-bottom: 2px dashed rgba(255,255,255,.55); }
+.play-run .kid { position: absolute; left: 0; bottom: 2px; animation: kid-run-lg .5s steps(4) infinite, kid-cross 5s linear infinite; }
+@keyframes kid-cross { from { left: -44px; } to { left: 100%; } }
+.play-txt { display: grid; line-height: 1.2; margin: 0; }
+.play-txt b { font-family: var(--display); font-weight: 600; font-size: 1.15rem; }
+.play-txt small { font-size: .85rem; font-weight: 700; color: rgba(255,255,255,.92); }
 .play-btns { display: flex; gap: .4rem; }
-.play-btns a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 1rem; border-radius: 999px; background: var(--sun); color: var(--ink); font-weight: 800; text-decoration: none; }
+.play-btns a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 1rem; border-radius: 999px; background: var(--sun); color: var(--ink); font-weight: 800; text-decoration: none; text-shadow: none; }
 .play-btns a + a { background: var(--ocean); color: #fff; }
 .play-btns a:hover { filter: brightness(1.06); }
 @media (max-width: 600px) {
-  .play { display: grid; grid-template-columns: auto 1fr; gap: .45rem .7rem; max-width: calc(100% - 112px); padding: .7rem .8rem; }
-  .play-kids .dive { display: none; }
+  .play { grid-template-columns: 1fr; width: calc(100% - 112px); }
+  .play { padding: 0 .8rem .7rem; gap: .35rem; }
+  .play-run { height: 44px; }
+  .play-run .kid { width: 26px; height: 40px; background-size: 104px 40px; animation: kid-run .5s steps(4) infinite, kid-cross 3.2s linear infinite; }
+  .play-txt small { display: none; }
   .play-txt b { font-size: 1.02rem; }
-  .play-btns { grid-column: 1 / -1; }
   .play-btns a { flex: 1; justify-content: center; padding: 0 .6rem; }
 }
-@media (prefers-reduced-motion: reduce) { .kid, .kid.lg, .kid.dive { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .kid, .kid.lg, .kid.dive, .play-run .kid { animation: none; } .play-run .kid { left: 1rem; } }
 
 
 /* mobile menu */
@@ -568,10 +568,9 @@ a.rating:hover b { text-decoration: underline; }
       <a href="#ubicacion">Ubicación</a>
       <a href="#historia">Historia</a>
       <a href="#que-hacer">Salinas</a>
-      <a class="nav-game" href="juego/index.html"><span class="kid" aria-hidden="true"></span>Juegos</a>
+      <a href="juego/index.html">Juegos</a>
       <a class="btn btn-sun" href="#reservar">Reservar</a>
     </nav>
-    <a class="bar-game" href="juego/index.html" aria-label="Juegos con Jorge Alberto"><span class="kid" aria-hidden="true"></span></a>
     <button class="menu-btn" id="menu-open" type="button" aria-expanded="false" aria-controls="menu">
       <span class="sr">Abrir menú</span>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -619,7 +618,7 @@ a.rating:hover b { text-decoration: underline; }
     </div>
     <div class="wrap hero-copy">
       <div class="play hero-in">
-        <div class="play-kids" aria-hidden="true"><span class="kid lg"></span><span class="kid dive"></span></div>
+        <div class="play-run" aria-hidden="true"><span class="kid lg"></span></div>
         <p class="play-txt"><b>¡Juega con Jorge Alberto!</b><small>El mejor puntaje del mes gana un descuento</small></p>
         <div class="play-btns"><a href="juego/index.html">Correr</a><a href="juego/mar.html">Bucear</a></div>
       </div>
