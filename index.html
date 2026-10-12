@@ -98,6 +98,35 @@ p { margin: 0; }
 .menu-btn { display: none; min-width: 48px; min-height: 48px; border: 0; background: transparent; color: inherit; cursor: pointer; padding: 0; }
 .menu-btn svg { width: 28px; height: 28px; }
 @media (max-width: 860px) { .nav { display: none; } .menu-btn { display: grid; place-items: center; } }
+/* Jorge Alberto, the mascot: tiny sprite animations that lead to the games */
+.kid { display: inline-block; flex: none; background: url(img/jorge-run.png) 0 0 / 104px 40px no-repeat; width: 26px; height: 40px; animation: kid-run .5s steps(4) infinite; }
+.kid.lg { background-size: 156px 60px; width: 39px; height: 60px; animation-name: kid-run-lg; }
+.kid.dive { background: url(img/jorge-buzo.png) 0 0 / 168px 33px no-repeat; width: 42px; height: 33px; animation: kid-dive .6s steps(4) infinite; }
+@keyframes kid-run { to { background-position: -104px 0; } }
+@keyframes kid-run-lg { to { background-position: -156px 0; } }
+@keyframes kid-dive { to { background-position: -168px 0; } }
+.nav .nav-game { display: inline-flex; align-items: center; gap: .4rem; }
+.bar-game { display: none; align-items: center; justify-content: center; min-width: 48px; min-height: 48px; border-radius: 999px; background: rgba(255,255,255,.16); text-decoration: none; }
+.bar.solid .bar-game { background: #fde7c9; }
+@media (max-width: 860px) { .bar-game { display: inline-flex; margin-left: auto; } .bar-in { gap: .5rem; } }
+.play { display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; justify-self: start; padding: .55rem .6rem .55rem .9rem; border-radius: 22px; background: rgba(250,246,239,.96); color: var(--ink); box-shadow: 0 12px 30px rgba(8,20,40,.25); max-width: 100%; }
+.play-kids { display: flex; align-items: center; gap: .5rem; }
+.play-txt { display: grid; line-height: 1.15; margin: 0; }
+.play-txt b { font-family: var(--display); font-weight: 600; font-size: 1.12rem; }
+.play-txt small { font-size: .82rem; font-weight: 700; color: var(--muted); }
+.play-btns { display: flex; gap: .4rem; }
+.play-btns a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 1rem; border-radius: 999px; background: var(--sun); color: var(--ink); font-weight: 800; text-decoration: none; }
+.play-btns a + a { background: var(--ocean); color: #fff; }
+.play-btns a:hover { filter: brightness(1.06); }
+@media (max-width: 600px) {
+  .play { display: grid; grid-template-columns: auto 1fr; gap: .45rem .7rem; max-width: calc(100% - 112px); padding: .7rem .8rem; }
+  .play-kids .dive { display: none; }
+  .play-txt b { font-size: 1.02rem; }
+  .play-btns { grid-column: 1 / -1; }
+  .play-btns a { flex: 1; justify-content: center; padding: 0 .6rem; }
+}
+@media (prefers-reduced-motion: reduce) { .kid, .kid.lg, .kid.dive { animation: none; } }
+
 
 /* mobile menu */
 .menu { position: fixed; inset: 0; z-index: 60; background: var(--ink); color: var(--paper); padding: calc(env(safe-area-inset-top, 0px) + 1rem) var(--gutter) 2rem; display: flex; flex-direction: column; }
@@ -539,8 +568,10 @@ a.rating:hover b { text-decoration: underline; }
       <a href="#ubicacion">Ubicación</a>
       <a href="#historia">Historia</a>
       <a href="#que-hacer">Salinas</a>
+      <a class="nav-game" href="juego/index.html"><span class="kid" aria-hidden="true"></span>Juegos</a>
       <a class="btn btn-sun" href="#reservar">Reservar</a>
     </nav>
+    <a class="bar-game" href="juego/index.html" aria-label="Juegos con Jorge Alberto"><span class="kid" aria-hidden="true"></span></a>
     <button class="menu-btn" id="menu-open" type="button" aria-expanded="false" aria-controls="menu">
       <span class="sr">Abrir menú</span>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -556,7 +587,8 @@ a.rating:hover b { text-decoration: underline; }
     <a href="#historia">Historia</a>
     <a href="#que-hacer">Salinas</a>
     <a href="#preguntas">Preguntas</a>
-    <a href="juego/index.html">Juego</a>
+    <a href="juego/index.html">Juego: correr con Jorge Alberto</a>
+    <a href="juego/mar.html">Juego: bucear con Jorge Alberto</a>
   </nav>
   <div class="menu-foot">
     <p>Gral. Enríquez Gallo y Calle 27, Salinas</p>
@@ -586,6 +618,11 @@ a.rating:hover b { text-decoration: underline; }
         <circle class="core" cx="100" cy="100" r="58"/><text class="num" x="100" y="106" text-anchor="middle">50+</text><text class="sub" x="100" y="128" text-anchor="middle">AÑOS</text></svg>
     </div>
     <div class="wrap hero-copy">
+      <div class="play hero-in">
+        <div class="play-kids" aria-hidden="true"><span class="kid lg"></span><span class="kid dive"></span></div>
+        <p class="play-txt"><b>¡Juega con Jorge Alberto!</b><small>El mejor puntaje del mes gana un descuento</small></p>
+        <div class="play-btns"><a href="juego/index.html">Correr</a><a href="juego/mar.html">Bucear</a></div>
+      </div>
       <p class="kicker hero-in">Salinas · Santa Elena · Ecuador</p>
       <h1 id="hero-title"><span class="line"><span>A una cuadra</span></span><span class="line"><span><em>del mar.</em></span></span></h1>
       <p class="sub hero-in">Ven con tu familia a Salinas y quédate a pasos de la playa. Tres hoteles de una misma familia, con buen precio y atención de casa.</p>
