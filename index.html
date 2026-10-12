@@ -507,9 +507,12 @@ a.rating:hover b { text-decoration: underline; }
 .panel .wave-top { display: none; }
 @media (min-width: 1100px) { .panel { margin-inline: 70px; } }
 /* see-through panels: the bay photo shows behind every section, frosted so the text stays easy to read */
-.hotels.panel, .salinas.panel, .faq.panel { background: rgba(250, 246, 239, .62); }
-.rooms.panel { background: rgba(255, 255, 255, .62); }
-.mapsec.panel { background: rgba(224, 241, 241, .64); }
+.hotels.panel, .salinas.panel, .faq.panel, .rooms.panel, .mapsec.panel { background: rgba(250, 246, 239, .12); }
+/* the light panels are almost clear so the video shows; each block of text sits on its own frosted card */
+.hotels.panel .sec-head, .rooms.panel .sec-head, .mapsec.panel .sec-head, .salinas.panel .sec-head, .rooms.panel .panel-head, .faq-grid > * { background: rgba(250, 246, 239, .88); border-radius: 20px; padding: clamp(1rem, 2.6vw, 1.7rem); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 14px 40px rgba(8,20,40,.18); }
+.salinas.panel .sec-head.plate-only { display: inline-block; margin-bottom: 1.4rem; }
+.rooms.panel .panel-head { margin-inline: var(--gutter); }
+.rooms.panel .tab:not([aria-selected="true"]) { background: rgba(250, 246, 239, .94); }
 /* slightly deeper teal and grey on the see-through light panels, so small text keeps AA contrast over the photo */
 .hotels.panel, .salinas.panel, .faq.panel, .rooms.panel, .mapsec.panel { --ocean: #05414f; --mist: #283444; }
 .story.panel, .book.panel { background: rgba(20, 40, 74, .42); border-color: rgba(255,255,255,.22); }
@@ -972,8 +975,8 @@ a.rating:hover b { text-decoration: underline; }
 
   <section class="salinas panel" id="salinas" aria-labelledby="sal-title">
     <div class="wrap">
-      <p class="kicker">Salinas</p>
-      <h2 id="sal-title" class="lines"><span class="line"><span>La playa a pie,</span></span> <span class="line"><span><em>lo demás muy cerca</em></span></span></h2>
+      <div class="sec-head plate-only"><div><p class="kicker">Salinas</p>
+      <h2 id="sal-title" class="lines"><span class="line"><span>La playa a pie,</span></span> <span class="line"><span><em>lo demás muy cerca</em></span></span></h2></div></div>
       <div class="places" tabindex="0" role="region" aria-label="Lugares de Salinas, se puede deslizar">
         <article class="place reveal"><figure><img src="img/ia-ninos-al-agua.jpg" alt="Dos niños corren hacia las olas en una playa de arena dorada" loading="lazy"><span class="ai-tag">Imagen ilustrativa</span></figure>
           <div class="place-body"><h3>Playa de San Lorenzo</h3><p>Carpas, sillas y banana a lo largo de la playa. En feriados Salinas se llena, así que conviene reservar con tiempo.</p></div></article>
