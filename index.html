@@ -532,6 +532,7 @@ a.rating:hover b { text-decoration: underline; }
 .todo img { width: 100%; height: 100%; object-fit: cover; }
 .todo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,20,40,0) 40%, rgba(8,20,40,.8)); }
 .todo-label { position: absolute; left: .7rem; right: .7rem; bottom: .55rem; z-index: 1; color: #fff; font-weight: 700; font-size: clamp(.82rem, 1.4vw, 1rem); line-height: 1.2; }
+.todo-label .todo-dist { display: block; margin-top: .15rem; font-weight: 600; font-size: .82em; color: #ffd59a; }
 .todo small { position: absolute; right: .45rem; top: .45rem; z-index: 1; background: rgba(20,40,74,.75); color: #fff; font-size: .62rem; padding: .1rem .4rem; border-radius: 999px; }
 .doors-copy .kicker { margin-bottom: .4rem; }
 
@@ -689,8 +690,8 @@ a.rating:hover b { text-decoration: underline; }
           <figure class="doors-back"></figure>
           <div class="doors-copy" id="que-hacer">
             <p class="kicker">Qué hacer en Salinas</p>
-            <h2 id="que-hacer-title">Todo esto, <em>a una cuadra</em></h2>
-            <ul class="todos" aria-label="Cosas para hacer en Salinas"><li class="todo"><img src="img/ia-ninos-al-agua.jpg" alt="" loading="lazy"><span class="todo-label">Playa de San Lorenzo</span><small>Imagen ilustrativa</small></li><li class="todo"><img src="img/playa-atardecer.jpg" alt="" loading="lazy"><span class="todo-label">Paseos en lancha y banana</span></li><li class="todo"><img src="img/ballena-jorobada.jpg" alt="" loading="lazy"><span class="todo-label">Ballenas, de junio a septiembre</span></li><li class="todo"><img src="img/la-chocolatera.jpg" alt="" loading="lazy"><span class="todo-label">La Chocolatera</span><small>Foto: Mlucero99, CC BY-SA 4.0</small></li><li class="todo"><img src="img/ia-ceviche.jpg" alt="" loading="lazy"><span class="todo-label">Ceviche y encebollado</span><small>Imagen ilustrativa</small></li><li class="todo"><img src="img/montanita-spondylus.jpg" alt="" loading="lazy"><span class="todo-label">La Ruta del Spondylus</span><small>Foto: Andrew Magill, CC BY 2.0</small></li></ul>
+            <h2 id="que-hacer-title">La playa a una cuadra, <em>y mucho más</em></h2>
+            <ul class="todos" aria-label="Cosas para hacer en Salinas"><li class="todo"><img src="img/ia-ninos-al-agua.jpg" alt="" loading="lazy"><span class="todo-label">Playa de San Lorenzo<span class="todo-dist">A una cuadra del hotel</span></span><small>Imagen ilustrativa</small></li><li class="todo"><img src="img/playa-atardecer.jpg" alt="" loading="lazy"><span class="todo-label">Paseos en lancha y banana<span class="todo-dist">Salen de la misma playa</span></span></li><li class="todo"><img src="img/ballena-jorobada.jpg" alt="" loading="lazy"><span class="todo-label">Ballenas jorobadas<span class="todo-dist">Tours en bote, de junio a septiembre</span></span></li><li class="todo"><img src="img/la-chocolatera.jpg" alt="" loading="lazy"><span class="todo-label">La Chocolatera<span class="todo-dist">A pocos minutos en carro</span></span><small>Foto: Mlucero99, CC BY-SA 4.0</small></li><li class="todo"><img src="img/ia-ceviche.jpg" alt="" loading="lazy"><span class="todo-label">Ceviche y encebollado<span class="todo-dist">Cerca del malecón</span></span><small>Imagen ilustrativa</small></li><li class="todo"><img src="img/montanita-spondylus.jpg" alt="" loading="lazy"><span class="todo-label">La Ruta del Spondylus<span class="todo-dist">Paseo de un día por la costa</span></span><small>Foto: Andrew Magill, CC BY 2.0</small></li></ul>
           </div>
           <div class="door d-l" aria-hidden="true"><img src="img/hotel-salinas-edificio.jpg" alt=""><span>Hotel Salinas</span></div>
           <div class="door d-c" aria-hidden="true"><img src="img/costa-azul-edificio.jpg" alt=""><span>Costa Azul</span></div>
@@ -966,16 +967,16 @@ a.rating:hover b { text-decoration: underline; }
   <section class="salinas panel" id="salinas" aria-labelledby="sal-title">
     <div class="wrap">
       <p class="kicker">Salinas</p>
-      <h2 id="sal-title" class="lines"><span class="line"><span>Todo queda</span></span> <span class="line"><span><em>a pie</em></span></span></h2>
+      <h2 id="sal-title" class="lines"><span class="line"><span>La playa a pie,</span></span> <span class="line"><span><em>lo demás muy cerca</em></span></span></h2>
       <div class="places" tabindex="0" role="region" aria-label="Lugares de Salinas, se puede deslizar">
         <article class="place reveal"><figure><img src="img/ia-ninos-al-agua.jpg" alt="Dos niños corren hacia las olas en una playa de arena dorada" loading="lazy"><span class="ai-tag">Imagen ilustrativa</span></figure>
           <div class="place-body"><h3>Playa de San Lorenzo</h3><p>Carpas, sillas y banana a lo largo de la playa. En feriados Salinas se llena, así que conviene reservar con tiempo.</p></div></article>
         <article class="place reveal"><figure class="duo"><img src="img/ia-ceviche.jpg" alt="Ceviche de camarón con canguil y chifles" loading="lazy"><img src="img/ia-encebollado.jpg" alt="Encebollado con yuca, cebolla encurtida y chifles" loading="lazy"><span class="ai-tag">Imagen ilustrativa</span></figure>
           <div class="place-body"><h3>Ceviche y encebollado</h3><p>Cerca del malecón encuentras ceviche de camarón con canguil y chifles, y encebollado para empezar el día.</p></div></article>
         <article class="place reveal"><figure><img src="img/ballena-jorobada.jpg" alt="Ballena jorobada saltando fuera del mar" loading="lazy"></figure><div class="place-body">
-          <h3>Ballenas jorobadas</h3><p>De junio a septiembre salen excursiones desde Salinas para verlas saltar en el Pacífico.</p></div></article>
+          <h3>Ballenas jorobadas</h3><p>De junio a septiembre salen tours en bote desde Salinas para verlas saltar en el Pacífico.</p></div></article>
         <article class="place reveal"><figure><img src="img/la-chocolatera.jpg" alt="Rocas oscuras y olas que revientan en La Chocolatera, la punta de la península de Santa Elena" loading="lazy"><span class="ai-tag credit">Foto: Mlucero99, CC BY-SA 4.0</span></figure>
-          <div class="place-body"><h3>La Chocolatera</h3><p>En la punta de la península de Santa Elena, donde las olas revientan contra las rocas. Un paseo corto desde el centro.</p></div></article>
+          <div class="place-body"><h3>La Chocolatera</h3><p>En la punta de la península de Santa Elena, donde las olas revientan contra las rocas. A pocos minutos en carro o taxi desde el hotel.</p></div></article>
         <article class="place reveal"><figure><img src="img/montanita-spondylus.jpg" alt="Playa larga de Montañita con el mar y el cielo azul, en la Ruta del Spondylus" loading="lazy"><span class="ai-tag credit">Foto: Andrew Magill, CC BY 2.0</span></figure>
           <div class="place-body"><h3>La Ruta del Spondylus</h3><p>La carretera de la costa que sale de la península y sube por Ballenita, Ayangue, Montañita y Olón. Ideal para un día de paseo desde Salinas.</p></div></article>
         <article class="place reveal game-card"><div class="place-body game-link">
