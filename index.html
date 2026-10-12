@@ -496,7 +496,7 @@ a.rating:hover b { text-decoration: underline; }
 .bg-fixed img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.05); transform-origin: 35% 30%; will-change: transform; }
 .bg-fixed::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,24,46,.55), rgba(10,24,46,.7)); }
 /* moving background: the hotel's own drone video of the bay and the marina, faded in once it plays */
-.bg-fixed video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.4s ease; transform-origin: 35% 30%; will-change: transform; }
+.bg-fixed video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.4s ease; }
 .bg-fixed video.on { opacity: 1; }
 .video-on .bg-fixed::after { background: linear-gradient(180deg, rgba(10,24,46,.3), rgba(10,24,46,.62)); }
 .hero-media { transition: opacity 1.4s ease; }
@@ -1253,8 +1253,8 @@ a.rating:hover b { text-decoration: underline; }
       .from(".hero h1 .line > span", { yPercent: 110, duration: 1.15, stagger: 0.12 }, 0.2)
       .from(".hero-in", { y: 22, opacity: 0, duration: 0.85, stagger: 0.09 }, 0.6);
     gsap.to(".hero-media", { yPercent: 16, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
-    // The bay photo behind the panels drifts slowly sideways and closer as you scroll, so the sky and clouds glide past.
-    gsap.fromTo(".bg-fixed img, .bg-fixed video", { xPercent: 0, scale: 1.1 }, { xPercent: -5, scale: 1.18, ease: "none",
+    // The still bay photo (used when the video does not play) drifts slowly as you scroll. The video itself stays still: the page slides over it.
+    gsap.fromTo(".bg-fixed img", { xPercent: 0, scale: 1.1 }, { xPercent: -5, scale: 1.18, ease: "none",
       scrollTrigger: { trigger: document.documentElement, start: "top top", end: "bottom bottom", scrub: 1.2 } });
 
     // Headings rise line by line.
