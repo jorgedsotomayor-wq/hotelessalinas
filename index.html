@@ -1,0 +1,1138 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Borrador: quitar "noindex" el día del lanzamiento -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#14284a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='8' fill='%23f08a1c'/%3E%3Cpath d='M16 2v4M16 26v4M2 16h4M26 16h4M6 6l3 3M23 23l3 3M26 6l-3 3M9 23l-3 3' stroke='%23f08a1c' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Hoteles Salinas · A una cuadra del mar">
+<meta property="og:description" content="Hotel Salinas, Hotel Salinas Costa Azul y Suite Salinas: tres hoteles de una familia a una cuadra del malecón de Salinas, Ecuador.">
+<meta property="og:image" content="https://hotelessalinas.com/img/hotel-salinas-edificio.jpg">
+<meta property="og:url" content="https://hotelessalinas.com/">
+<title>Hoteles Salinas</title>
+<meta name="description" content="Hotel Salinas, Hotel Salinas Costa Azul y Suite Salinas: tres hoteles de una familia, a una cuadra del malecón de Salinas, Ecuador, desde hace más de 50 años.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..700,0..100;1,9..144,400..700,0..100&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: big real photos, generous sand-white space, sticky stacked hotel cards, swipeable rooms.
+   Balance: premium craft (type, space, motion) + affordable signals (prices, warm words, bright daylight, WhatsApp). */
+:root {
+  --sand: #faf6ef;       /* page ground, warm salt-white */
+  --paper: #ffffff;
+  --ink: #14284a;        /* Pacific navy from the hotel signs */
+  --mist: #55657a;       /* secondary text, 5.4:1 on sand */
+  --ocean: #0b6a80;      /* links and labels, 5.6:1 on sand */
+  --sun: #f08a1c;        /* the logo sun: buttons and accents with navy text */
+  --sun-soft: #fde7c9;
+  --shell: #f4e9d8;      /* Hotel Salinas tint */
+  --aqua: #e0f1f1;       /* Costa Azul tint */
+  --sky: #e6edf7;        /* Suite Salinas tint */
+  --line: rgba(20, 40, 74, .15);
+  --wa: #0f7a40;         /* WhatsApp green darkened to 5.4:1 with white text */
+  --display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --body: "Figtree", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --gutter: max(16px, 5vw);
+  --t-hero: clamp(3rem, 12vw, 8.4rem);
+  --t-h2: clamp(2.1rem, 6vw, 4.4rem);
+  --t-h3: clamp(1.7rem, 3.6vw, 2.6rem);
+  --t-lead: clamp(1.06rem, 1.5vw, 1.22rem);
+  --bar-h: 72px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--sand); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; border-radius: 2px; }
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 500; line-height: 1.02; margin: 0; text-wrap: balance; font-variation-settings: "SOFT" 60; letter-spacing: -.015em; }
+h2 { font-size: var(--t-h2); }
+h3 { font-size: var(--t-h3); }
+h2 em, h1 em, h3 em { font-style: italic; color: var(--ocean); }
+p { margin: 0; }
+.wrap { padding-inline: var(--gutter); max-width: 1320px; margin-inline: auto; }
+.kicker { font-size: .78rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--ocean); margin-bottom: .9rem; display: flex; align-items: center; gap: .6rem; }
+.kicker svg { width: 20px; height: 20px; flex: none; }
+.lead { font-size: var(--t-lead); color: var(--mist); max-width: 36rem; }
+.line { display: block; overflow: hidden; padding-bottom: .08em; margin-bottom: -.08em; }
+.line > span { display: inline-block; }
+.skip { position: absolute; left: 16px; top: -100px; z-index: 100; background: var(--ink); color: var(--paper); padding: .8rem 1.2rem; border-radius: 6px; font-weight: 600; }
+.skip:focus { top: calc(12px + env(safe-area-inset-top, 0px)); }
+.sr { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .55rem; min-height: 50px; padding: 0 1.5rem; border-radius: 999px; font-weight: 700; font-size: 1rem; text-decoration: none; border: 2px solid transparent; cursor: pointer; font-family: inherit; transition: transform .2s ease, background-color .2s ease, color .2s ease, border-color .2s ease; }
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0) scale(.98); }
+.btn .arr { transition: transform .25s ease; }
+.btn:hover .arr { transform: translateX(4px); }
+.btn-sun { background: var(--sun); color: var(--ink); }
+.btn-sun:hover { background: #ff9d36; }
+.btn-ink { background: var(--ink); color: var(--paper); }
+.btn-line { border-color: var(--ink); color: var(--ink); background: transparent; }
+.btn-light { border-color: rgba(255,255,255,.85); color: #fff; background: rgba(10, 24, 46, .18); }
+.btn-wa { background: var(--wa); color: #fff; }
+.btn-wa:hover { background: #0b6334; }
+.btn svg { width: 20px; height: 20px; fill: currentColor; flex: none; }
+
+/* header */
+.bar { position: fixed; inset: 0 0 auto 0; z-index: 50; padding-top: env(safe-area-inset-top, 0px); color: #fff; transition: background-color .35s ease, color .35s ease, box-shadow .35s ease; }
+.bar::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,20,40,.45), rgba(8,20,40,0)); opacity: 1; transition: opacity .35s ease; z-index: -1; pointer-events: none; }
+.bar-in { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: var(--bar-h); padding-inline: var(--gutter); max-width: 1320px; margin-inline: auto; }
+.bar.solid { background: rgba(250, 246, 239, .96); color: var(--ink); box-shadow: 0 1px 0 var(--line); }
+.bar.solid::before { opacity: 0; }
+.brand { display: flex; align-items: center; gap: .65rem; text-decoration: none; font-family: var(--display); font-size: 1.35rem; font-weight: 600; white-space: nowrap; min-height: 44px; }
+.brand-sun { width: 26px; height: 26px; flex: none; }
+.brand-sun circle { fill: var(--sun); }
+.brand-sun path { stroke: var(--sun); }
+.brand:hover .brand-sun { transform: rotate(45deg); }
+.brand-sun { transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+.nav { display: flex; align-items: center; gap: 1.7rem; font-size: .98rem; font-weight: 600; }
+.nav a:not(.btn) { text-decoration: none; padding-block: .6rem; background-image: linear-gradient(currentColor, currentColor); background-size: 0 2px; background-repeat: no-repeat; background-position: 0 85%; transition: background-size .3s ease; }
+.nav a:not(.btn):hover { background-size: 100% 2px; }
+.nav .btn { min-height: 44px; padding: 0 1.2rem; }
+.menu-btn { display: none; min-width: 48px; min-height: 48px; border: 0; background: transparent; color: inherit; cursor: pointer; padding: 0; }
+.menu-btn svg { width: 28px; height: 28px; }
+@media (max-width: 860px) { .nav { display: none; } .menu-btn { display: grid; place-items: center; } }
+
+/* mobile menu */
+.menu { position: fixed; inset: 0; z-index: 60; background: var(--ink); color: var(--paper); padding: calc(env(safe-area-inset-top, 0px) + 1rem) var(--gutter) 2rem; display: flex; flex-direction: column; }
+.menu[hidden] { display: none !important; }
+.menu-top { display: flex; justify-content: space-between; align-items: center; height: var(--bar-h); }
+.menu-top button { min-width: 48px; min-height: 48px; border: 0; background: transparent; color: inherit; cursor: pointer; font-size: 2rem; line-height: 1; }
+.menu nav { display: grid; gap: .4rem; margin-top: 2rem; }
+.menu nav a { font-family: var(--display); font-size: clamp(2.2rem, 10vw, 3.2rem); text-decoration: none; padding-block: .25rem; }
+.menu .menu-foot { margin-top: auto; display: grid; gap: .8rem; }
+.menu .menu-foot p { color: rgba(255,255,255,.75); }
+
+/* hero */
+.hero { position: relative; min-height: min(100svh, 940px); display: grid; align-items: end; overflow: hidden; color: #fff; isolation: isolate; }
+.hero-media { position: absolute; inset: -32px; z-index: -2; }
+.hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: 28% 62%; }
+.hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(8,20,40,.1) 30%, rgba(8,20,40,.72) 100%); }
+.hero-copy { padding-block: calc(var(--bar-h) + 4rem) clamp(2.5rem, 7vh, 4.5rem); display: grid; gap: 1.6rem; }
+.hero .kicker { color: #ffe1b0; margin: 0; }
+.hero h1 { font-size: var(--t-hero); line-height: .9; font-weight: 400; color: #fff; }
+.hero h1 em { color: #ffd59a; font-weight: 500; }
+.hero .sub { font-size: var(--t-lead); max-width: 32rem; color: rgba(255,255,255,.94); }
+.picker { display: grid; gap: .7rem; }
+.picker p { font-size: .82rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #ffe1b0; }
+.chips { display: flex; flex-wrap: wrap; gap: .6rem; }
+.chip { display: inline-flex; align-items: center; gap: .5rem; min-height: 48px; padding: 0 1.15rem; border-radius: 999px; background: rgba(255,255,255,.95); color: var(--ink); text-decoration: none; font-weight: 700; transition: transform .2s ease, background-color .2s ease; }
+.chip:hover { transform: translateY(-2px); background: var(--sun); }
+.chip i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); flex: none; }
+.rating { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .7rem; font-size: .95rem; color: rgba(255,255,255,.94); }
+.rating .stars { color: #ffd59a; letter-spacing: .1em; }
+
+/* marquee */
+.ticker { background: var(--ink); color: var(--paper); display: flex; align-items: center; overflow: hidden; }
+.ticker-track { display: flex; gap: 3rem; padding-block: 1.05rem; white-space: nowrap; width: max-content; animation: run 38s linear infinite; }
+.ticker.paused .ticker-track { animation-play-state: paused; }
+.ticker-track span { display: inline-flex; align-items: center; gap: .8rem; font-family: var(--display); font-size: 1.3rem; font-style: italic; }
+.ticker-track svg { width: 26px; height: 26px; color: var(--sun); }
+.ticker-wrap { flex: 1; overflow: hidden; }
+.ticker-btn { flex: none; min-width: 48px; min-height: 48px; margin-right: 8px; border: 1px solid rgba(255,255,255,.35); border-radius: 999px; background: transparent; color: #fff; cursor: pointer; font-size: .8rem; font-weight: 700; padding: 0 .9rem; font-family: inherit; }
+@keyframes run { to { transform: translateX(-50%); } }
+
+/* hotels */
+.hotels { padding-block: clamp(4.5rem, 10vw, 7.5rem); }
+.sec-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1.2rem 2rem; margin-bottom: clamp(2.2rem, 5vw, 3.5rem); }
+.stack { display: grid; gap: 1.6rem; }
+.hcard { background: var(--tint); border-radius: 22px; overflow: hidden; display: grid; transform-origin: 50% 0; }
+.hcard-media { position: relative; min-height: 0; }
+.hcard-media > img { width: 100%; height: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.hcard-inset { position: absolute; right: 14px; bottom: -28px; width: 42%; max-width: 260px; border-radius: 14px; overflow: hidden; border: 5px solid var(--tint); box-shadow: 0 18px 40px rgba(20,40,74,.22); }
+.hcard-inset img { aspect-ratio: 4 / 3; object-fit: cover; width: 100%; }
+.hcard-inset figcaption { position: absolute; left: 8px; bottom: 8px; background: rgba(20,40,74,.85); color: #fff; font-size: .74rem; font-weight: 700; padding: .2rem .55rem; border-radius: 999px; }
+.hcard-body { padding: clamp(1.6rem, 4vw, 3rem); display: grid; gap: 1.1rem; align-content: center; min-width: 0; }
+.hcard-body p.desc { color: var(--mist); max-width: 32rem; }
+.facts { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: .5rem; }
+.facts li { background: rgba(255,255,255,.75); border-radius: 999px; padding: .45rem .9rem; font-size: .92rem; font-weight: 600; }
+.hcard-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: .4rem; }
+.hcard:nth-child(2) .hcard-media { padding-bottom: 0; }
+@media (max-width: 899px) { .hcard-inset { bottom: 14px; } }
+@media (min-width: 900px) {
+  .stack { gap: 0; }
+  .hcard { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); position: sticky; top: calc(var(--bar-h) + 24px + var(--i) * 18px); min-height: min(76vh, 640px); margin-bottom: 7vh; box-shadow: 0 -10px 40px rgba(20,40,74,.08); }
+  .hcard-media > img { aspect-ratio: auto; position: absolute; inset: 0; }
+  .hcard-media { min-height: 100%; }
+  .hcard-inset { bottom: 24px; right: -40px; z-index: 2; }
+  .hcard-body { padding-left: clamp(3rem, 5vw, 4.5rem); }
+}
+
+/* story */
+.story { background: var(--ink); color: var(--paper); padding-block: clamp(4.5rem, 10vw, 8rem); overflow: hidden; }
+.story-grid { display: grid; gap: 2.6rem; align-items: center; }
+@media (min-width: 900px) { .story-grid { grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 5rem; } }
+.story .kicker { color: #ffd59a; }
+.story h2 { color: var(--paper); }
+.story h2 em { color: #ffd59a; }
+.story p { color: rgba(255,255,255,.86); font-size: var(--t-lead); max-width: 34rem; }
+.story-text { display: grid; gap: 1.3rem; }
+.story figure { margin: 0; position: relative; }
+.then-now { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .8fr); align-items: end; gap: 0; padding: 1rem 0 2rem; }
+.polaroid { background: #f3ead6; padding: 12px 12px 0; border-radius: 4px; box-shadow: 0 24px 50px rgba(0,0,0,.45); transform: rotate(-4deg); z-index: 2; margin-right: -14% !important; }
+.polaroid img { aspect-ratio: 1560 / 836 !important; border-radius: 2px !important; object-fit: cover; filter: sepia(.15) contrast(1.05); }
+.polaroid figcaption { color: #4a3b22 !important; font-family: var(--display); font-style: italic; font-size: clamp(.95rem, 2.4vw, 1.15rem); text-align: center; padding: .7rem .4rem .9rem; margin: 0 !important; }
+.today { transform: translateY(-14%); }
+.today img { aspect-ratio: 3 / 4 !important; }
+.today figcaption { text-align: right; }
+.story figure img { border-radius: 18px; aspect-ratio: 4 / 5; object-fit: cover; width: 100%; }
+.story figcaption { margin-top: .8rem; font-size: .9rem; color: rgba(255,255,255,.7); }
+.dad { display: grid; grid-template-columns: minmax(110px, 190px) 1fr; gap: 1.2rem; align-items: center; margin: .4rem 0; }
+.dad figure { margin: 0; }
+.story .dad img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 999px 999px 18px 18px; border: 4px solid #ffd59a; box-shadow: 0 16px 34px rgba(0,0,0,.35); }
+@media (max-width: 420px) { .dad { grid-template-columns: 110px 1fr; } }
+.his-words { margin: .4rem 0; padding: 1.2rem 0 1.2rem 1.4rem; border-left: 3px solid #ffd59a; }
+.his-words p { font-family: var(--display); font-style: italic; font-size: clamp(1.35rem, 2.6vw, 1.75rem); line-height: 1.3; color: #fff !important; max-width: 30ch; }
+.his-words cite { display: block; margin-top: .7rem; font-style: normal; font-size: .9rem; color: #ffd59a; }
+.memoriam { border-top: 1px solid rgba(255,255,255,.2); padding-top: 1.2rem; font-family: var(--display); font-style: italic; font-size: 1.2rem; color: #ffd59a !important; }
+
+/* rooms */
+.rooms { padding-block: clamp(4.5rem, 10vw, 7.5rem); background: var(--paper); }
+.tabs { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.8rem; }
+.tab { min-height: 48px; padding: 0 1.2rem; border-radius: 999px; border: 2px solid var(--line); background: transparent; color: var(--ink); font: inherit; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: .5rem; }
+.tab i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+.tab[aria-selected="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.tab:hover:not([aria-selected="true"]) { border-color: var(--ink); }
+.panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.2rem; }
+.panel-head p { color: var(--mist); max-width: 40rem; }
+.rail-btns { display: flex; gap: .5rem; }
+.rail-btns button { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--ink); background: transparent; color: var(--ink); font-size: 1.2rem; cursor: pointer; }
+.rail-btns button:hover { background: var(--ink); color: var(--paper); }
+.rail { display: flex; gap: 1.1rem; overflow-x: auto; scroll-snap-type: x mandatory; padding: .3rem var(--gutter) 1.4rem; scroll-padding-inline: var(--gutter); scrollbar-width: thin; list-style: none; margin: 0; }
+.room { flex: 0 0 min(82vw, 370px); scroll-snap-align: start; background: var(--sand); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; }
+.room figure { margin: 0; aspect-ratio: 4 / 3; overflow: hidden; }
+.room img { width: 100%; height: 100%; object-fit: cover; transition: transform .9s cubic-bezier(.2,.7,.2,1); }
+.room:hover img { transform: scale(1.06); }
+.room-body { padding: 1.2rem 1.3rem 1.4rem; display: flex; flex-direction: column; gap: .45rem; flex: 1; }
+.room h3 { font-size: 1.6rem; }
+.room .beds { color: var(--mist); font-size: .96rem; flex: 1; }
+.room-foot { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-top: .7rem; padding-top: .9rem; border-top: 1px solid var(--line); }
+.price { font-size: .86rem; color: var(--mist); line-height: 1.3; }
+.price b { display: block; font-family: var(--display); font-size: 1.45rem; color: var(--ink); font-weight: 600; }
+.pax { display: inline-block; font-size: .8rem; font-weight: 700; color: var(--ocean); }
+.room .btn { min-height: 44px; padding: 0 1rem; font-size: .92rem; }
+.included { margin-top: 1.4rem; display: flex; flex-wrap: wrap; gap: .5rem; }
+.included span { background: var(--sand); border-radius: 999px; padding: .45rem .9rem; font-size: .92rem; font-weight: 600; }
+.draft-note { margin-top: 1.2rem; font-size: .88rem; color: var(--mist); }
+
+/* salinas */
+.salinas { padding-block: clamp(4.5rem, 10vw, 7.5rem); }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 2.4rem 0 3.4rem; }
+.stat { border-top: 2px solid var(--ink); padding-top: 1rem; min-width: 0; }
+.stat b { display: block; font-family: var(--display); font-weight: 500; font-size: clamp(2.6rem, 8vw, 5rem); line-height: 1; font-variant-numeric: tabular-nums; }
+.stat span { color: var(--mist); font-size: .95rem; }
+.places { display: grid; gap: 1.4rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.place { background: var(--paper); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; }
+.place figure { margin: 0; aspect-ratio: 3 / 2; overflow: hidden; }
+.place figure img { width: 100%; height: 100%; object-fit: cover; }
+.place figure { position: relative; }
+.place figure.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+.ai-tag { position: absolute; right: 8px; bottom: 8px; background: rgba(20,40,74,.8); color: #fff; font-size: .72rem; font-weight: 600; padding: .2rem .55rem; border-radius: 999px; }
+.place-body { padding: 1.3rem; display: grid; gap: .5rem; }
+.place-body svg { width: 44px; height: 44px; color: var(--ocean); }
+.place h3 { font-size: 1.45rem; }
+.place p { color: var(--mist); }
+
+/* reviews */
+.reviews { background: var(--sun-soft); padding-block: clamp(3.5rem, 8vw, 5.5rem); }
+.reviews-in { display: grid; gap: 1.6rem 3rem; align-items: center; }
+@media (min-width: 820px) { .reviews-in { grid-template-columns: auto 1fr auto; } }
+.score { font-family: var(--display); font-size: clamp(4.5rem, 14vw, 7.5rem); line-height: .9; font-weight: 500; }
+.score small { display: block; font-family: var(--body); font-size: 1rem; font-weight: 700; letter-spacing: .02em; margin-top: .6rem; }
+.score .stars { color: #b25c00; font-size: 1.3rem; letter-spacing: .12em; display: block; margin-top: .3rem; }
+.reviews p.lead { color: var(--ink); max-width: 38rem; }
+
+/* booking */
+.book { background: var(--ink); color: var(--paper); padding-block: clamp(4.5rem, 10vw, 7.5rem); }
+.book .kicker { color: #ffd59a; }
+.book h2 { color: var(--paper); }
+.book h2 em { color: #ffd59a; }
+.book-grid { display: grid; gap: 3rem; }
+@media (min-width: 900px) { .book-grid { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: start; } }
+.book .lead { color: rgba(255,255,255,.82); margin-top: 1.2rem; }
+.contact { margin-top: 2.2rem; display: grid; gap: 1rem; }
+.contact .row { border-top: 1px solid rgba(255,255,255,.2); padding-top: 1rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .6rem 1rem; }
+.contact .label { display: block; font-size: .78rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.72); margin-bottom: .2rem; }
+.contact .val { font-size: 1.15rem; font-weight: 600; word-break: break-word; }
+.contact a.val { text-decoration: underline; text-decoration-color: var(--sun); text-underline-offset: 4px; text-decoration-thickness: 2px; }
+.copy { min-height: 44px; background: transparent; color: var(--paper); border: 1.5px solid rgba(255,255,255,.5); border-radius: 999px; padding: 0 1rem; font: inherit; font-size: .9rem; font-weight: 600; cursor: pointer; }
+.copy:hover { border-color: var(--sun); }
+.form { background: var(--paper); color: var(--ink); border-radius: 22px; padding: clamp(1.4rem, 4vw, 2.4rem); display: grid; gap: 1.1rem; }
+.form h3 { font-size: 2rem; }
+.fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.field { display: grid; gap: .35rem; min-width: 0; }
+.field.full { grid-column: 1 / -1; }
+.field label { font-size: .85rem; font-weight: 700; color: var(--ink); }
+.field input, .field select { width: 100%; min-width: 0; height: 52px; border: 1.5px solid #8b97a6; border-radius: 10px; background: var(--paper); color: var(--ink); font: inherit; font-size: 1rem; padding: 0 .85rem; }
+.field input:focus, .field select:focus { outline: 3px solid var(--ocean); outline-offset: 1px; }
+.summary { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; font-size: .95rem; color: var(--mist); border-top: 1px solid var(--line); padding-top: 1rem; }
+.summary b { color: var(--ink); }
+.form .btn-wa { width: 100%; min-height: 56px; font-size: 1.05rem; }
+.form .note { font-size: .9rem; color: var(--mist); }
+.err { color: #a3160d; font-size: .95rem; font-weight: 600; }
+@media (max-width: 440px) { .fields { grid-template-columns: 1fr; } }
+
+/* faq */
+.faq { padding-block: clamp(4.5rem, 10vw, 7rem); }
+.faq-grid { display: grid; gap: 2rem 4rem; }
+@media (min-width: 900px) { .faq-grid { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); } }
+.faq details { border-top: 1px solid var(--line); }
+.faq details:last-child { border-bottom: 1px solid var(--line); }
+.faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 1rem; min-height: 64px; padding-block: .8rem; font-family: var(--display); font-size: 1.3rem; font-weight: 500; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-family: var(--body); font-size: 1.6rem; font-weight: 400; color: var(--ocean); transition: transform .3s ease; flex: none; }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq details p { color: var(--mist); padding-bottom: 1.2rem; max-width: 42rem; }
+
+/* footer */
+.foot { background: #0c1a33; color: rgba(255,255,255,.8); padding-block: 3.5rem 2.5rem; font-size: .95rem; }
+.foot-grid { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+.foot h2 { color: var(--paper); font-size: 1.35rem; margin-bottom: .7rem; }
+.foot p { margin-bottom: .35rem; }
+.foot a { text-decoration: underline; text-underline-offset: 3px; }
+.foot-bottom { margin-top: 2.6rem; padding-top: 1.2rem; border-top: 1px solid rgba(255,255,255,.15); display: flex; flex-wrap: wrap; justify-content: space-between; gap: .6rem; font-size: .85rem; color: rgba(255,255,255,.72); }
+
+/* mobile bottom bar + desktop whatsapp bubble */
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 45; display: none; gap: .6rem; padding: .7rem 16px calc(.7rem + env(safe-area-inset-bottom, 0px)); background: rgba(250,246,239,.97); box-shadow: 0 -1px 0 var(--line), 0 -10px 30px rgba(20,40,74,.08); }
+.dock .btn { flex: 1; min-height: 52px; }
+.bubble { position: fixed; right: 20px; bottom: 20px; z-index: 45; width: 60px; height: 60px; border-radius: 50%; background: var(--wa); color: #fff; display: grid; place-items: center; box-shadow: 0 10px 28px rgba(15,122,64,.4); }
+.bubble svg { width: 30px; height: 30px; fill: currentColor; }
+@media (max-width: 860px) { .dock { display: flex; } .bubble { display: none; } body { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); } }
+
+/* social */
+.social { padding-block: clamp(3.5rem, 8vw, 5.5rem); background: var(--aqua); }
+.social-in { display: grid; gap: 1.6rem 3rem; align-items: center; }
+@media (min-width: 860px) { .social-in { grid-template-columns: minmax(0, 1fr) auto; } }
+.social h2 { font-size: clamp(2rem, 5vw, 3.4rem); }
+.social .lead { margin-top: .8rem; }
+.social-links { display: flex; flex-wrap: wrap; gap: .7rem; }
+.social-links .btn { background: var(--paper); color: var(--ink); border-color: var(--ink); }
+.social-links .btn:hover { background: var(--ink); color: var(--paper); }
+.social-links .btn svg { width: 22px; height: 22px; }
+.foot .soc { display: flex; gap: .6rem; margin-top: .6rem; }
+.foot .soc a { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.4); text-decoration: none; }
+.foot .soc a:hover { border-color: var(--sun); color: var(--sun); }
+.foot .soc svg { width: 20px; height: 20px; }
+.menu .soc { display: flex; gap: 1.2rem; }
+.menu .soc a { color: #fff; font-weight: 600; min-height: 44px; display: inline-flex; align-items: center; gap: .5rem; }
+.menu .soc svg { width: 22px; height: 22px; }
+
+/* ===== eye-catchers ===== */
+.badge { position: absolute; right: var(--gutter); top: calc(var(--bar-h) + env(safe-area-inset-top, 0px) + 1.4rem); width: clamp(104px, 15vw, 176px); aspect-ratio: 1; z-index: 2; }
+.badge svg { width: 100%; height: 100%; overflow: visible; }
+.badge .ring { transform-origin: 100px 100px; animation: spin 26s linear infinite; }
+.badge text { font-family: var(--body); font-weight: 700; font-size: 15.5px; letter-spacing: 2.6px; fill: #fff; }
+.badge .core { fill: var(--sun); }
+.badge .num { font-family: var(--display); font-size: 44px; font-weight: 600; fill: var(--ink); }
+.badge .sub { font-size: 13px; letter-spacing: 1.5px; fill: var(--ink); }
+@keyframes spin { to { transform: rotate(360deg); } }
+.chip-thumb { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-left: -.55rem; border: 2px solid var(--c); flex: none; }
+.sticker { position: absolute; left: 16px; top: 16px; z-index: 3; display: inline-flex; align-items: center; gap: .45rem; background: var(--sun); color: var(--ink); font-family: var(--display); font-weight: 600; font-size: clamp(1rem, 1.8vw, 1.22rem); line-height: 1.1; padding: .6rem 1.05rem; border-radius: 999px; transform: rotate(var(--r, -5deg)); box-shadow: 0 10px 24px rgba(20,40,74,.28); transition: transform .4s cubic-bezier(.3,1.6,.5,1); }
+.sticker svg { width: 20px; height: 20px; flex: none; }
+.hcard:hover .sticker { transform: rotate(calc(var(--r, -5deg) * -1)) scale(1.06); }
+.people { display: inline-flex; gap: 1px; margin-right: .45rem; vertical-align: -3px; color: var(--ocean); }
+.people svg { width: 14px; height: 14px; }
+
+/* wave edge */
+.wave-top { position: relative; height: 0; }
+.wave-top svg { position: absolute; left: 0; bottom: -1px; width: 200%; height: 46px; color: var(--wave); animation: drift 14s linear infinite; }
+@keyframes drift { to { transform: translateX(-50%); } }
+
+/* illustrated map */
+.mapsec { background: var(--aqua); padding-block: clamp(4rem, 9vw, 6.5rem); --wave: var(--aqua); position: relative; }
+.mapsec .wave-top { position: absolute; top: 0; left: 0; right: 0; overflow: hidden; height: 46px; transform: translateY(-45px); }
+.mapsec .wave-top svg { bottom: 0; }
+.map-frame { margin: 0; background: #bfe7ea; border-radius: 26px; overflow: hidden; box-shadow: 0 30px 60px rgba(20,40,74,.14); }
+.map-scroll { overflow-x: auto; }
+.map-scroll svg { display: block; width: 100%; min-width: 640px; height: auto; }
+.map-frame figcaption { background: var(--paper); padding: .9rem 1.2rem; font-size: .92rem; color: var(--mist); display: flex; flex-wrap: wrap; justify-content: space-between; gap: .4rem 1rem; }
+.swipe-hint { display: none; font-weight: 700; color: var(--ocean); }
+@media (max-width: 700px) { .swipe-hint { display: inline; } }
+.legend { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.4rem; }
+.legend a { display: inline-flex; align-items: center; gap: .55rem; min-height: 48px; padding: 0 1.1rem; border-radius: 999px; background: var(--paper); text-decoration: none; font-weight: 700; border: 2px solid transparent; }
+.legend a:hover { border-color: var(--ink); }
+.legend i { width: 14px; height: 14px; border-radius: 4px; background: var(--c); }
+.m-waves { animation: drift-sm 6s ease-in-out infinite alternate; }
+@keyframes drift-sm { to { transform: translateX(-24px); } }
+.m-whale { transform-box: fill-box; transform-origin: 50% 100%; animation: breach 7s ease-in-out infinite; }
+@keyframes breach { 0%, 62%, 100% { transform: translateY(26px) rotate(-20deg); opacity: 0; } 70% { opacity: 1; } 78% { transform: translateY(-14px) rotate(8deg); opacity: 1; } 88% { transform: translateY(18px) rotate(30deg); opacity: 0; } }
+.m-boat { animation: bob 3.2s ease-in-out infinite alternate; }
+@keyframes bob { to { transform: translateY(5px) rotate(2deg); } }
+.m-sunrays { transform-origin: 760px 30px; animation: spin 40s linear infinite; }
+.m-hotel { cursor: pointer; }
+.m-hotel .pulse { transform-box: fill-box; transform-origin: center; animation: pulse 2.4s ease-out infinite; }
+@keyframes pulse { from { transform: scale(.6); opacity: .9; } to { transform: scale(1.8); opacity: 0; } }
+.m-hotel:hover .bld { filter: brightness(1.08); }
+
+/* why direct */
+.direct { padding-block: clamp(3.5rem, 8vw, 5.5rem); }
+.direct-grid { display: grid; gap: 1.2rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-top: 2rem; }
+.perk { background: var(--paper); border-radius: 20px; padding: 1.5rem; display: grid; gap: .6rem; align-content: start; }
+.perk .ico { width: 56px; height: 56px; border-radius: 16px; background: var(--sun-soft); display: grid; place-items: center; color: var(--ink); transform: rotate(-4deg); }
+.perk .ico svg { width: 30px; height: 30px; }
+.perk h3 { font-size: 1.5rem; }
+.perk p { color: var(--mist); }
+
+/* portal: an illustrated window; the curtains open onto the real malecón, then you step through */
+.portal { position: relative; background: var(--ink); color: #fff; --wall: #f3d6a8; }
+.portal-stage { position: relative; overflow: hidden; }
+.portal-stage figure { margin: 0; }
+.p-sea img { width: 100%; display: block; object-fit: cover; }
+.p-copy { padding: 2rem var(--gutter) 3rem; display: grid; gap: .4rem; position: relative; z-index: 3; }
+.p-copy p { font-family: var(--display); font-size: clamp(2rem, 6.5vw, 4.6rem); line-height: 1.02; font-weight: 500; margin: 0; }
+.p-copy p em { color: #ffd59a; }
+.wall, .p-shade { display: none; }
+.motion .portal { height: 145vh; }
+.motion .portal-stage { position: sticky; top: 0; height: 100vh; height: 100svh; }
+.motion .p-sea { position: absolute; inset: 0; }
+.motion .p-sea img { height: 100%; }
+.motion .wall { display: block; position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.win { position: absolute; left: 50%; top: 42%; translate: -50% -50%; width: min(64vw, 44vh); aspect-ratio: 4 / 5; border: clamp(9px, 1.5vmin, 15px) solid #fff; border-radius: 12px; box-shadow: 0 0 0 250vmax var(--wall), 0 0 0 calc(250vmax + 1px) var(--wall); will-change: transform; }
+.mul-v { position: absolute; left: 50%; top: 0; bottom: 0; width: clamp(6px, 1vmin, 10px); translate: -50% 0; background: #fff; z-index: 1; }
+.mul-h { position: absolute; left: 0; right: 0; top: 38%; height: clamp(6px, 1vmin, 10px); background: #fff; z-index: 1; }
+.past { position: absolute; inset: 0; margin: 0; z-index: 0; overflow: hidden; }
+.past img { width: 100%; height: 100%; object-fit: cover; filter: sepia(.35) contrast(1.05); }
+.past span { position: absolute; left: 8px; bottom: 8px; background: rgba(74,59,34,.85); color: #f3ead6; font-family: var(--display); font-style: italic; font-size: clamp(.8rem, 2.2vw, 1rem); padding: .15rem .55rem; border-radius: 4px; }
+.motion .p-mid { opacity: 0; color: var(--ink); }
+.motion .p-mid, .motion .p-line1, .motion .p-line2 { grid-area: 1 / 1; }
+.rod { position: absolute; left: -14%; right: -14%; top: -9%; height: 9px; border-radius: 9px; background: #8a5a2b; z-index: 2; }
+.rod::before, .rod::after { content: ""; position: absolute; top: -5px; width: 19px; height: 19px; border-radius: 50%; background: #8a5a2b; }
+.rod::before { left: -6px; } .rod::after { right: -6px; }
+.curtain { position: absolute; top: -8%; height: 116%; width: 58%; z-index: 1; background: repeating-linear-gradient(90deg, #e7a447 0 12px, #f6c56f 12px 24px, #f9d38a 24px 28px, #d88d32 28px 34px); box-shadow: 0 14px 30px rgba(90,50,10,.25); }
+.curtain.l { left: -10%; transform-origin: 0 50%; border-radius: 0 0 40% 6px; }
+.curtain.r { right: -10%; transform-origin: 100% 50%; border-radius: 0 0 6px 40%; }
+.sill { position: absolute; left: -8%; right: -8%; bottom: -7%; height: 7%; min-height: 10px; background: #fff; border-radius: 4px; box-shadow: 0 8px 18px rgba(90,50,10,.18); z-index: 2; }
+.plant { position: absolute; right: 4%; bottom: 100%; width: 22%; z-index: 2; }
+.plant svg { width: 100%; height: auto; display: block; }
+.motion .p-copy { position: absolute; inset: auto 0 0 0; padding-bottom: clamp(2.5rem, 8vh, 5rem); }
+.motion .p-line1, .motion .p-line2 { grid-area: 1 / 1; }
+.motion .p-line1 { color: var(--ink); }
+.motion .p-line2 { opacity: 0; }
+.motion .p-shade { display: block; position: absolute; inset: 40% 0 0 0; z-index: 2; background: linear-gradient(180deg, rgba(8,20,40,0), rgba(8,20,40,.72)); opacity: 0; }
+.hint { display: inline-flex; align-items: center; gap: .4rem; font-family: var(--body); font-size: .85rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); opacity: .7; margin-top: .6rem; }
+.hint::after { content: "↓"; animation: nudge 1.4s ease-in-out infinite; }
+@keyframes nudge { 50% { transform: translateY(5px); } }
+.p-copy .hint, .p-mid { display: none; }
+.motion .p-mid { display: block; }
+.motion .p-copy .hint { display: inline-flex; grid-area: 2 / 1; }
+@media (max-width: 860px) { .motion .portal { height: 135vh; } .motion .p-copy { padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)); } }
+
+/* compact hotel cards (override the old stacked layout) */
+.stack { display: grid; grid-auto-flow: column; grid-auto-columns: min(84vw, 380px); gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: .8rem; scrollbar-width: thin; }
+.hcard { position: static !important; display: flex !important; flex-direction: column; min-height: 0 !important; margin: 0 !important; box-shadow: none !important; transform: none !important; scroll-snap-align: start; border-radius: 20px; }
+.hcard .hcard-media { min-height: 0 !important; }
+.hcard .hcard-media > img { position: static !important; aspect-ratio: 4 / 3 !important; height: auto !important; }
+.hcard .hcard-inset { right: 10px !important; bottom: 10px !important; width: 38%; border-width: 4px; }
+.hcard .hcard-body { padding: 1.2rem 1.2rem 1.4rem !important; gap: .7rem; align-content: start; }
+.hcard .hcard-body h3 { font-size: 1.7rem; }
+.hcard .facts li { font-size: .85rem; padding: .35rem .7rem; }
+.hcard .hcard-actions .btn { min-height: 46px; padding: 0 1rem; font-size: .92rem; }
+.hcard .sticker { font-size: .95rem; padding: .45rem .85rem; }
+@media (min-width: 900px) { .stack { grid-auto-flow: row; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: visible; } }
+.perks-mini { list-style: none; padding: 0; margin: 1.4rem 0 0; display: grid; gap: .5rem; }
+.perks-mini li { display: flex; gap: .6rem; align-items: baseline; color: rgba(255,255,255,.9); }
+.perks-mini li::before { content: "✓"; color: #ffd59a; font-weight: 700; }
+a.rating { text-decoration: none; color: inherit; }
+a.rating:hover b { text-decoration: underline; }
+@media (max-width: 819px) { .places { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: min(80vw, 340px); overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: .6rem; } .place { scroll-snap-align: start; } }
+
+/* doors: the three hotels side by side open like doors onto the sea */
+.doors { margin-bottom: clamp(2rem, 5vw, 3.5rem); }
+.doors-stage { position: relative; }
+.doors-back { margin: 0; display: none; }
+.doors-copy { display: grid; gap: .8rem; margin-bottom: 1.6rem; }
+.doors-copy h2 { font-size: var(--t-h2); }
+.door { display: none; }
+.motion .doors { height: 135vh; width: 100vw; margin-left: calc(50% - 50vw); }
+.motion .hotels { padding-top: 0; }
+.motion .doors-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; perspective: 1400px; }
+.motion .doors-back { display: block; position: absolute; inset: 0; }
+.motion .doors-back img { width: 100%; height: 100%; object-fit: cover; }
+.motion .doors-back::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,20,40,.15), rgba(8,20,40,.62)); }
+.motion .doors-copy { position: absolute; inset: auto 0 0 0; z-index: 1; padding: 0 var(--gutter) clamp(3rem, 10vh, 6rem); color: #fff; margin: 0; }
+.motion .doors-copy .kicker { color: #ffd59a; }
+.motion .doors-copy h2 { color: #fff; }
+.motion .doors-copy h2 em { color: #ffd59a; }
+.motion .doors-copy .lead { color: rgba(255,255,255,.9); }
+.motion .door { display: block; position: absolute; top: 0; bottom: 0; width: 33.4%; z-index: 2; overflow: hidden; background: var(--ink); backface-visibility: hidden; will-change: transform; }
+.motion .door img { width: 100%; height: 100%; object-fit: cover; }
+.motion .door span { position: absolute; left: 50%; bottom: clamp(5.5rem, 14vh, 7rem); translate: -50% 0; white-space: nowrap; background: rgba(20,40,74,.88); color: #fff; font-weight: 700; font-size: clamp(.8rem, 1.6vw, 1rem); padding: .45rem .9rem; border-radius: 999px; }
+.motion .d-l { left: 0; transform-origin: 0% 50%; border-right: 3px solid var(--sand); }
+.motion .d-c { left: 33.3%; transform-origin: 50% 50%; }
+.motion .d-r { right: 0; transform-origin: 100% 50%; border-left: 3px solid var(--sand); }
+@media (max-width: 860px) { .motion .doors { height: 125vh; } .motion .doors-copy { padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px)); } .motion .door span { bottom: calc(120px + env(safe-area-inset-bottom, 0px)); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .badge .ring, .wave-top svg, .m-waves, .m-whale, .m-boat, .m-sunrays, .m-hotel .pulse { animation: none !important; }
+  .m-whale { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .ticker-track { animation: none; flex-wrap: wrap; white-space: normal; width: auto; gap: 1rem 2rem; padding-inline: var(--gutter); }
+  .ticker-track [aria-hidden="true"] { display: none; }
+  .ticker-btn { display: none; }
+  *, *::before, *::after { transition-duration: .01ms !important; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#contenido">Saltar al contenido</a>
+
+<header class="bar" id="bar">
+  <div class="bar-in">
+    <a class="brand" href="#inicio" aria-label="Hoteles Salinas, inicio">
+      <svg class="brand-sun" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="7"/><path d="M16 2v4M16 26v4M2 16h4M26 16h4M6 6l3 3M23 23l3 3M26 6l-3 3M9 23l-3 3" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg>
+      Hoteles Salinas
+    </a>
+    <nav class="nav" aria-label="Principal">
+      <a href="#hoteles">Hoteles</a>
+      <a href="#habitaciones">Habitaciones</a>
+      <a href="#ubicacion">Ubicación</a>
+      <a href="#historia">Historia</a>
+      <a href="#salinas">Salinas</a>
+      <a class="btn btn-sun" href="#reservar">Reservar</a>
+    </nav>
+    <button class="menu-btn" id="menu-open" type="button" aria-expanded="false" aria-controls="menu">
+      <span class="sr">Abrir menú</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menú" hidden>
+  <div class="menu-top"><span class="brand">Hoteles Salinas</span><button type="button" id="menu-close" aria-label="Cerrar menú">×</button></div>
+  <nav aria-label="Menú principal">
+    <a href="#hoteles">Hoteles</a>
+    <a href="#habitaciones">Habitaciones</a>
+    <a href="#historia">Historia</a>
+    <a href="#salinas">Salinas</a>
+    <a href="#preguntas">Preguntas</a>
+  </nav>
+  <div class="menu-foot">
+    <p>Gral. Enríquez Gallo y Calle 27, Salinas</p>
+    <div class="soc"><a href="https://www.instagram.com/hoteles.salinas/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>Instagram</a><a href="https://www.facebook.com/profile.php?id=100057365242051" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 8h3V4h-3c-2.8 0-4.5 1.8-4.5 4.6V11H7v4h2.5v7h4v-7h3l.5-4h-3.5V8.8c0-.5.3-.8.5-.8z"/></svg>Facebook</a></div>
+    <a class="btn btn-sun" href="#reservar">Reservar</a>
+  </div>
+</div>
+
+<main id="contenido">
+  <section class="hero" id="inicio" aria-labelledby="hero-title">
+    <div class="hero-media"><img src="img/hero-playa.jpg" alt="Playa de Salinas con agua turquesa y el malecón al fondo" fetchpriority="high"></div>
+    <div class="badge hero-in" aria-hidden="true">
+      <svg viewBox="0 0 200 200"><defs><path id="badge-circle" d="M100 100m-82 0a82 82 0 1 1 164 0a82 82 0 1 1 -164 0"/></defs>
+        <g class="ring"><circle cx="100" cy="100" r="98" fill="rgba(10,24,46,.55)"/><text><textPath href="#badge-circle">MÁS DE 50 AÑOS · HOTELES SALINAS · ECUADOR ·</textPath></text></g>
+        <circle class="core" cx="100" cy="100" r="58"/><text class="num" x="100" y="106" text-anchor="middle">50+</text><text class="sub" x="100" y="128" text-anchor="middle">AÑOS</text></svg>
+    </div>
+    <div class="wrap hero-copy">
+      <p class="kicker hero-in">Salinas · Santa Elena · Ecuador</p>
+      <h1 id="hero-title"><span class="line"><span>A una cuadra</span></span><span class="line"><span><em>del mar.</em></span></span></h1>
+      <p class="sub hero-in">Ven con tu familia a Salinas y quédate a pasos de la playa. Tres hoteles de una misma familia, con buen precio y atención de casa.</p>
+      <div class="picker hero-in">
+        <p id="picker-label">¿Dónde te quieres quedar?</p>
+        <div class="chips" role="group" aria-labelledby="picker-label">
+          <a class="chip" href="#hotel-salinas" style="--c:#e0a458"><img class="chip-thumb" src="img/hotel-salinas-edificio.jpg" alt="">Hotel Salinas</a>
+          <a class="chip" href="#costa-azul" style="--c:#2aa3a8"><img class="chip-thumb" src="img/costa-azul-piscina.jpg" alt="">Costa Azul</a>
+          <a class="chip" href="#suites-salinas" style="--c:#5b7fbf"><img class="chip-thumb" src="img/suites-salinas-edificio.jpg" alt="">Suite Salinas</a>
+        </div>
+      </div>
+      <a class="rating hero-in" href="https://www.google.com/maps/search/?api=1&amp;query=Hoteles+Salinas+Gral+Enrique+Gallo+Salinas+Ecuador" target="_blank" rel="noopener"><span class="stars" aria-hidden="true">★★★★☆</span><span><b>4,1 en Google</b> · 803 opiniones<span class="sr"> (se abre en Google Maps)</span></span></a>
+    </div>
+  </section>
+
+  <div class="ticker" id="ticker">
+    <div class="ticker-wrap">
+      <div class="ticker-track">
+        <span><svg viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 20c3-3 5-3 8 0s5 3 8 0 5-3 8 0"/><path d="M3 26c3-3 5-3 8 0s5 3 8 0 5-3 8 0"/></svg>Malecón de Salinas</span>
+        <span><svg viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 6v20M6 14a10 8 0 0 1 20 0z"/><path d="M4 28h24"/></svg>Playa de San Lorenzo</span>
+        <span><svg viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18c4 6 14 7 20 2 2-2 3-5 3-8 1 0 3-1 3-3-2 0-3 1-4 2-1-1-3-1-4 0 1 0 2 1 2 2-5 6-12 6-20 5z"/><circle cx="20" cy="15" r=".6" fill="currentColor"/></svg>Ballenas de junio a septiembre</span>
+        <span><svg viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 24l7-9 5 6 4-4 8 7z"/><path d="M22 8c2 0 3 1 3 3"/></svg>La Chocolatera</span>
+        <span><svg viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 15h22a11 11 0 0 1-22 0z"/><path d="M12 10c0-2 2-2 2-4M18 10c0-2 2-2 2-4"/></svg>Ceviche y encebollado</span>
+        <span><svg viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 20a10 10 0 0 1 20 0"/><path d="M3 24h26M16 4v4M7 9l2 2M25 9l-2 2"/></svg>Atardeceres en el Pacífico</span>
+        <span aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 20c3-3 5-3 8 0s5 3 8 0 5-3 8 0"/><path d="M3 26c3-3 5-3 8 0s5 3 8 0 5-3 8 0"/></svg>Malecón de Salinas</span>
+        <span aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 6v20M6 14a10 8 0 0 1 20 0z"/><path d="M4 28h24"/></svg>Playa de San Lorenzo</span>
+        <span aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18c4 6 14 7 20 2 2-2 3-5 3-8 1 0 3-1 3-3-2 0-3 1-4 2-1-1-3-1-4 0 1 0 2 1 2 2-5 6-12 6-20 5z"/></svg>Ballenas de junio a septiembre</span>
+        <span aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 24l7-9 5 6 4-4 8 7z"/></svg>La Chocolatera</span>
+        <span aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 15h22a11 11 0 0 1-22 0z"/></svg>Ceviche y encebollado</span>
+        <span aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 20a10 10 0 0 1 20 0"/><path d="M3 24h26"/></svg>Atardeceres en el Pacífico</span>
+      </div>
+    </div>
+    <button class="ticker-btn" id="ticker-btn" type="button" aria-pressed="false">Pausar</button>
+  </div>
+
+
+  <section class="hotels" id="hoteles" aria-labelledby="hoteles-title">
+    <div class="wrap">
+      <div class="doors" id="doors">
+        <div class="doors-stage">
+          <figure class="doors-back"><img src="img/playa-atardecer.jpg" alt="" loading="lazy"></figure>
+          <div class="doors-copy">
+            <p class="kicker">Nuestros hoteles</p>
+            <h2 id="hoteles-title">Tres hoteles, <em>una misma calle</em></h2>
+            <p class="lead">Están en la esquina de Gral. Enríquez Gallo y Calle 27, uno junto al otro, a una cuadra del mar. Los huéspedes de los tres comparten la piscina del Costa Azul.</p>
+          </div>
+          <div class="door d-l" aria-hidden="true"><img src="img/hotel-salinas-edificio.jpg" alt=""><span>Hotel Salinas</span></div>
+          <div class="door d-c" aria-hidden="true"><img src="img/costa-azul-edificio.jpg" alt=""><span>Costa Azul</span></div>
+          <div class="door d-r" aria-hidden="true"><img src="img/suites-salinas-edificio.jpg" alt=""><span>Suite Salinas</span></div>
+        </div>
+      </div>
+      <div class="stack" id="stack">
+        <article class="hcard" id="hotel-salinas" style="--tint: var(--shell); --i: 0" aria-labelledby="hs-title">
+          <div class="hcard-media"><span class="sticker" style="--r:-6deg"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3l-6.1 3.3 1.4-6.8L2.2 9.1l6.9-.8z"/></svg>El original, desde los 70</span><img src="img/hotel-salinas-edificio.jpg" alt="Edificio del Hotel Salinas, ocho pisos blancos con detalles azules y el letrero en la terraza" loading="lazy"></div>
+          <div class="hcard-body">
+            <p class="kicker">Donde empezó todo, hace más de 50 años</p>
+            <h3 id="hs-title">Hotel Salinas</h3>
+            <p class="desc">El hotel del primer salinense que levantó un hotel con vista al mar. Desde los pisos altos se ve el mar.</p>
+            <ul class="facts" aria-label="Datos del Hotel Salinas"><li>8 pisos con ascensor</li><li>Sencillas, matrimoniales y múltiples</li><li>1 cuadra del malecón</li></ul>
+            <div class="hcard-actions">
+              <a class="btn btn-ink" href="#habitaciones" data-tab="hs">Ver habitaciones <span class="arr" aria-hidden="true">→</span></a>
+              <a class="btn btn-line" href="#reservar" data-hotel="Hotel Salinas">Reservar aquí</a>
+            </div>
+          </div>
+        </article>
+        <article class="hcard" id="costa-azul" style="--tint: var(--aqua); --i: 1" aria-labelledby="ca-title">
+          <div class="hcard-media">
+            <span class="sticker" style="--r:5deg"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 18c2-1.5 3.5-1.5 5 0s3.5 1.5 5 0 3.5-1.5 5 0 3.5 1.5 5 0"/><path d="M7 15V5a2 2 0 0 1 4 0M15 15V5a2 2 0 0 1 4 0M7 9h8"/></svg>Piscina para los 3 hoteles</span>
+            <img src="img/costa-azul-edificio.jpg" alt="Edificio del Hotel Salinas Costa Azul, blanco con franjas azules" loading="lazy">
+            <figure class="hcard-inset"><img src="img/costa-azul-piscina.jpg" alt="Piscina del Costa Azul con su puente de baldosas azules" loading="lazy"><figcaption>La piscina</figcaption></figure>
+          </div>
+          <div class="hcard-body">
+            <p class="kicker">La piscina de la familia</p>
+            <h3 id="ca-title">Hotel Salinas Costa Azul</h3>
+            <p class="desc">Tiene la piscina que comparten los huéspedes de los tres hoteles. Ideal para grupos y familias.</p>
+            <ul class="facts" aria-label="Datos del Costa Azul"><li>Desde 1988</li><li>5 pisos</li><li>Piscina para los 3 hoteles</li></ul>
+            <div class="hcard-actions">
+              <a class="btn btn-ink" href="#habitaciones" data-tab="ca">Ver habitaciones <span class="arr" aria-hidden="true">→</span></a>
+              <a class="btn btn-line" href="#reservar" data-hotel="Hotel Salinas Costa Azul">Reservar aquí</a>
+            </div>
+          </div>
+        </article>
+        <article class="hcard" id="suites-salinas" style="--tint: var(--sky); --i: 2" aria-labelledby="su-title">
+          <div class="hcard-media"><span class="sticker" style="--r:-4deg"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><circle cx="7" cy="5" r="2.4"/><circle cx="17" cy="5" r="2.4"/><circle cx="12" cy="10" r="2"/><path d="M3 21v-7a4 4 0 0 1 8 0v7zM13 21v-7a4 4 0 0 1 8 0v7z"/></svg>Hasta 6 personas</span><img src="img/suites-salinas-edificio.jpg" alt="Edificio de Suite Salinas, blanco con franjas azules y el nombre «SUITES SALINAS» en letras verticales" loading="lazy"></div>
+          <div class="hcard-body">
+            <p class="kicker">Para familias y grupos</p>
+            <h3 id="su-title">Suite Salinas</h3>
+            <p class="desc">El más moderno de los tres. Suites de dos a seis personas, con aire acondicionado y WiFi.</p>
+            <ul class="facts" aria-label="Datos de Suite Salinas"><li>Desde el 2000</li><li>5 pisos con ascensor</li><li>6 tipos de suite</li><li>Garaje y salón de eventos</li></ul>
+            <div class="hcard-actions">
+              <a class="btn btn-ink" href="#habitaciones" data-tab="su">Ver habitaciones <span class="arr" aria-hidden="true">→</span></a>
+              <a class="btn btn-line" href="#reservar" data-hotel="Suite Salinas">Reservar aquí</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="rooms" id="habitaciones" aria-labelledby="hab-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="kicker">Habitaciones</p>
+          <h2 id="hab-title" class="lines"><span class="line"><span>Una habitación</span></span> <span class="line"><span><em>para cada viaje</em></span></span></h2>
+        </div>
+        <div class="rail-btns">
+          <button type="button" id="prev" aria-label="Ver habitaciones anteriores">←</button>
+          <button type="button" id="next" aria-label="Ver más habitaciones">→</button>
+        </div>
+      </div>
+      <div class="tabs" role="tablist" aria-label="Elige un hotel">
+        <button class="tab" role="tab" id="tab-su" aria-controls="panel-su" aria-selected="true" style="--c:#5b7fbf"><i aria-hidden="true"></i>Suite Salinas</button>
+        <button class="tab" role="tab" id="tab-ca" aria-controls="panel-ca" aria-selected="false" tabindex="-1" style="--c:#2aa3a8"><i aria-hidden="true"></i>Costa Azul</button>
+        <button class="tab" role="tab" id="tab-hs" aria-controls="panel-hs" aria-selected="false" tabindex="-1" style="--c:#e0a458"><i aria-hidden="true"></i>Hotel Salinas</button>
+      </div>
+    </div>
+
+    <div role="tabpanel" id="panel-su" aria-labelledby="tab-su">
+      <div class="wrap panel-head"><p>Seis tipos de suite, de 2 a 6 personas. Todas con aire acondicionado, TV por cable, WiFi y baño privado con agua caliente. Hay ascensor.</p></div>
+      <ul class="rail" aria-label="Suites de Suite Salinas">
+        <li class="room"><figure><img src="img/su-matrimonial.jpg" alt="Suite matrimonial con cama de dos plazas" loading="lazy"></figure>
+          <div class="room-body"><h3>Matrimonial</h3><p class="beds">1 cama de 2 plazas</p><span class="pax">2 personas</span>
+          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Matrimonial" data-for="Suite Salinas">Reservar</button></div></div></li>
+        <li class="room"><figure><img src="img/su-2ambientes.jpg" alt="Suite de dos ambientes con sillón y cama" loading="lazy"></figure>
+          <div class="room-body"><h3>Suite 2 Ambientes</h3><p class="beds">1 cama de 2 plazas y 3 camas sencillas</p><span class="pax">Hasta 5 personas</span>
+          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Suite 2 Ambientes" data-for="Suite Salinas">Reservar</button></div></div></li>
+        <li class="room"><figure><img src="img/su-triple.jpg" alt="Suite triple con ventanas a la ciudad" loading="lazy"></figure>
+          <div class="room-body"><h3>Triple</h3><p class="beds">1 cama de 2 plazas y 1 de plaza y media</p><span class="pax">3 personas</span>
+          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Triple" data-for="Suite Salinas">Reservar</button></div></div></li>
+        <li class="room"><figure><img src="img/su-cuadruple.jpg" alt="Suite cuádruple" loading="lazy"></figure>
+          <div class="room-body"><h3>Cuádruple</h3><p class="beds">1 cama de 2 plazas o 2 de plaza y media</p><span class="pax">4 personas</span>
+          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Cuádruple" data-for="Suite Salinas">Reservar</button></div></div></li>
+        <li class="room"><figure><img src="img/su-quintuple.jpg" alt="Suite quíntuple con varias camas" loading="lazy"></figure>
+          <div class="room-body"><h3>Quíntuple</h3><p class="beds">1 cama de 2 plazas y 3 de plaza y media</p><span class="pax">5 personas</span>
+          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Quíntuple" data-for="Suite Salinas">Reservar</button></div></div></li>
+        <li class="room"><figure><img src="img/su-sextuple.jpg" alt="Suite séxtuple para familias grandes" loading="lazy"></figure>
+          <div class="room-body"><h3>Séxtuple</h3><p class="beds">1 cama de 2 plazas y 4 de plaza y media</p><span class="pax">6 personas</span>
+          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Séxtuple" data-for="Suite Salinas">Reservar</button></div></div></li>
+      </ul>
+    </div>
+
+    <div role="tabpanel" id="panel-ca" aria-labelledby="tab-ca" hidden>
+      <div class="wrap panel-head"><p>Habitaciones sencillas, matrimoniales y suites, todas con baño privado y aire acondicionado. Abajo te espera la piscina.</p></div>
+      <ul class="rail" aria-label="Habitaciones del Costa Azul">
+        <li class="room"><figure><img src="img/ca-hab-1.jpg" alt="Habitación matrimonial azul del Costa Azul con vista a los edificios del malecón" loading="lazy"></figure>
+          <div class="room-body"><h3>Matrimonial</h3><p class="beds">Cama de 2 plazas, baño privado y aire acondicionado</p><span class="pax">2 personas</span>
+          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Matrimonial" data-for="Hotel Salinas Costa Azul">Reservar</button></div></div></li>
+        <li class="room"><figure><img src="img/ca-hab-2.jpg" alt="Habitación del Costa Azul con cama y sillón" loading="lazy"></figure>
+          <div class="room-body"><h3>Sencilla</h3><p class="beds">Para viajar solo o en pareja, con sillón y baño privado</p><span class="pax">1 a 2 personas</span>
+          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Sencilla" data-for="Hotel Salinas Costa Azul">Reservar</button></div></div></li>
+        <li class="room"><figure><img src="img/ca-suite.jpg" alt="Sala de una suite del Costa Azul con sofá y refrigeradora" loading="lazy"></figure>
+          <div class="room-body"><h3>Suite</h3><p class="beds">Con sala, refrigeradora y espacio para la familia</p><span class="pax">Familias</span>
+          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Suite" data-for="Hotel Salinas Costa Azul">Reservar</button></div></div></li>
+        <li class="room"><figure><img src="img/costa-azul-piscina.jpg" alt="Piscina del Costa Azul" loading="lazy"></figure>
+          <div class="room-body"><h3>La piscina</h3><p class="beds">En la planta baja, con sillas para tomar sol. Abierta para los huéspedes de los tres hoteles.</p><span class="pax">Para huéspedes</span>
+          <div class="room-foot"><p class="price">Incluido<b>Sin costo extra</b></p><button class="btn btn-sun" type="button" data-room="La que me recomienden" data-for="Hotel Salinas Costa Azul">Reservar</button></div></div></li>
+      </ul>
+    </div>
+
+    <div role="tabpanel" id="panel-hs" aria-labelledby="tab-hs" hidden>
+      <div class="wrap panel-head"><p>Habitaciones sencillas, matrimoniales y múltiples para grupos, con TV por cable y baño privado con agua caliente.</p></div>
+      <ul class="rail" aria-label="Habitaciones del Hotel Salinas">
+        <li class="room"><figure><img src="img/hs-hab-1.jpg" alt="Habitación del Hotel Salinas con dos camas y ventanas con vista al mar" loading="lazy"></figure>
+          <div class="room-body"><h3>Múltiple con vista</h3><p class="beds">Dos camas grandes y ventanales a la ciudad y el mar</p><span class="pax">Hasta 4 personas</span>
+          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Múltiple" data-for="Hotel Salinas">Reservar</button></div></div></li>
+        <li class="room"><figure><img src="img/hs-hab-3.jpg" alt="Habitación matrimonial del Hotel Salinas" loading="lazy"></figure>
+          <div class="room-body"><h3>Matrimonial</h3><p class="beds">Cama de 2 plazas y baño privado</p><span class="pax">2 personas</span>
+          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Matrimonial" data-for="Hotel Salinas">Reservar</button></div></div></li>
+        <li class="room"><figure><img src="img/hs-hab-2.jpg" alt="Habitación múltiple del Hotel Salinas con tres camas" loading="lazy"></figure>
+          <div class="room-body"><h3>Múltiple</h3><p class="beds">Tres camas para familias o amigos</p><span class="pax">3 o más personas</span>
+          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Múltiple" data-for="Hotel Salinas">Reservar</button></div></div></li>
+      </ul>
+    </div>
+    <div class="wrap">
+      <p class="draft-note">Los precios cambian según la temporada, los feriados y el tamaño del grupo. Escríbenos con tus fechas y te damos el precio exacto.</p>
+    </div>
+  </section>
+
+  <section class="book" id="reservar" aria-labelledby="book-title">
+    <div class="wrap book-grid">
+      <div>
+        <p class="kicker">Reservas</p>
+        <h2 id="book-title">Reserva <em>directo</em> con la familia</h2>
+        <p class="lead">Elige hotel, fechas y habitación. Se abre WhatsApp con tu mensaje listo y te confirmamos disponibilidad y precio.</p>
+        <ul class="perks-mini">
+          <li>Te responde la familia, no un call center.</li>
+          <li>Te ayudamos a elegir la habitación para tu grupo.</li>
+          <li>No pagas nada en línea: confirmas con nosotros.</li>
+        </ul>
+        <div class="contact">
+          <div class="row"><div><span class="label">WhatsApp y teléfono</span><span class="val" id="phone">099 575 5979</span></div><button class="copy" type="button" data-copy="phone">Copiar<span class="sr"> el teléfono</span></button></div>
+          <div class="row"><div><span class="label">Correo</span><span class="val" id="email">salinashoteles@gmail.com</span></div><button class="copy" type="button" data-copy="email">Copiar<span class="sr"> el correo</span></button></div>
+          <div class="row"><div><span class="label">Dirección</span><a class="val" href="https://www.google.com/maps/search/?api=1&amp;query=-2.2063,-80.9707" target="_blank" rel="noopener">Gral. Enríquez Gallo y Calle 27, Salinas<span class="sr"> (se abre en Google Maps)</span></a></div></div>
+          <div class="row"><div><span class="label">Redes</span><span class="val"><a href="https://www.instagram.com/hoteles.salinas/" target="_blank" rel="noopener">Instagram<span class="sr"> (se abre en otra pestaña)</span></a> · <a href="https://www.facebook.com/profile.php?id=100057365242051" target="_blank" rel="noopener">Facebook<span class="sr"> (se abre en otra pestaña)</span></a></span></div></div>
+        </div>
+        <p class="sr" aria-live="polite" id="copy-status"></p>
+      </div>
+      <form class="form" id="form" novalidate aria-labelledby="form-title">
+        <h3 id="form-title">Solicitar reserva</h3>
+        <div class="fields">
+          <div class="field full"><label for="f-hotel">Hotel</label>
+            <select id="f-hotel">
+              <option>Suite Salinas</option>
+              <option>Hotel Salinas Costa Azul</option>
+              <option>Hotel Salinas</option>
+              <option>El que tenga disponibilidad</option>
+            </select></div>
+          <div class="field"><label for="f-in">Llegada</label><input id="f-in" type="date" required aria-describedby="err"></div>
+          <div class="field"><label for="f-out">Salida</label><input id="f-out" type="date" required aria-describedby="err"></div>
+          <div class="field"><label for="f-guests">Personas</label>
+            <select id="f-guests"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7 o más</option></select></div>
+          <div class="field"><label for="f-room">Habitación</label><select id="f-room"></select></div>
+          <div class="field full"><label for="f-name">Tu nombre (opcional)</label><input id="f-name" type="text" autocomplete="name"></div>
+        </div>
+        <div class="summary" id="summary" aria-live="polite"></div>
+        <p class="err" id="err" role="alert" hidden></p>
+        <a class="btn btn-wa" id="send" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-2-1.2 7.4 7.4 0 0 1-1.4-1.7c-.1-.2 0-.4.1-.5l.4-.4.2-.4v-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 2.9 2.9 0 0 0-.9 2.2 5 5 0 0 0 1.1 2.7 11.4 11.4 0 0 0 4.4 3.9c.6.3 1.1.4 1.5.5a3.6 3.6 0 0 0 1.6.1c.5-.1 1.5-.6 1.7-1.2s.2-1.1.1-1.2l-.5-.3z"/></svg>
+          Enviar por WhatsApp<span class="sr"> (se abre WhatsApp)</span></a>
+        <p class="note">Tu reserva queda confirmada cuando te respondemos. Esta página no cobra nada.</p>
+      </form>
+    </div>
+  </section>
+
+  <section class="portal" aria-labelledby="portal-title">
+    <h2 id="portal-title" class="sr">De tu habitación al mar</h2>
+    <div class="portal-stage" id="portal">
+      <figure class="p-sea"><img src="img/malecon-baranda.jpg" alt="El malecón de Salinas con su baranda azul y el mar turquesa" loading="lazy"></figure>
+      <div class="wall" aria-hidden="true">
+        <div class="win">
+          <span class="rod"></span>
+          <figure class="past"><img src="img/hotel-salinas-antes.jpg" alt=""><span>Años 70</span></figure>
+          <span class="mul-v"></span><span class="mul-h"></span>
+          <span class="curtain l"></span><span class="curtain r"></span>
+          <span class="sill"><span class="plant"><svg viewBox="0 0 40 44"><path d="M8 26h24l-3 16H11z" fill="#c8693a"/><path d="M20 26c0-8-6-14-12-16 4 6 6 10 12 16zM20 26c0-9 5-16 12-19-3 7-6 12-12 19zM20 26c-1-10 0-17 2-22 2 7 1 14-2 22z" fill="#2e9b5f"/></svg></span></span>
+        </div>
+      </div>
+      <div class="p-shade" aria-hidden="true"></div>
+      <div class="p-copy">
+        <p class="p-line1">Abre la cortina…</p>
+        <p class="p-mid" aria-hidden="true">Así empezó, hace más de 50 años.</p>
+        <p class="p-line2">…y hoy el mar sigue <em>a una cuadra.</em></p>
+        <span class="hint" aria-hidden="true">Desliza</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="story" id="historia" aria-labelledby="historia-title">
+    <div class="wrap story-grid">
+      <div class="then-now">
+        <figure class="polaroid">
+          <img src="img/hotel-salinas-antes.jpg" alt="Foto antigua en sepia del primer Hotel Salinas: un edificio esquinero de tres pisos con dos letreros verticales y vecinos en bicicleta en la vereda" loading="lazy">
+          <figcaption>Así empezó, hace más de 50 años</figcaption>
+        </figure>
+        <figure class="today">
+          <img src="img/hotel-salinas-edificio.jpg" alt="El Hotel Salinas hoy, una torre blanca de ocho pisos con detalles azules" loading="lazy">
+          <figcaption>Hoy</figcaption>
+        </figure>
+      </div>
+      <div class="story-text">
+        <p class="kicker">Nuestra historia</p>
+        <h2 id="historia-title" class="lines"><span class="line"><span>Más de 50 años</span></span> <span class="line"><span><em>en Salinas</em></span></span></h2>
+        <p>Jorge Sotomayor Zambrano trabajaba en el turismo desde 1964, con transporte. Veía llegar a familias enteras en chivas, con las camas amarradas al techo, para pasar tres meses en Salinas sin un lugar cómodo donde dormir ni comer.</p>
+        <p>Entonces puso un pequeño hotel, levantado piedra por piedra. Vendió sus transportes, vendió todo, y fue el primer salinense que levantó un hotel con vista al mar. En 1979 fundó la Empresa de Turismo Salinas, EMTURISA.</p>
+        <div class="dad"><figure><img src="img/don-jorge.jpg" alt="Jorge Sotomayor Zambrano sonriendo frente a unas buganvillas, con la playa de Salinas detrás" loading="lazy"></figure>
+        <blockquote class="his-words"><p>“Quise a Salinas e invertí todo mi dinero. Salinas para mí es todo: familia, progreso y la belleza que tenemos, que todos se enamoran.”</p><cite>Jorge Sotomayor, en una entrevista</cite></blockquote></div>
+        <p>Después construyó la torre del Hotel Salinas. En 1988 abrió el Costa Azul y en el 2000 Suite Salinas, todos en la misma esquina.</p>
+        <p>Hoy su familia sigue atendiendo los tres hoteles como él lo hacía: de cerca, con buen precio y con cariño por Salinas.</p>
+        <p class="memoriam">En memoria de Jorge Sotomayor Zambrano</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="mapsec" id="ubicacion" aria-labelledby="map-title">
+    <div class="wave-top" aria-hidden="true"><svg viewBox="0 0 1200 46" preserveAspectRatio="none"><path fill="currentColor" d="M0 46V22c50 0 50-18 100-18s50 18 100 18 50-18 100-18 50 18 100 18 50-18 100-18 50 18 100 18 50-18 100-18 50 18 100 18 50-18 100-18 50 18 100 18 50-18 100-18 50 18 100 18V46z"/></svg></div>
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="kicker">Ubicación</p>
+          <h2 id="map-title" class="lines"><span class="line"><span>A una cuadra</span></span> <span class="line"><span><em>de la playa</em></span></span></h2>
+        </div>
+        <p class="lead">Los tres están en la esquina de Gral. Enríquez Gallo y Calle 27 (José Estrella). Sales, caminas una cuadra y ya estás en el malecón y en la playa de San Lorenzo.</p>
+      </div>
+      <figure class="map-frame">
+        <div class="map-scroll" tabindex="0" role="region" aria-label="Mapa ilustrado de la ubicación, se puede desplazar"><svg viewBox="0 0 800 570" aria-hidden="true" focusable="false">
+  <rect width="800" height="570" fill="#eef3ee"/>
+  <rect width="800" height="182" fill="#7fcbd6"/>
+  <g class="m-waves" stroke="#ffffff" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".75">
+    <path d="M20 40c15-8 25-8 40 0s25 8 40 0"/><path d="M260 70c15-8 25-8 40 0s25 8 40 0"/><path d="M90 120c15-8 25-8 40 0s25 8 40 0"/><path d="M420 30c15-8 25-8 40 0s25 8 40 0"/><path d="M380 130c15-8 25-8 40 0s25 8 40 0"/><path d="M520 110c15-8 25-8 40 0s25 8 40 0"/><path d="M680 150c15-8 25-8 40 0s25 8 40 0"/>
+  </g>
+  <g class="m-sunrays"><circle cx="760" cy="30" r="58" fill="#ffd27a" opacity=".35"/></g>
+  <circle cx="760" cy="30" r="34" fill="#f8a531"/>
+  <g class="m-boat" transform="translate(170 62)"><path d="M-22 14h44l-8 10h-28z" fill="#14284a"/><path d="M0 12V-24l20 30z" fill="#fff" stroke="#14284a" stroke-width="2"/></g>
+  <g transform="translate(600 104)"><g class="m-whale"><path d="M-34 10c10 14 44 16 60 2 6-6 8-14 8-22 4 0 9-3 9-8-6 0-9 3-12 6-3-3-9-3-12 0 3 0 6 3 6 6-14 16-36 16-59 16z" fill="#2f4a6d"/><circle cx="10" cy="2" r="1.8" fill="#fff"/></g><path d="M-30 22c8-6 14-6 22 0s14 6 22 0" stroke="#fff" stroke-width="3" fill="none"/></g>
+  <text x="600" y="160" text-anchor="middle" font-family="Figtree, sans-serif" font-size="15" font-weight="700" fill="#14284a" opacity=".75">Ballenas (jun–sep)</text>
+  <text x="230" y="168" text-anchor="middle" font-family="Figtree, sans-serif" font-size="17" font-weight="700" fill="#14284a">Playa de San Lorenzo</text>
+  <path d="M0 182c40 8 80-6 130 2s90 10 140 0 100-8 150 2 90 8 140-2 110-8 240 2V232H0z" fill="#f3dfb4"/>
+  <g transform="translate(70 197)"><path d="M0 0v12" stroke="#14284a" stroke-width="2"/><path d="M-12 0a12 9 0 0 1 24 0z" fill="#f08a1c"/></g><g transform="translate(150 202)"><path d="M0 0v12" stroke="#14284a" stroke-width="2"/><path d="M-12 0a12 9 0 0 1 24 0z" fill="#e8546b"/></g><g transform="translate(250 195)"><path d="M0 0v12" stroke="#14284a" stroke-width="2"/><path d="M-12 0a12 9 0 0 1 24 0z" fill="#2aa3a8"/></g><g transform="translate(340 201)"><path d="M0 0v12" stroke="#14284a" stroke-width="2"/><path d="M-12 0a12 9 0 0 1 24 0z" fill="#f6c344"/></g><g transform="translate(620 198)"><path d="M0 0v12" stroke="#14284a" stroke-width="2"/><path d="M-12 0a12 9 0 0 1 24 0z" fill="#e8546b"/></g><g transform="translate(690 193)"><path d="M0 0v12" stroke="#14284a" stroke-width="2"/><path d="M-12 0a12 9 0 0 1 24 0z" fill="#f08a1c"/></g><g transform="translate(760 200)"><path d="M0 0v12" stroke="#14284a" stroke-width="2"/><path d="M-12 0a12 9 0 0 1 24 0z" fill="#5b7fbf"/></g>
+  <rect y="232" width="800" height="30" fill="#d9d4c8"/><path d="M0 247h800" stroke="#fff" stroke-width="2" stroke-dasharray="14 12"/>
+  <text x="24" y="253" font-family="Figtree, sans-serif" font-size="15" font-weight="700" fill="#14284a">MALECÓN</text>
+  <g transform="translate(50 246)"><path d="M0 0v-18" stroke="#7a5a3a" stroke-width="3"/><path d="M0-18c-8-4-14-2-18 2M0-18c8-4 14-2 18 2M0-18c-4-8-2-12 0-14M0-18c4-8 8-10 12-9" stroke="#2e9b5f" stroke-width="3" fill="none" stroke-linecap="round"/></g><g transform="translate(190 246)"><path d="M0 0v-18" stroke="#7a5a3a" stroke-width="3"/><path d="M0-18c-8-4-14-2-18 2M0-18c8-4 14-2 18 2M0-18c-4-8-2-12 0-14M0-18c4-8 8-10 12-9" stroke="#2e9b5f" stroke-width="3" fill="none" stroke-linecap="round"/></g><g transform="translate(330 246)"><path d="M0 0v-18" stroke="#7a5a3a" stroke-width="3"/><path d="M0-18c-8-4-14-2-18 2M0-18c8-4 14-2 18 2M0-18c-4-8-2-12 0-14M0-18c4-8 8-10 12-9" stroke="#2e9b5f" stroke-width="3" fill="none" stroke-linecap="round"/></g><g transform="translate(620 246)"><path d="M0 0v-18" stroke="#7a5a3a" stroke-width="3"/><path d="M0-18c-8-4-14-2-18 2M0-18c8-4 14-2 18 2M0-18c-4-8-2-12 0-14M0-18c4-8 8-10 12-9" stroke="#2e9b5f" stroke-width="3" fill="none" stroke-linecap="round"/></g><g transform="translate(770 246)"><path d="M0 0v-18" stroke="#7a5a3a" stroke-width="3"/><path d="M0-18c-8-4-14-2-18 2M0-18c8-4 14-2 18 2M0-18c-4-8-2-12 0-14M0-18c4-8 8-10 12-9" stroke="#2e9b5f" stroke-width="3" fill="none" stroke-linecap="round"/></g>
+  <rect x="20" y="282" width="70" height="104" rx="4" fill="#f4f1ea" stroke="#9fb3bf" stroke-width="1.5"/><rect x="102" y="296" width="64" height="90" rx="4" fill="#e9eef2" stroke="#9fb3bf" stroke-width="1.5"/><rect x="178" y="282" width="72" height="104" rx="4" fill="#f4f1ea" stroke="#9fb3bf" stroke-width="1.5"/><rect x="690" y="290" width="90" height="96" rx="4" fill="#e9eef2" stroke="#9fb3bf" stroke-width="1.5"/><rect x="20" y="440" width="80" height="110" rx="4" fill="#e9eef2" stroke="#9fb3bf" stroke-width="1.5"/><rect x="112" y="450" width="70" height="100" rx="4" fill="#f4f1ea" stroke="#9fb3bf" stroke-width="1.5"/><rect x="520" y="440" width="90" height="110" rx="4" fill="#f4f1ea" stroke="#9fb3bf" stroke-width="1.5"/><rect x="622" y="450" width="70" height="100" rx="4" fill="#e9eef2" stroke="#9fb3bf" stroke-width="1.5"/><rect x="704" y="440" width="80" height="110" rx="4" fill="#f4f1ea" stroke="#9fb3bf" stroke-width="1.5"/>
+  <rect y="392" width="800" height="34" fill="#d9d4c8"/><path d="M0 409h800" stroke="#fff" stroke-width="2" stroke-dasharray="14 12"/>
+  <text x="24" y="414" font-family="Figtree, sans-serif" font-size="15" font-weight="700" fill="#14284a">GRAL. ENRÍQUEZ GALLO</text>
+  <rect x="462" y="232" width="34" height="338" fill="#d9d4c8"/>
+  <text transform="translate(484 560) rotate(-90)" font-family="Figtree, sans-serif" font-size="13" font-weight="700" fill="#14284a">CALLE 27 · JOSÉ ESTRELLA</text>
+  <a href="#hotel-salinas" class="m-hotel" tabindex="-1"><g class="bld"><rect x="300" y="282" width="150" height="104" rx="6" fill="#ffffff" stroke="#14284a" stroke-width="2.5"/><rect x="300" y="282" width="150" height="12" rx="6" fill="#e0a458"/><rect x="313" y="302" width="26" height="12" rx="2" fill="#cfe8f2"/><rect x="345" y="302" width="26" height="12" rx="2" fill="#cfe8f2"/><rect x="377" y="302" width="26" height="12" rx="2" fill="#cfe8f2"/><rect x="409" y="302" width="26" height="12" rx="2" fill="#cfe8f2"/><rect x="313" y="326" width="26" height="12" rx="2" fill="#cfe8f2"/><rect x="345" y="326" width="26" height="12" rx="2" fill="#cfe8f2"/><rect x="377" y="326" width="26" height="12" rx="2" fill="#cfe8f2"/><rect x="409" y="326" width="26" height="12" rx="2" fill="#cfe8f2"/><rect x="313" y="350" width="26" height="12" rx="2" fill="#cfe8f2"/><rect x="345" y="350" width="26" height="12" rx="2" fill="#cfe8f2"/><rect x="377" y="350" width="26" height="12" rx="2" fill="#cfe8f2"/><rect x="409" y="350" width="26" height="12" rx="2" fill="#cfe8f2"/></g><circle class="pulse" cx="375.0" cy="282" r="14" fill="#e0a458"/><circle cx="375.0" cy="282" r="9" fill="#e0a458" stroke="#fff" stroke-width="3"/><rect x="307.1" y="342" width="135.8" height="30" rx="15" fill="#14284a"/><text x="375" y="363" text-anchor="middle" font-family="Figtree, sans-serif" font-weight="700" font-size="15" fill="#fff">Hotel Salinas</text></a>
+  <a href="#suites-salinas" class="m-hotel" tabindex="-1"><g class="bld"><rect x="510" y="282" width="160" height="104" rx="6" fill="#ffffff" stroke="#14284a" stroke-width="2.5"/><rect x="510" y="282" width="160" height="12" rx="6" fill="#5b7fbf"/><rect x="523" y="302" width="29" height="12" rx="2" fill="#cfe8f2"/><rect x="558" y="302" width="29" height="12" rx="2" fill="#cfe8f2"/><rect x="593" y="302" width="29" height="12" rx="2" fill="#cfe8f2"/><rect x="628" y="302" width="29" height="12" rx="2" fill="#cfe8f2"/><rect x="523" y="326" width="29" height="12" rx="2" fill="#cfe8f2"/><rect x="558" y="326" width="29" height="12" rx="2" fill="#cfe8f2"/><rect x="593" y="326" width="29" height="12" rx="2" fill="#cfe8f2"/><rect x="628" y="326" width="29" height="12" rx="2" fill="#cfe8f2"/><rect x="523" y="350" width="29" height="12" rx="2" fill="#cfe8f2"/><rect x="558" y="350" width="29" height="12" rx="2" fill="#cfe8f2"/><rect x="593" y="350" width="29" height="12" rx="2" fill="#cfe8f2"/><rect x="628" y="350" width="29" height="12" rx="2" fill="#cfe8f2"/></g><circle class="pulse" cx="590.0" cy="282" r="14" fill="#5b7fbf"/><circle cx="590.0" cy="282" r="9" fill="#5b7fbf" stroke="#fff" stroke-width="3"/><rect x="517.8" y="342" width="144.4" height="30" rx="15" fill="#14284a"/><text x="590" y="363" text-anchor="middle" font-family="Figtree, sans-serif" font-weight="700" font-size="15" fill="#fff">Suite Salinas</text></a>
+  <a href="#costa-azul" class="m-hotel" tabindex="-1"><rect x="214" y="452" width="100" height="44" rx="8" fill="#4cc3d1" stroke="#14284a" stroke-width="2"/><path d="M222 474.0c6-4 10-4 16 0s10 4 16 0" stroke="#fff" stroke-width="2" fill="none"/><g class="bld"><rect x="330" y="440" width="120" height="96" rx="6" fill="#ffffff" stroke="#14284a" stroke-width="2.5"/><rect x="330" y="440" width="120" height="12" rx="6" fill="#2aa3a8"/><rect x="343" y="460" width="27" height="12" rx="2" fill="#cfe8f2"/><rect x="376" y="460" width="27" height="12" rx="2" fill="#cfe8f2"/><rect x="409" y="460" width="27" height="12" rx="2" fill="#cfe8f2"/><rect x="343" y="484" width="27" height="12" rx="2" fill="#cfe8f2"/><rect x="376" y="484" width="27" height="12" rx="2" fill="#cfe8f2"/><rect x="409" y="484" width="27" height="12" rx="2" fill="#cfe8f2"/></g><circle class="pulse" cx="390.0" cy="440" r="14" fill="#2aa3a8"/><circle cx="390.0" cy="440" r="9" fill="#2aa3a8" stroke="#fff" stroke-width="3"/><rect x="335.0" y="530" width="110.0" height="30" rx="15" fill="#14284a"/><text x="390" y="551" text-anchor="middle" font-family="Figtree, sans-serif" font-weight="700" font-size="15" fill="#fff">Costa Azul</text></a>
+  <g><path d="M479 388V214" stroke="#14284a" stroke-width="2.5" stroke-dasharray="6 6"/><path d="M471 222l8-12 8 12" fill="none" stroke="#14284a" stroke-width="2.5"/>
+  <rect x="409" y="186" width="140" height="26" rx="13" fill="#f08a1c"/><text x="479" y="204" text-anchor="middle" font-family="Figtree, sans-serif" font-size="14" font-weight="700" fill="#14284a">1 cuadra · 2 min</text></g>
+</svg></div>
+        <figcaption><span>Mapa ilustrado, no está a escala.</span><span class="swipe-hint">Desliza el mapa →</span></figcaption>
+      </figure>
+      <div class="legend">
+        <a href="#hotel-salinas" style="--c:#e0a458"><i aria-hidden="true"></i>Hotel Salinas</a>
+        <a href="#costa-azul" style="--c:#2aa3a8"><i aria-hidden="true"></i>Costa Azul</a>
+        <a href="#suites-salinas" style="--c:#5b7fbf"><i aria-hidden="true"></i>Suite Salinas</a>
+        <a href="https://www.google.com/maps/search/?api=1&amp;query=-2.2063,-80.9707" target="_blank" rel="noopener" style="--c:var(--ocean)"><i aria-hidden="true"></i>Abrir en Google Maps<span class="sr"> (se abre en otra pestaña)</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="salinas" id="salinas" aria-labelledby="sal-title">
+    <div class="wrap">
+      <p class="kicker">Salinas</p>
+      <h2 id="sal-title" class="lines"><span class="line"><span>Todo queda</span></span> <span class="line"><span><em>a pie</em></span></span></h2>
+      <div class="places" tabindex="0" role="region" aria-label="Lugares de Salinas, se puede deslizar">
+        <article class="place reveal"><figure><img src="img/ia-ninos-al-agua.jpg" alt="Dos niños corren hacia las olas en una playa de arena dorada" loading="lazy"><span class="ai-tag">Imagen ilustrativa</span></figure>
+          <div class="place-body"><h3>Playa de San Lorenzo</h3><p>Carpas, sillas y banana a lo largo de la playa. En feriados Salinas se llena, así que conviene reservar con tiempo.</p></div></article>
+        <article class="place reveal"><figure class="duo"><img src="img/ia-ceviche.jpg" alt="Ceviche de camarón con canguil y chifles" loading="lazy"><img src="img/ia-encebollado.jpg" alt="Encebollado con yuca, cebolla encurtida y chifles" loading="lazy"><span class="ai-tag">Imagen ilustrativa</span></figure>
+          <div class="place-body"><h3>Ceviche y encebollado</h3><p>Cerca del malecón encuentras ceviche de camarón con canguil y chifles, y encebollado para empezar el día.</p></div></article>
+        <article class="place reveal"><figure><img src="img/ballena-jorobada.jpg" alt="Ballena jorobada saltando fuera del mar" loading="lazy"></figure><div class="place-body">
+          <h3>Ballenas jorobadas</h3><p>De junio a septiembre salen excursiones desde Salinas para verlas saltar en el Pacífico.</p></div></article>
+        <article class="place reveal"><figure><img src="img/la-chocolatera.jpg" alt="Rocas oscuras y olas que revientan en La Chocolatera, la punta de la península de Santa Elena" loading="lazy"><span class="ai-tag credit">Foto: Mlucero99, CC BY-SA 4.0</span></figure>
+          <div class="place-body"><h3>La Chocolatera</h3><p>En la punta de la península de Santa Elena, donde las olas revientan contra las rocas. Un paseo corto desde el centro.</p></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq" id="preguntas" aria-labelledby="faq-title">
+    <div class="wrap faq-grid">
+      <div>
+        <p class="kicker">Preguntas</p>
+        <h2 id="faq-title" class="lines"><span class="line"><span>Antes de</span></span> <span class="line"><span><em>venir</em></span></span></h2>
+      </div>
+      <div>
+        <details><summary>¿Cómo reservo?</summary><p>Llena el formulario de reservas o escríbenos al 099 575 5979 por WhatsApp. Te respondemos con disponibilidad y precio, y tu reserva queda lista cuando la confirmamos.</p></details>
+        <details><summary>¿Qué tan cerca están de la playa?</summary><p>Los tres hoteles están en Gral. Enríquez Gallo y Calle 27, a una cuadra del malecón y de la playa de San Lorenzo.</p></details>
+        <details><summary>¿Hay piscina?</summary><p>Sí. Los huéspedes de los tres hoteles pueden usar la piscina del Costa Azul.</p></details>
+        <details><summary>¿Hay parqueo?</summary><p>Sí, hay garaje para los huéspedes de los tres hoteles, según disponibilidad. Pregúntanos cuando reserves.</p></details>
+        <details><summary>¿A qué hora es la entrada y la salida?</summary><p>La entrada (check-in) es desde las 13h00 y la salida (check-out) hasta las 12h00.</p></details>
+        <details><summary>¿Cómo se paga?</summary><p>Por transferencia bancaria o en efectivo. Te damos los datos cuando confirmamos tu reserva.</p></details>
+        <details><summary>¿Y si tengo que cancelar?</summary><p>Si nos avisas con anticipación, cambiamos tu reserva para otra fecha. No hacemos devoluciones de dinero.</p></details>
+        <details><summary>¿Hay ascensor? ¿Tienen habitaciones accesibles?</summary><p>Hotel Salinas y Suite Salinas tienen ascensor. Por ahora no tenemos habitaciones en planta baja ni instalaciones para personas con discapacidad. Escríbenos y te ayudamos a ver qué opción te sirve.</p></details>
+        <details><summary>Accesibilidad de esta página</summary><p>Hicimos esta página siguiendo las pautas de accesibilidad WCAG 2.2 nivel AA: se puede usar con teclado y lector de pantalla, tiene buen contraste y respeta la opción de reducir movimiento de tu teléfono. Si algo no te funciona, escríbenos y lo arreglamos.</p></details>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div><h2>Hoteles Salinas</h2><p>Empresa familiar de turismo en Salinas, Santa Elena, Ecuador, desde hace más de 50 años.</p></div>
+      <div><h2>Hoteles</h2><p>Hotel Salinas</p><p>Hotel Salinas Costa Azul</p><p>Suite Salinas</p></div>
+      <div><h2>Contacto</h2><p>099 575 5979</p><p>salinashoteles@gmail.com</p><p><a href="https://www.google.com/maps/search/?api=1&amp;query=-2.2063,-80.9707" target="_blank" rel="noopener">Gral. Enríquez Gallo y Calle 27<span class="sr"> (se abre en Google Maps)</span></a></p><div class="soc"><a href="https://www.instagram.com/hoteles.salinas/" target="_blank" rel="noopener" aria-label="Instagram de Hoteles Salinas"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a><a href="https://www.facebook.com/profile.php?id=100057365242051" target="_blank" rel="noopener" aria-label="Facebook de Hoteles Salinas"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 8h3V4h-3c-2.8 0-4.5 1.8-4.5 4.6V11H7v4h2.5v7h4v-7h3l.5-4h-3.5V8.8c0-.5.3-.8.5-.8z"/></svg></a></div></div>
+    </div>
+    <div class="foot-bottom"><span>En memoria de Jorge Sotomayor Zambrano</span><span>Empresa de Turismo Salinas S.A. (EMTURISA) · RUC 0990376719001</span><span>Foto de la ballena: Astrid Osborne, dominio público (CC0). Las imágenes marcadas como ilustrativas fueron creadas con IA. Foto de La Chocolatera: <a href="https://commons.wikimedia.org/wiki/File:LaChocolatera.jpg" target="_blank" rel="noopener">Mlucero99</a>, licencia <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.es" target="_blank" rel="noopener">CC BY-SA 4.0</a>. · hotelessalinas.com · Borrador para la familia, octubre 2026</span></div>
+  </div>
+</footer>
+
+<aside aria-label="Reserva rápida">
+<div class="dock">
+  <a class="btn btn-sun" href="#reservar">Reservar</a>
+  <a class="btn btn-wa" href="https://wa.me/593995755979" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg>WhatsApp</a>
+</div>
+<a class="bubble" href="https://wa.me/593995755979" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-2-1.2 7.4 7.4 0 0 1-1.4-1.7c-.1-.2 0-.4.1-.5l.4-.4.2-.4v-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 2.9 2.9 0 0 0-.9 2.2 5 5 0 0 0 1.1 2.7 11.4 11.4 0 0 0 4.4 3.9c.6.3 1.1.4 1.5.5a3.6 3.6 0 0 0 1.6.1c.5-.1 1.5-.6 1.7-1.2s.2-1.1.1-1.2l-.5-.3z"/></svg>
+</a>
+</aside>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  var WA = "593995755979";
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)");
+  function go(sel) { var el = $(sel); if (el) el.scrollIntoView({ behavior: reduce.matches ? "auto" : "smooth" }); }
+
+  /* header turns solid after the hero */
+  var bar = $("#bar");
+  function onScroll() { bar.classList.toggle("solid", window.scrollY > window.innerHeight * 0.6); }
+  window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
+
+  /* mobile menu: dialog with focus handling and Escape */
+  var menu = $("#menu"), openBtn = $("#menu-open"), closeBtn = $("#menu-close");
+  function openMenu() { menu.hidden = false; openBtn.setAttribute("aria-expanded", "true"); document.body.style.overflow = "hidden"; closeBtn.focus(); }
+  function closeMenu(back) { menu.hidden = true; openBtn.setAttribute("aria-expanded", "false"); document.body.style.overflow = ""; if (back) openBtn.focus(); }
+  openBtn.addEventListener("click", openMenu);
+  closeBtn.addEventListener("click", function () { closeMenu(true); });
+  menu.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeMenu(true);
+    if (e.key === "Tab") {
+      var f = $$("a, button", menu), first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+  $$("a", menu).forEach(function (a) { a.addEventListener("click", function () { closeMenu(false); }); });
+
+  /* ticker pause (moving content must be pausable) */
+  var ticker = $("#ticker"), tBtn = $("#ticker-btn");
+  tBtn.addEventListener("click", function () {
+    var p = ticker.classList.toggle("paused");
+    tBtn.setAttribute("aria-pressed", p ? "true" : "false");
+    tBtn.textContent = p ? "Seguir" : "Pausar";
+  });
+
+  /* room tabs (ARIA tabs pattern with arrow keys) */
+  var tabs = $$('[role="tab"]');
+  var rail = function () { var p = $('[role="tabpanel"]:not([hidden])'); return p && $(".rail", p); };
+  function select(tab, focus) {
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      t.tabIndex = on ? 0 : -1;
+      $("#" + t.getAttribute("aria-controls")).hidden = !on;
+    });
+    if (focus) tab.focus();
+    if (window.ScrollTrigger) ScrollTrigger.refresh();
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener("click", function () { select(t); });
+    t.addEventListener("keydown", function (e) {
+      var n = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (e.key === "Home") { e.preventDefault(); select(tabs[0], true); }
+      if (e.key === "End") { e.preventDefault(); select(tabs[tabs.length - 1], true); }
+      if (n) { e.preventDefault(); select(tabs[(i + n + tabs.length) % tabs.length], true); }
+    });
+  });
+  $$("[data-tab]").forEach(function (a) {
+    a.addEventListener("click", function (e) { e.preventDefault(); select($("#tab-" + a.dataset.tab)); go("#habitaciones"); });
+  });
+  $("#prev").addEventListener("click", function () { var r = rail(); if (r) r.scrollBy({ left: -r.clientWidth * 0.8, behavior: reduce.matches ? "auto" : "smooth" }); });
+  $("#next").addEventListener("click", function () { var r = rail(); if (r) r.scrollBy({ left: r.clientWidth * 0.8, behavior: reduce.matches ? "auto" : "smooth" }); });
+
+  /* booking form: builds a pre-filled WhatsApp message */
+  var ROOMS = {
+    "Suite Salinas": ["Matrimonial", "Suite 2 Ambientes", "Triple", "Cuádruple", "Quíntuple", "Séxtuple"],
+    "Hotel Salinas Costa Azul": ["Sencilla", "Matrimonial", "Suite"],
+    "Hotel Salinas": ["Sencilla", "Matrimonial", "Múltiple"],
+    "El que tenga disponibilidad": []
+  };
+  var fHotel = $("#f-hotel"), fIn = $("#f-in"), fOut = $("#f-out"), fGuests = $("#f-guests"), fRoom = $("#f-room"), fName = $("#f-name");
+  var send = $("#send"), err = $("#err"), summary = $("#summary");
+  function iso(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  function nice(s) { var p = s.split("-"); return p[2] + "/" + p[1] + "/" + p[0]; }
+  function fillRooms(keep) {
+    var list = (ROOMS[fHotel.value] || []).concat(["La que me recomienden"]);
+    fRoom.innerHTML = list.map(function (r) { return "<option>" + r + "</option>"; }).join("");
+    if (keep && list.indexOf(keep) > -1) fRoom.value = keep;
+  }
+  // Example dates: the coming weekend, Friday to Sunday.
+  var t = new Date(); t.setHours(0, 0, 0, 0);
+  var fri = new Date(t); fri.setDate(t.getDate() + ((5 - t.getDay() + 7) % 7 || 7));
+  var sun = new Date(fri); sun.setDate(fri.getDate() + 2);
+  fIn.min = iso(t); fOut.min = iso(t);
+  fIn.value = iso(fri); fOut.value = iso(sun);
+  fillRooms();
+  function update() {
+    var nights = Math.round((new Date(fOut.value) - new Date(fIn.value)) / 864e5);
+    var ok = !!(fIn.value && fOut.value && nights > 0);
+    err.hidden = ok; err.textContent = ok ? "" : "Revisa las fechas: la salida tiene que ser después de la llegada.";
+    fOut.setAttribute("aria-invalid", ok ? "false" : "true");
+    summary.innerHTML = ok ? "<span><b>" + nights + "</b> " + (nights === 1 ? "noche" : "noches") + "</span><span><b>" + fGuests.value + "</b> " + (fGuests.value === "1" ? "persona" : "personas") + "</span><span>" + fHotel.value + "</span>" : "";
+    var msg = "Hola, quisiera reservar." +
+      "\nHotel: " + fHotel.value +
+      "\nLlegada: " + (fIn.value ? nice(fIn.value) : "-") +
+      "\nSalida: " + (fOut.value ? nice(fOut.value) : "-") +
+      (ok ? "\nNoches: " + nights : "") +
+      "\nPersonas: " + fGuests.value +
+      "\nHabitación: " + fRoom.value +
+      (fName.value.trim() ? "\nNombre: " + fName.value.trim() : "");
+    send.href = "https://wa.me/" + WA + "?text=" + encodeURIComponent(msg);
+    send.setAttribute("aria-disabled", ok ? "false" : "true");
+    send.style.opacity = ok ? "1" : ".6";
+  }
+  fHotel.addEventListener("change", function () { fillRooms(); update(); });
+  [fIn, fOut, fGuests, fRoom].forEach(function (el) { el.addEventListener("change", update); });
+  fName.addEventListener("input", update);
+  fIn.addEventListener("change", function () { if (fIn.value && fOut.value <= fIn.value) { var d = new Date(fIn.value + "T00:00"); d.setDate(d.getDate() + 1); fOut.value = iso(d); update(); } });
+  send.addEventListener("click", function (e) { if (send.getAttribute("aria-disabled") === "true") { e.preventDefault(); fOut.focus(); } });
+  $("#form").addEventListener("submit", function (e) { e.preventDefault(); });
+  update();
+  $$("[data-room]").forEach(function (b) {
+    b.addEventListener("click", function () { fHotel.value = b.dataset.for; fillRooms(b.dataset.room); update(); go("#reservar"); fHotel.focus({ preventScroll: true }); });
+  });
+  $$("[data-hotel]").forEach(function (a) {
+    a.addEventListener("click", function (e) { e.preventDefault(); fHotel.value = a.dataset.hotel; fillRooms(); update(); go("#reservar"); fHotel.focus({ preventScroll: true }); });
+  });
+
+  /* copy buttons */
+  var status = $("#copy-status");
+  $$(".copy").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var el = $("#" + b.dataset.copy), text = el.textContent.trim();
+      function done(msg) { status.textContent = msg; }
+      function select() { var r = document.createRange(); r.selectNodeContents(el); var s = getSelection(); s.removeAllRanges(); s.addRange(r); done("Texto seleccionado, cópialo con tu teléfono."); }
+      try { navigator.clipboard.writeText(text).then(function () { done("Copiado: " + text); }, select); } catch (e) { select(); }
+    });
+  });
+
+  /* little people icons for room capacity */
+  var PERSON = '<svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="4" r="3"/><path d="M2.5 15a5.5 5.5 0 0 1 11 0z"/></svg>';
+  $$(".pax").forEach(function (p) {
+    var m = p.textContent.match(/(\d+)(?!.*\d)/); if (!m) return;
+    var n = Math.min(6, +m[1]), span = document.createElement("span");
+    span.className = "people"; span.setAttribute("aria-hidden", "true");
+    span.innerHTML = new Array(n + 1).join(PERSON); p.prepend(span);
+  });
+
+  /* motion */
+  if (!window.gsap || !window.ScrollTrigger) return;
+  gsap.registerPlugin(ScrollTrigger);
+  var mm = gsap.matchMedia();
+
+  mm.add("(prefers-reduced-motion: no-preference)", function () {
+    var tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    tl.from(".hero-media img", { scale: 1.16, duration: 2.4, ease: "power2.out" }, 0)
+      .from(".hero h1 .line > span", { yPercent: 110, duration: 1.15, stagger: 0.12 }, 0.2)
+      .from(".hero-in", { y: 22, opacity: 0, duration: 0.85, stagger: 0.09 }, 0.6);
+    gsap.to(".hero-media", { yPercent: 16, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+
+    // Headings rise line by line.
+    $$("h2.lines").forEach(function (h) {
+      gsap.from($$(".line > span", h), { yPercent: 110, duration: 1.05, stagger: 0.1, ease: "power3.out", scrollTrigger: { trigger: h, start: "top 88%", once: true } });
+    });
+    // The old photo drops onto the page like a print on a table; today's photo rises behind it.
+    gsap.from(".polaroid", { rotate: -16, y: 80, opacity: 0, duration: 1.4, ease: "power3.out", scrollTrigger: { trigger: ".then-now", start: "top 80%", once: true } });
+    gsap.from(".today", { yPercent: 10, opacity: 0, duration: 1.4, ease: "power3.out", scrollTrigger: { trigger: ".then-now", start: "top 80%", once: true } });
+    // Photos open like a curtain.
+    $$(".wipe img, .place figure img").forEach(function (img) {
+      gsap.fromTo(img, { clipPath: "inset(0 0 100% 0)", scale: 1.12 }, { clipPath: "inset(0 0 0% 0)", scale: 1, duration: 1.3, ease: "power3.inOut", scrollTrigger: { trigger: img, start: "top 88%", once: true } });
+    });
+    gsap.from(".reveal", { y: 36, opacity: 0, duration: 0.9, stagger: 0.08, ease: "power3.out", scrollTrigger: { trigger: ".places", start: "top 85%", once: true } });
+    gsap.from(".room", { x: 50, opacity: 0, duration: 0.8, stagger: 0.07, ease: "power3.out", scrollTrigger: { trigger: "#panel-su", start: "top 85%", once: true } });
+    $$("[data-count]").forEach(function (b) {
+      var n = { v: 0 }, end = +b.dataset.count;
+      gsap.to(n, { v: end, duration: 1.6, ease: "power2.out", scrollTrigger: { trigger: b, start: "top 92%", once: true }, onUpdate: function () { b.textContent = Math.round(n.v) + (b.dataset.suffix || ""); } });
+    });
+
+    // Portal: zoom through the Hotel Salinas window, land on the malecón.
+    document.documentElement.classList.add("motion");
+    // Doors: the three hotels open like doors onto the sea.
+    var dtl = gsap.timeline({ defaults: { ease: "none" }, scrollTrigger: { trigger: "#doors", start: "top top", end: "bottom bottom", scrub: 0.4 } });
+    dtl.to({}, { duration: 0.12 }, 0)
+       .to(".d-l", { rotateY: 78, xPercent: -18, ease: "power2.in", duration: 0.5 }, 0.12)
+       .to(".d-r", { rotateY: -78, xPercent: 18, ease: "power2.in", duration: 0.5 }, 0.12)
+       .to(".d-c", { scale: 0.55, yPercent: -6, opacity: 0, ease: "power2.in", duration: 0.45 }, 0.16)
+       .fromTo(".doors-back img", { scale: 1.25 }, { scale: 1, duration: 0.7 }, 0.12)
+       .fromTo(".doors-copy > *", { opacity: 0, y: 30 }, { opacity: 1, y: 0, stagger: 0.05, duration: 0.15 }, 0.52)
+       .to({}, { duration: 0.2 }, 0.8);
+    // CSS sticky holds the scene (smooth with iPhone momentum scrolling); the timeline only scrubs.
+    var ptl = gsap.timeline({ defaults: { ease: "none" }, scrollTrigger: { trigger: ".portal", start: "top top", end: "bottom bottom", scrub: 0.4 } });
+    ptl.to(".curtain.l", { xPercent: -30, scaleX: 0.3, ease: "power2.inOut", duration: 0.24 }, 0.02)       // curtains open...
+       .to(".curtain.r", { xPercent: 30, scaleX: 0.3, ease: "power2.inOut", duration: 0.24 }, 0.02)
+       .to(".p-line1, .p-copy .hint", { opacity: 0, y: -20, duration: 0.1 }, 0.08)
+       .fromTo(".p-mid", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.1 }, 0.18)                // ...onto the 1970s hotel
+       .fromTo(".past", { clipPath: "inset(0% 0% 0% 0%)" }, { clipPath: "inset(0% 50% 0% 50%)", ease: "power2.inOut", duration: 0.14 }, 0.38) // the past parts in the middle...
+       .to(".p-mid", { opacity: 0, y: -20, duration: 0.08 }, 0.44)
+       .to(".mul-v, .mul-h", { opacity: 0, duration: 0.06 }, 0.5)
+       .fromTo(".p-sea img", { scale: 1.18 }, { scale: 1, duration: 0.5 }, 0.36)
+       .to(".win", { scale: 9, ease: "power2.in", duration: 0.34 }, 0.5)                                    // ...and you step out onto today's malecón
+       .to(".p-shade", { opacity: 1, duration: 0.12 }, 0.7)
+       .fromTo(".p-line2", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.12 }, 0.74)
+       .to({}, { duration: 0.14 }, 0.86);
+    // Hero depth: photo and words drift apart with the mouse (desktop only).
+    if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      var hx = gsap.quickTo(".hero-media", "x", { duration: 1.2, ease: "power3" }), hy = gsap.quickTo(".hero-media", "y", { duration: 1.2, ease: "power3" });
+      var tx = gsap.quickTo(".hero-copy", "x", { duration: 1.2, ease: "power3" }), bx = gsap.quickTo(".badge", "x", { duration: 1.4, ease: "power3" });
+      $(".hero").addEventListener("pointermove", function (e) {
+        var r = e.currentTarget.getBoundingClientRect(), dx = (e.clientX - r.left) / r.width - 0.5, dy = (e.clientY - r.top) / r.height - 0.5;
+        hx(dx * -24); hy(dy * -14); tx(dx * 14); bx(dx * 28);
+      });
+    }
+    return function () { document.documentElement.classList.remove("motion"); };
+  });
+
+  // Phones: hotel photos open as they scroll in.
+  mm.add("(max-width: 899px) and (prefers-reduced-motion: no-preference)", function () {
+    $$(".hcard-media > img").forEach(function (img) {
+      gsap.fromTo(img, { clipPath: "inset(10% 8% 10% 8% round 16px)", scale: 1.15 }, { clipPath: "inset(0% 0% 0% 0% round 0px)", scale: 1, ease: "none", scrollTrigger: { trigger: img, start: "top 95%", end: "top 40%", scrub: true } });
+    });
+  });
+
+  window.addEventListener("load", function () { ScrollTrigger.refresh(); });
+})();
+</script>
+</body>
+</html>

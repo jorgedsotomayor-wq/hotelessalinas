@@ -1,0 +1,3 @@
+# Borrador: el sitio no se indexa hasta el lanzamiento
+User-agent: *
+Disallow: /
