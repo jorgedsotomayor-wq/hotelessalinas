@@ -53,6 +53,10 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
 .back { font-weight: 700; color: var(--ocean); }
 .alt { font-weight: 700; color: var(--ocean); }
 :focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
+.goal { margin: 0; font-weight: 700; color: var(--ink); }
+.goal b { font-family: var(--display); font-size: 1.25rem; color: #b3560a; }
+.goal-res { margin: 0; font-weight: 700; color: var(--ink); background: #fff; border-radius: 12px; padding: .6rem .8rem; }
+.goal-res.win { background: #dcf3e4; color: #0d4a26; }
 </style>
 </head>
 <body>
@@ -69,6 +73,7 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
     <div class="card">
       <h1>A una cuadra <em>del mar</em></h1>
       <p>Corre con <b>Jorge A</b> por Salinas, frente al Hotel Salinas, el Costa Azul y Suite Salinas. Cada vez va más rápido. ¿Hasta dónde llegas?</p>
+      <p class="goal">Récord a vencer este mes: <b id="goal-start">2000</b></p>
       <div class="how"><span>Toca para saltar</span><span>Mantén para saltar más alto</span><span>Las gaviotas vuelan alto: pasa por debajo sin saltar</span><span>Conchas Spondylus: +10</span></div>
       <button class="btn btn-sun" type="button" id="go">¡A correr!</button>
       <a class="alt" href="mar.html">¿Prefieres el mar? Bucea con Jorge A</a>
@@ -80,6 +85,7 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
     <div class="card" role="dialog" aria-labelledby="end-title">
       <h2 id="end-title">¡Ups! <em id="end-what">Chocaste</em></h2>
       <div class="stats"><div><b id="end-score">0</b><small>puntos</small></div><div><b id="end-best">0</b><small id="end-best-label">tu récord</small></div></div>
+      <p class="goal-res" id="goal-res"></p>
       <div class="contest"><p><b>Concurso del mes:</b> el mejor puntaje de cada mes gana un descuento en su estadía en Hoteles Salinas. Envía tu puntaje por WhatsApp con una captura de pantalla.</p></div>
       <div class="row">
         <a class="btn btn-wa" id="send" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg>Enviar mi puntaje</a>
@@ -94,6 +100,7 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
 (function () {
   "use strict";
   var WA = "593995755979";
+  var GOAL = 2000;   // score to beat this month: update it to the best score the family receives
   var canvas = document.getElementById("game"), ctx = canvas.getContext("2d");
   var $ = function (id) { return document.getElementById(id); };
   var H = 400, W = 700, scale = 1, dpr = 1, GROUND = 318;
@@ -172,6 +179,9 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
     $("end-what").textContent = "Chocaste " + (NAMES[what] || "");
     $("end-score").textContent = pts; $("end-best").textContent = best;
     $("end-best-label").textContent = isBest ? "¡nuevo récord!" : "tu récord";
+    var gr = $("goal-res");
+    if (pts >= GOAL) { gr.textContent = "¡Superaste el récord del mes (" + GOAL + ")! Envía tu captura por WhatsApp para participar."; gr.className = "goal-res win"; }
+    else { gr.textContent = "Te faltaron " + (GOAL - pts) + " puntos para el récord del mes (" + GOAL + "). ¡Otra vez!"; gr.className = "goal-res"; }
     $("send").href = "https://wa.me/" + WA + "?text=" + encodeURIComponent("Hola, hice " + pts + " puntos en «A una cuadra del mar» y quiero participar en el concurso del mes. (Adjunto mi captura)");
     var url = location.href.split("#")[0];
     $("dare").href = "https://wa.me/?text=" + encodeURIComponent("Hice " + pts + " puntos corriendo por Salinas frente a los Hoteles Salinas. ¿Me ganas? " + url);

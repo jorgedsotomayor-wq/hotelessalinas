@@ -53,6 +53,10 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
 .back { font-weight: 700; color: var(--ocean); }
 :focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
 .alt { font-weight: 700; color: var(--ocean); }
+.goal { margin: 0; font-weight: 700; color: var(--ink); }
+.goal b { font-family: var(--display); font-size: 1.25rem; color: #b3560a; }
+.goal-res { margin: 0; font-weight: 700; color: var(--ink); background: #fff; border-radius: 12px; padding: .6rem .8rem; }
+.goal-res.win { background: #dcf3e4; color: #0d4a26; }
 </style>
 </head>
 <body>
@@ -68,8 +72,9 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
   <div class="overlay" id="start">
     <div class="card">
       <h1>Bajo el mar <em>de Salinas</em></h1>
-      <p>Bucea con <b>Jorge A</b> frente al Hotel Salinas, el Costa Azul y Suite Salinas. Pasa por el hueco entre los peces, medusas y tiburones. Cada paso es un punto.</p>
-      <div class="how"><span>Toca: patalea y sube</span><span>No toques: se hunde</span><span>Pasa por el hueco</span><span>Conchas Spondylus: +1</span></div>
+      <p>Bucea con <b>Jorge A</b> frente al Hotel Salinas, el Costa Azul y Suite Salinas. Pasa por el hueco entre los peces, medusas y tiburones. Cada paso vale 50 puntos.</p>
+      <p class="goal">Récord a vencer este mes: <b id="goal-start">2000</b></p>
+      <div class="how"><span>Toca: patalea y sube</span><span>No toques: se hunde</span><span>Pasa por el hueco</span><span>Conchas Spondylus: +25</span></div>
       <button class="btn btn-sun" type="button" id="go">¡A bucear!</button>
       <a class="alt" href="index.html">¿Prefieres correr? Juega «A una cuadra del mar»</a>
       <a class="back" href="../">Ver los hoteles</a>
@@ -80,6 +85,7 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
     <div class="card" role="dialog" aria-labelledby="end-title">
       <h2 id="end-title">¡Ups! <em id="end-what">Chocaste</em></h2>
       <div class="stats"><div><b id="end-score">0</b><small>puntos</small></div><div><b id="end-best">0</b><small id="end-best-label">tu récord</small></div></div>
+      <p class="goal-res" id="goal-res"></p>
       <div class="contest"><p><b>Concurso del mes:</b> el mejor puntaje de cada mes gana un descuento en su estadía en Hoteles Salinas. Envía tu puntaje por WhatsApp con una captura de pantalla.</p></div>
       <div class="row">
         <a class="btn btn-wa" id="send" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg>Enviar mi puntaje</a>
@@ -94,6 +100,7 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
 (function () {
   "use strict";
   var WA = "593995755979";
+  var GOAL = 2000;   // score to beat this month: update it to the best score the family receives
   var canvas = document.getElementById("game"), ctx = canvas.getContext("2d");
   var $ = function (id) { return document.getElementById(id); };
   var H = 400, W = 700, scale = 1, dpr = 1;
@@ -101,7 +108,7 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
   var state = "start", last = 0, overAt = 0, t = 0;
   var world, speed, score, diver, walls, items, bubbles, nextWall, banner, bannerT, rng, passed, kick;
   var best = 0;
-  try { best = parseInt(localStorage.getItem("hs-best-buceo") || "0", 10) || 0; } catch (e) {}
+  try { best = parseInt(localStorage.getItem("hs-best-buceo2") || "0", 10) || 0; } catch (e) {}
   function showBest() { $("hi-top").textContent = best ? "Récord: " + best : ""; }
   showBest();
 
@@ -173,11 +180,14 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
   function gameOver(what) {
     state = "over"; overAt = performance.now();
     var pts = score, isBest = pts > best;
-    if (isBest) { best = pts; try { localStorage.setItem("hs-best-buceo", String(best)); } catch (e) {} }
+    if (isBest) { best = pts; try { localStorage.setItem("hs-best-buceo2", String(best)); } catch (e) {} }
     showBest();
     $("end-what").textContent = "Chocaste " + (NAMES[what] || "");
     $("end-score").textContent = pts; $("end-best").textContent = best;
     $("end-best-label").textContent = isBest ? "¡nuevo récord!" : "tu récord";
+    var gr = $("goal-res");
+    if (pts >= GOAL) { gr.textContent = "¡Superaste el récord del mes (" + GOAL + ")! Envía tu captura por WhatsApp para participar."; gr.className = "goal-res win"; }
+    else { gr.textContent = "Te faltaron " + (GOAL - pts) + " puntos para el récord del mes (" + GOAL + "). ¡Otra vez!"; gr.className = "goal-res"; }
     $("send").href = "https://wa.me/" + WA + "?text=" + encodeURIComponent("Hola, hice " + pts + " puntos en «Bajo el mar de Salinas» y quiero participar en el concurso del mes. (Adjunto mi captura)");
     var url = location.href.split("#")[0];
     $("dare").href = "https://wa.me/?text=" + encodeURIComponent("Hice " + pts + " puntos buceando con Jorge A bajo el mar de Salinas. ¿Me ganas? " + url);
@@ -223,11 +233,11 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
         if (db > w2.gy + w2.gap / 2 + (w2.whale ? 14 : 0)) { gameOver(w2.bot); return; }
       }
       if (!w2.done && dl > w2.x + w2.w) {
-        w2.done = true; passed++; score++;
+        w2.done = true; passed++; score += 50;
         if (w2.whale) { banner = "¡Ballena jorobada!"; bannerT = 1.6; }
       }
     }
-    items.forEach(function (it) { if (it.got) return; var ddx = dx - it.x, ddy = diver.y - it.y; if (ddx * ddx + ddy * ddy < 38 * 38) { it.got = true; score++; } });
+    items.forEach(function (it) { if (it.got) return; var ddx = dx - it.x, ddy = diver.y - it.y; if (ddx * ddx + ddy * ddy < 38 * 38) { it.got = true; score += 25; } });
     walls = walls.filter(function (w3) { return w3.x + w3.w - world > -80; });
     items = items.filter(function (it) { return it.x - world > -80; });
   }
