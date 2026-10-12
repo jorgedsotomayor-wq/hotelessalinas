@@ -495,6 +495,12 @@ a.rating:hover b { text-decoration: underline; }
 .bg-fixed { overflow: hidden; }
 .bg-fixed img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.05); transform-origin: 35% 30%; will-change: transform; }
 .bg-fixed::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,24,46,.55), rgba(10,24,46,.7)); }
+/* moving background: the hotel's own drone video of the bay and the marina, faded in once it plays */
+.bg-fixed video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.4s ease; transform-origin: 35% 30%; will-change: transform; }
+.bg-fixed video.on { opacity: 1; }
+.video-on .bg-fixed::after { background: linear-gradient(180deg, rgba(10,24,46,.3), rgba(10,24,46,.62)); }
+.hero-media { transition: opacity 1.4s ease; }
+.video-on .hero-media { opacity: 0; }
 .panel { position: relative; margin: clamp(12px, 2.2vw, 30px) clamp(10px, 2.2vw, 30px); border-radius: clamp(22px, 3vw, 38px); overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.3); }
 .hotels.panel, .salinas.panel, .faq.panel { background: var(--sand); }
 .story.panel, .book.panel { border: 1px solid rgba(255,255,255,.1); }
@@ -620,7 +626,7 @@ a.rating:hover b { text-decoration: underline; }
   </div>
 </div>
 
-<div class="bg-fixed" aria-hidden="true"><img src="img/hero-playa.jpg" alt=""></div>
+<div class="bg-fixed" aria-hidden="true"><img src="img/hero-playa.jpg" alt=""><video id="bg-video" muted loop playsinline preload="none" poster="img/fondo-salinas-poster.jpg"></video></div>
 <nav class="dots" aria-label="Ir a una sección">
   <a href="#inicio"><span>Inicio</span><i></i></a>
   <a href="#que-hacer"><span>Qué hacer</span><i></i></a>
@@ -1072,6 +1078,17 @@ a.rating:hover b { text-decoration: underline; }
   }).catch(function () {});
 })();
 </script>
+<script>
+/* Play the background video only when it will not hurt: no reduced motion, no data saver, not a 2G connection. Otherwise the still photo stays. */
+(function () {
+  var v = document.getElementById("bg-video"); if (!v) return;
+  var c = navigator.connection || {};
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches || c.saveData || /2g/.test(c.effectiveType || "")) return;
+  v.muted = true; v.src = "img/fondo-salinas.mp4";
+  v.addEventListener("playing", function () { v.classList.add("on"); document.documentElement.classList.add("video-on"); }, { once: true });
+  var p = v.play(); if (p && p.catch) p.catch(function () {});
+})();
+</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://hotelessalinas.com/#empresa", "name": "Hoteles Salinas", "legalName": "Empresa de Turismo Salinas S.A. (EMTURISA)", "url": "https://hotelessalinas.com/", "email": "reservas@hotelessalinas.com", "telephone": "+593995755979", "sameAs": ["https://www.instagram.com/hoteles.salinas/", "https://www.facebook.com/profile.php?id=100057365242051"]}, {"@type": "Hotel", "@id": "https://hotelessalinas.com/#hotel-salinas", "name": "Hotel Salinas", "url": "https://hotelessalinas.com/#hotel-salinas", "image": "https://hotelessalinas.com/img/hotel-salinas-edificio.jpg", "description": "El primer hotel de la familia, a una cuadra del malecón de Salinas.", "address": {"@type": "PostalAddress", "streetAddress": "Gral. Enríquez Gallo y Calle 27", "addressLocality": "Salinas", "addressRegion": "Santa Elena", "addressCountry": "EC"}, "geo": {"@type": "GeoCoordinates", "latitude": -2.2063, "longitude": -80.9707}, "telephone": "+593995755979", "email": "reservas@hotelessalinas.com", "checkinTime": "13:00", "checkoutTime": "12:00", "parentOrganization": {"@id": "https://hotelessalinas.com/#empresa"}}, {"@type": "Hotel", "@id": "https://hotelessalinas.com/#costa-azul", "name": "Hotel Salinas Costa Azul", "url": "https://hotelessalinas.com/#costa-azul", "image": "https://hotelessalinas.com/img/costa-azul-edificio.jpg", "description": "Hotel con la piscina que comparten los huéspedes de los tres hoteles, a una cuadra del mar.", "address": {"@type": "PostalAddress", "streetAddress": "Gral. Enríquez Gallo y Calle 27", "addressLocality": "Salinas", "addressRegion": "Santa Elena", "addressCountry": "EC"}, "geo": {"@type": "GeoCoordinates", "latitude": -2.2063, "longitude": -80.9707}, "telephone": "+593995755979", "email": "reservas@hotelessalinas.com", "checkinTime": "13:00", "checkoutTime": "12:00", "parentOrganization": {"@id": "https://hotelessalinas.com/#empresa"}}, {"@type": "Hotel", "@id": "https://hotelessalinas.com/#suites-salinas", "name": "Suite Salinas", "url": "https://hotelessalinas.com/#suites-salinas", "image": "https://hotelessalinas.com/img/suites-salinas-edificio.jpg", "description": "Habitaciones para familias y grupos, a una cuadra del malecón de Salinas.", "address": {"@type": "PostalAddress", "streetAddress": "Gral. Enríquez Gallo y Calle 27", "addressLocality": "Salinas", "addressRegion": "Santa Elena", "addressCountry": "EC"}, "geo": {"@type": "GeoCoordinates", "latitude": -2.2063, "longitude": -80.9707}, "telephone": "+593995755979", "email": "reservas@hotelessalinas.com", "checkinTime": "13:00", "checkoutTime": "12:00", "parentOrganization": {"@id": "https://hotelessalinas.com/#empresa"}}]}</script>
 <script>
 (function () {
@@ -1237,7 +1254,7 @@ a.rating:hover b { text-decoration: underline; }
       .from(".hero-in", { y: 22, opacity: 0, duration: 0.85, stagger: 0.09 }, 0.6);
     gsap.to(".hero-media", { yPercent: 16, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
     // The bay photo behind the panels drifts slowly sideways and closer as you scroll, so the sky and clouds glide past.
-    gsap.fromTo(".bg-fixed img", { xPercent: 0, scale: 1.1 }, { xPercent: -5, scale: 1.18, ease: "none",
+    gsap.fromTo(".bg-fixed img, .bg-fixed video", { xPercent: 0, scale: 1.1 }, { xPercent: -5, scale: 1.18, ease: "none",
       scrollTrigger: { trigger: document.documentElement, start: "top top", end: "bottom bottom", scrub: 1.2 } });
 
     // Headings rise line by line.
