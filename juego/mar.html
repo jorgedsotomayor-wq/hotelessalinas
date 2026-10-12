@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Bajo el mar de Salinas · Hoteles Salinas</title>
-<meta name="description" content="Juego: bucea con Jorge Alberto bajo el mar de Salinas, esquiva peces, medusas y ballenas, y supera tu récord.">
+<meta name="description" content="Juego: bucea con Jorge A bajo el mar de Salinas, esquiva peces, medusas y ballenas, y supera tu récord.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,500..700,0..100;1,9..144,500..700,0..100&family=Figtree:wght@500;700;800&display=swap">
@@ -61,13 +61,13 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
 </header>
 
 <main class="stage" id="stage">
-  <canvas id="game" role="img" aria-label="Juego de buceo: Jorge Alberto nada bajo el mar de Salinas, con los Hoteles Salinas arriba en la orilla, y esquiva peces, medusas y ballenas."></canvas>
+  <canvas id="game" role="img" aria-label="Juego de buceo: Jorge A nada bajo el mar de Salinas, con los Hoteles Salinas arriba en la orilla, y esquiva peces, medusas y ballenas."></canvas>
   <p class="tap-hint" aria-hidden="true">Toca para patalear y subir</p>
 
   <div class="overlay" id="start">
     <div class="card">
       <h1>Bajo el mar <em>de Salinas</em></h1>
-      <p>Bucea con <b>Jorge Alberto</b> frente al Hotel Salinas, el Costa Azul y Suite Salinas. Pasa por el hueco entre los peces, medusas y tiburones. Cada paso es un punto.</p>
+      <p>Bucea con <b>Jorge A</b> frente al Hotel Salinas, el Costa Azul y Suite Salinas. Pasa por el hueco entre los peces, medusas y tiburones. Cada paso es un punto.</p>
       <div class="how"><span>Toca: patalea y sube</span><span>No toques: se hunde</span><span>Pasa por el hueco</span><span>Conchas Spondylus: +1</span></div>
       <button class="btn btn-sun" type="button" id="go">¡A bucear!</button>
       <a class="alt" href="index.html">¿Prefieres correr? Juega «A una cuadra del mar»</a>
@@ -178,7 +178,7 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
     $("end-best-label").textContent = isBest ? "¡nuevo récord!" : "tu récord";
     $("send").href = "https://wa.me/" + WA + "?text=" + encodeURIComponent("Hola, hice " + pts + " puntos en «Bajo el mar de Salinas» y quiero participar en el concurso del mes. (Adjunto mi captura)");
     var url = location.href.split("#")[0];
-    $("dare").href = "https://wa.me/?text=" + encodeURIComponent("Hice " + pts + " puntos buceando con Jorge Alberto bajo el mar de Salinas. ¿Me ganas? " + url);
+    $("dare").href = "https://wa.me/?text=" + encodeURIComponent("Hice " + pts + " puntos buceando con Jorge A bajo el mar de Salinas. ¿Me ganas? " + url);
     setTimeout(function () { $("end").hidden = false; $("again").focus(); }, 650);
   }
   $("go").addEventListener("click", start);

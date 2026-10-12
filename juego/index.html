@@ -61,16 +61,16 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
 </header>
 
 <main class="stage" id="stage">
-  <canvas id="game" role="img" aria-label="Juego de correr: Jorge Alberto corre por Salinas frente a los Hoteles Salinas y salta obstáculos."></canvas>
+  <canvas id="game" role="img" aria-label="Juego de correr: Jorge A corre por Salinas frente a los Hoteles Salinas y salta obstáculos."></canvas>
   <p class="tap-hint" aria-hidden="true">Toca en cualquier parte para saltar</p>
 
   <div class="overlay" id="start">
     <div class="card">
       <h1>A una cuadra <em>del mar</em></h1>
-      <p>Corre con <b>Jorge Alberto</b> por Salinas, frente al Hotel Salinas, el Costa Azul y Suite Salinas. Cada vez va más rápido. ¿Hasta dónde llegas?</p>
+      <p>Corre con <b>Jorge A</b> por Salinas, frente al Hotel Salinas, el Costa Azul y Suite Salinas. Cada vez va más rápido. ¿Hasta dónde llegas?</p>
       <div class="how"><span>Toca para saltar</span><span>Mantén para saltar más alto</span><span>Las gaviotas vuelan alto: pasa por debajo sin saltar</span><span>Conchas Spondylus: +10</span></div>
       <button class="btn btn-sun" type="button" id="go">¡A correr!</button>
-      <a class="alt" href="mar.html">¿Prefieres el mar? Bucea con Jorge Alberto</a>
+      <a class="alt" href="mar.html">¿Prefieres el mar? Bucea con Jorge A</a>
       <a class="back" href="../">Ver los hoteles</a>
     </div>
   </div>
@@ -180,7 +180,7 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
 
   /* ---------- update: faster and faster, like the dinosaur game ---------- */
   var KINDS = ["umbrella", "banana", "cart", "castle", "woman", "man", "surf", "ball", "cooler"];
-  var GULL_Y = GROUND - 152;   // high enough that Jorge Alberto runs under it without jumping
+  var GULL_Y = GROUND - 152;   // high enough that Jorge A runs under it without jumping
   function update(dt) {
     speed = Math.min(980, 380 + score * 0.16);
     world += speed * dt;
@@ -287,7 +287,7 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
       return;
     }
     var bottom = o.k === "ball" ? ballY(o) : GROUND + 3, lift = GROUND + 3 - bottom;
-    // shadow on the path, so every obstacle stands right in Jorge Alberto's lane
+    // shadow on the path, so every obstacle stands right in Jorge A's lane
     ctx.fillStyle = "rgba(20,40,74,.22)"; ctx.beginPath();
     ctx.ellipse(x + o.w / 2, GROUND + 3, Math.max(8, o.w * 0.55 - lift * 0.12), 5, 0, 0, Math.PI * 2); ctx.fill();
     if (im.complete && im.naturalWidth) {
