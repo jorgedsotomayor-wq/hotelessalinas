@@ -507,13 +507,13 @@ a.rating:hover b { text-decoration: underline; }
 .panel .wave-top { display: none; }
 @media (min-width: 1100px) { .panel { margin-inline: 70px; } }
 /* see-through panels: the bay photo shows behind every section, frosted so the text stays easy to read */
-.hotels.panel, .salinas.panel, .faq.panel { background: rgba(250, 246, 239, .84); }
-.rooms.panel { background: rgba(255, 255, 255, .84); }
-.mapsec.panel { background: rgba(224, 241, 241, .86); }
+.hotels.panel, .salinas.panel, .faq.panel { background: rgba(250, 246, 239, .62); }
+.rooms.panel { background: rgba(255, 255, 255, .62); }
+.mapsec.panel { background: rgba(224, 241, 241, .64); }
 /* slightly deeper teal and grey on the see-through light panels, so small text keeps AA contrast over the photo */
-.hotels.panel, .salinas.panel, .faq.panel, .rooms.panel, .mapsec.panel { --ocean: #075a6d; --mist: #3f4d60; }
-.story.panel, .book.panel { background: rgba(20, 40, 74, .66); border-color: rgba(255,255,255,.18); }
-.panel { -webkit-backdrop-filter: blur(16px) saturate(1.15); backdrop-filter: blur(16px) saturate(1.15); }
+.hotels.panel, .salinas.panel, .faq.panel, .rooms.panel, .mapsec.panel { --ocean: #05414f; --mist: #283444; }
+.story.panel, .book.panel { background: rgba(20, 40, 74, .42); border-color: rgba(255,255,255,.22); }
+.panel { -webkit-backdrop-filter: blur(9px) saturate(1.2); backdrop-filter: blur(9px) saturate(1.2); }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .hotels.panel, .salinas.panel, .faq.panel { background: rgba(250, 246, 239, .94); }
   .rooms.panel { background: rgba(255, 255, 255, .94); }
