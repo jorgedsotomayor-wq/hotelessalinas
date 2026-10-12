@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Bajo el mar de Salinas · Hoteles Salinas</title>
+<meta name="description" content="Juego: bucea con Jorge Alberto bajo el mar de Salinas, esquiva peces, medusas y ballenas, y supera tu récord.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,500..700,0..100;1,9..144,500..700,0..100&family=Figtree:wght@500;700;800&display=swap">
+<style>
+/* Layout: a landscape game band (canvas) centered on navy, DOM overlays for start and game over. Same palette as the hotel site. */
+:root {
+  --ink: #14284a; --sand: #faf6ef; --sun: #f08a1c; --ocean: #0b6a80; --wa: #0f7a40; --paper: #ffffff; --muted: #4c5b70;
+  --display: "Fraunces", Georgia, serif; --body: "Figtree", -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--ink); color: var(--ink); font-family: var(--body); overscroll-behavior: none; }
+body { display: flex; flex-direction: column; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 10px; background: var(--ink); color: #fff; }
+.top a { color: #fff; text-decoration: none; font-family: var(--display); font-weight: 600; font-size: 1.1rem; display: flex; align-items: center; gap: .5rem; min-height: 44px; }
+.top a svg { width: 22px; height: 22px; }
+.top .hi { font-weight: 800; font-size: .9rem; color: #ffd59a; }
+.stage { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; touch-action: manipulation; user-select: none; -webkit-user-select: none; background: linear-gradient(180deg, #14284a, #0f2e4f); }
+canvas { display: block; width: 100%; flex: none; cursor: pointer; }
+.tap-hint { text-align: center; color: rgba(255,255,255,.75); font-weight: 700; font-size: .9rem; padding: 14px 16px 0; }
+@media (min-aspect-ratio: 1/1) { .tap-hint { display: none; } }
+.overlay { position: absolute; inset: 0; display: grid; place-items: center; padding: 16px; background: rgba(20,40,74,.6); overflow-y: auto; }
+.overlay[hidden] { display: none !important; }
+.card { background: var(--sand); border-radius: 24px; padding: clamp(1.3rem, 4vw, 2rem); max-width: 440px; width: 100%; text-align: center; display: grid; gap: .8rem; box-shadow: 0 30px 80px rgba(0,0,0,.35); }
+.card h1, .card h2 { font-family: var(--display); font-weight: 600; margin: 0; line-height: 1.05; font-variation-settings: "SOFT" 60; }
+.card h1 { font-size: clamp(2rem, 7vw, 2.7rem); }
+.card h2 { font-size: clamp(1.6rem, 6vw, 2.1rem); }
+.card em { color: var(--ocean); }
+.card p { margin: 0; color: var(--muted); line-height: 1.5; }
+.how { display: flex; justify-content: center; gap: .45rem; flex-wrap: wrap; font-size: .88rem; font-weight: 700; color: var(--ink); }
+.how span { background: #fde7c9; border-radius: 999px; padding: .35rem .8rem; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 50px; padding: 0 1.3rem; border-radius: 999px; border: 0; font: inherit; font-weight: 800; font-size: 1.02rem; cursor: pointer; text-decoration: none; }
+.btn-sun { background: var(--sun); color: var(--ink); }
+.btn-wa { background: var(--wa); color: #fff; }
+.btn-line { background: transparent; color: var(--ink); border: 2px solid var(--ink); }
+.btn svg { width: 20px; height: 20px; fill: currentColor; }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.stats div { background: #fff; border-radius: 14px; padding: .7rem; }
+.stats b { display: block; font-family: var(--display); font-size: 1.9rem; color: var(--ink); font-variant-numeric: tabular-nums; }
+.stats small { color: var(--muted); font-weight: 700; }
+.contest { background: #fde7c9; border-radius: 14px; padding: .8rem 1rem; text-align: left; }
+.contest p { color: var(--ink); font-size: .92rem; }
+.row { display: grid; gap: .55rem; }
+.back { font-weight: 700; color: var(--ocean); }
+:focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
+.alt { font-weight: 700; color: var(--ocean); }
+</style>
+</head>
+<body>
+<header class="top">
+  <a href="../"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="7" fill="#f08a1c"/><path d="M16 2v4M16 26v4M2 16h4M26 16h4M6 6l3 3M23 23l3 3M26 6l-3 3M9 23l-3 3" stroke="#f08a1c" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg>Hoteles Salinas</a>
+  <span class="hi" id="hi-top" aria-live="polite"></span>
+</header>
+
+<main class="stage" id="stage">
+  <canvas id="game" role="img" aria-label="Juego de buceo: Jorge Alberto nada bajo el mar de Salinas, con los Hoteles Salinas arriba en la orilla, y esquiva peces, medusas y ballenas."></canvas>
+  <p class="tap-hint" aria-hidden="true">Toca para patalear y subir</p>
+
+  <div class="overlay" id="start">
+    <div class="card">
+      <h1>Bajo el mar <em>de Salinas</em></h1>
+      <p>Bucea con <b>Jorge Alberto</b> frente al Hotel Salinas, el Costa Azul y Suite Salinas. Pasa por el hueco entre los peces, medusas y tiburones. Cada paso es un punto.</p>
+      <div class="how"><span>Toca: patalea y sube</span><span>No toques: se hunde</span><span>Pasa por el hueco</span><span>Conchas Spondylus: +1</span></div>
+      <button class="btn btn-sun" type="button" id="go">¡A bucear!</button>
+      <a class="alt" href="index.html">¿Prefieres correr? Juega «A una cuadra del mar»</a>
+      <a class="back" href="../">Ver los hoteles</a>
+    </div>
+  </div>
+
+  <div class="overlay" id="end" hidden>
+    <div class="card" role="dialog" aria-labelledby="end-title">
+      <h2 id="end-title">¡Ups! <em id="end-what">Chocaste</em></h2>
+      <div class="stats"><div><b id="end-score">0</b><small>puntos</small></div><div><b id="end-best">0</b><small id="end-best-label">tu récord</small></div></div>
+      <div class="contest"><p><b>Concurso del mes:</b> el mejor puntaje de cada mes gana un descuento en su estadía en Hoteles Salinas. Envía tu puntaje por WhatsApp con una captura de pantalla.</p></div>
+      <div class="row">
+        <a class="btn btn-wa" id="send" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg>Enviar mi puntaje</a>
+        <button class="btn btn-sun" type="button" id="again">Bucear otra vez</button>
+        <a class="btn btn-line" id="dare" href="#" target="_blank" rel="noopener">Retar a un amigo</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var WA = "593995755979";
+  var canvas = document.getElementById("game"), ctx = canvas.getContext("2d");
+  var $ = function (id) { return document.getElementById(id); };
+  var H = 400, W = 700, scale = 1, dpr = 1;
+  var SURF = 86, FLOOR = 362;                 // water surface and sea floor, in game units
+  var state = "start", last = 0, overAt = 0, t = 0;
+  var world, speed, score, diver, walls, items, bubbles, nextWall, banner, bannerT, rng, passed, kick;
+  var best = 0;
+  try { best = parseInt(localStorage.getItem("hs-best-buceo") || "0", 10) || 0; } catch (e) {}
+  function showBest() { $("hi-top").textContent = best ? "Récord: " + best : ""; }
+  showBest();
+
+  /* ---------- 2D drawings (made with ChatGPT) ---------- */
+  function load(src) { var im = new Image(); im.onload = function () { if (state !== "run") draw(); }; im.src = src; return im; }
+  function ok(im) { return im && im.complete && im.naturalWidth > 0; }
+  function aspect(im, fallback) { return ok(im) ? im.naturalWidth / im.naturalHeight : fallback; }
+  var DIVER = load("img/buzo.png");          // 4 swim poses in one row
+  var NAMES = { tropical: "con un pez payaso", angel: "con un pez ángel", puffer: "con un pez globo", jelly: "con una medusa", turtle: "con una tortuga",
+    school: "con un cardumen", octopus: "con un pulpo", manta: "con una manta raya", urchin: "con un erizo de mar", shark: "con un tiburón", whale: "con una ballena jorobada" };
+  var SEA = {};
+  Object.keys(NAMES).forEach(function (k) { SEA[k] = load("img/mar-" + k + ".png"); });
+  var SHELL = load("img/mar-spondylus.png");
+  var DECO = ["coral", "seaweed", "rock", "anchor"].map(function (n) { return load("img/mar-" + n + ".png"); });
+  var HOTELS = {};
+  ["sprite-hotel-salinas", "sprite-costa-azul", "sprite-suite-salinas", "sprite-casas"].forEach(function (n) { HOTELS[n] = load("img/" + n + ".png"); });
+  // the shore at the top: hotel, houses, hotel, houses, hotel... (same order as the street game)
+  var SHORE = [
+    { n: "sprite-hotel-salinas", h: 74, gap: 26 }, { n: "palm" }, { n: "sprite-casas", h: 34, gap: 30 },
+    { n: "sprite-costa-azul", h: 50, gap: 28 }, { n: "palm" }, { n: "sprite-casas", h: 34, gap: 30 },
+    { n: "sprite-suite-salinas", h: 72, gap: 28 }, { n: "palm" }, { n: "sprite-casas", h: 34, gap: 60 }
+  ];
+  // the "tubes": a wall of animals hangs from the surface and another rises from the sea floor
+  var TOP_KINDS = ["jelly", "school", "tropical", "angel", "jelly", "manta"];
+  var BOT_KINDS = ["puffer", "octopus", "turtle", "urchin", "shark", "puffer"];
+  var COL = 64;                               // width of a wall
+
+  function resize() {
+    var st = $("stage").getBoundingClientRect();
+    var portrait = st.height > st.width;
+    canvas.style.height = Math.round(Math.min(st.height - (portrait ? 40 : 0), st.width * (portrait ? 0.88 : 0.62))) + "px";
+    var r = canvas.getBoundingClientRect();
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(r.width * dpr); canvas.height = Math.round(r.height * dpr);
+    scale = canvas.height / H; W = canvas.width / scale;
+  }
+  window.addEventListener("resize", function () { resize(); if (state !== "run") draw(); });
+
+  function seed(n) { return function () { n = (n * 16807) % 2147483647; return (n - 1) / 2147483646; }; }
+  function reset() {
+    rng = seed((Date.now() % 2147483646) + 1);
+    diver = { x: Math.min(170, W * 0.28), y: 210, vy: 0 };
+    walls = []; items = []; bubbles = []; world = 0; speed = 165; score = 0; passed = 0; banner = ""; bannerT = 0; kick = 0;
+    nextWall = W + 60;
+  }
+
+  /* ---------- input: every tap is one kick of the fins, like the bird game ---------- */
+  function flap() {
+    diver.vy = -330; kick = 0.35;
+    for (var i = 0; i < 3; i++) bubbles.push({ x: diver.x - 40, y: diver.y + 10 + i * 4, r: 2 + rng() * 2.5, vy: -30 - rng() * 30, a: 0.9 });
+  }
+  function press() {
+    if (state === "run") flap();
+    else if (state === "ready") { state = "run"; flap(); }
+    else if (state === "over" && performance.now() - overAt > 700) start();
+  }
+  $("stage").addEventListener("pointerdown", function (e) { if (e.target.closest("button, a")) return; if (state === "start") return; e.preventDefault(); press(); });
+  window.addEventListener("keydown", function (e) {
+    if (e.code === "Space" || e.code === "ArrowUp" || e.code === "KeyW") { if (state !== "start" && !(e.target.closest && e.target.closest("button, a"))) { e.preventDefault(); if (!e.repeat) press(); } }
+  });
+
+  /* ---------- flow ---------- */
+  function start() {
+    var wasIdle = state !== "start";
+    reset(); state = "ready"; $("start").hidden = true; $("end").hidden = true;
+    last = performance.now(); if (wasIdle) requestAnimationFrame(loop);
+  }
+  function gameOver(what) {
+    state = "over"; overAt = performance.now();
+    var pts = score, isBest = pts > best;
+    if (isBest) { best = pts; try { localStorage.setItem("hs-best-buceo", String(best)); } catch (e) {} }
+    showBest();
+    $("end-what").textContent = "Chocaste " + (NAMES[what] || "");
+    $("end-score").textContent = pts; $("end-best").textContent = best;
+    $("end-best-label").textContent = isBest ? "¡nuevo récord!" : "tu récord";
+    $("send").href = "https://wa.me/" + WA + "?text=" + encodeURIComponent("Hola, hice " + pts + " puntos en «Bajo el mar de Salinas» y quiero participar en el concurso del mes. (Adjunto mi captura)");
+    var url = location.href.split("#")[0];
+    $("dare").href = "https://wa.me/?text=" + encodeURIComponent("Hice " + pts + " puntos buceando con Jorge Alberto bajo el mar de Salinas. ¿Me ganas? " + url);
+    setTimeout(function () { $("end").hidden = false; $("again").focus(); }, 650);
+  }
+  $("go").addEventListener("click", start);
+  $("again").addEventListener("click", start);
+
+  /* ---------- walls ---------- */
+  function makeWall(x) {
+    var gap = Math.max(108, 134 - passed * 1.2);                      // the hole gets a little smaller as you go
+    var lo = SURF + 40 + gap / 2, hi = FLOOR - 40 - gap / 2;
+    var gy = lo + rng() * (hi - lo);
+    var w = { x: x, w: COL, gy: gy, gap: gap, top: TOP_KINDS[Math.floor(rng() * TOP_KINDS.length)], bot: BOT_KINDS[Math.floor(rng() * BOT_KINDS.length)], ph: rng() * 6, done: false };
+    if (passed >= 8 && rng() < 0.14) {                                 // now and then a humpback whale makes a long tunnel
+      w.whale = true; w.bot = "whale"; w.top = "jelly";
+      w.gy = Math.max(lo, Math.min(hi, gy)); w.w = Math.round(Math.min(150, FLOOR - (w.gy + gap / 2) + 30) * aspect(SEA.whale, 3.06));
+    }
+    if (rng() < 0.35) items.push({ x: x + w.w / 2, y: w.gy, got: false });
+    return w;
+  }
+  function update(dt) {
+    t += dt; kick = Math.max(0, kick - dt); bannerT = Math.max(0, bannerT - dt);
+    speed = Math.min(235, 165 + passed * 2);
+    world += speed * dt;
+    diver.vy = Math.min(420, diver.vy + 1050 * dt);                   // sinks slowly, like underwater
+    diver.y += diver.vy * dt;
+    if (diver.y < SURF + 22) { diver.y = SURF + 22; diver.vy = Math.max(0, diver.vy); }
+    if (diver.y > FLOOR - 20) { gameOver("urchin"); $("end-what").textContent = "Tocaste el fondo del mar"; return; }
+    if (rng() < dt * 5) bubbles.push({ x: diver.x + 30, y: diver.y - 6, r: 1.5 + rng() * 2.5, vy: -40 - rng() * 40, a: 1 });
+    bubbles.forEach(function (b) { b.y += b.vy * dt; b.x -= speed * dt * 0.3; b.a -= dt * 0.5; });
+    bubbles = bubbles.filter(function (b) { return b.a > 0 && b.y > SURF; });
+    while (world + W + 40 > nextWall) {
+      var w = makeWall(nextWall); walls.push(w);
+      nextWall += w.w + Math.max(170, 215 - passed * 1.5);
+    }
+    // collisions: a little forgiving
+    var dx = world + diver.x, dl = dx - 34, dr = dx + 38, dt2 = diver.y - 18, db = diver.y + 14;
+    for (var j = 0; j < walls.length; j++) {
+      var w2 = walls[j], l = w2.x + 6, r = w2.x + w2.w - 6;
+      if (dr > l && dl < r) {
+        if (dt2 < w2.gy - w2.gap / 2) { gameOver(w2.top); return; }
+        if (db > w2.gy + w2.gap / 2 + (w2.whale ? 14 : 0)) { gameOver(w2.bot); return; }
+      }
+      if (!w2.done && dl > w2.x + w2.w) {
+        w2.done = true; passed++; score++;
+        if (w2.whale) { banner = "¡Ballena jorobada!"; bannerT = 1.6; }
+      }
+    }
+    items.forEach(function (it) { if (it.got) return; var ddx = dx - it.x, ddy = diver.y - it.y; if (ddx * ddx + ddy * ddy < 38 * 38) { it.got = true; score++; } });
+    walls = walls.filter(function (w3) { return w3.x + w3.w - world > -80; });
+    items = items.filter(function (it) { return it.x - world > -80; });
+  }
+
+  /* ---------- drawing ---------- */
+  function rect(x, y, w, h, c) { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); }
+  function rr(x, y, w, h, r, c) { ctx.fillStyle = c; ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); ctx.fill(); }
+  function palm(x, base, s) {
+    ctx.strokeStyle = "#8a5a2b"; ctx.lineWidth = 3 * s; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(x, base); ctx.quadraticCurveTo(x + 4 * s, base - 25 * s, x + 2 * s, base - 55 * s); ctx.stroke();
+    ctx.strokeStyle = "#2e9b5f"; ctx.lineWidth = 3.5 * s;
+    [[-22, -4], [22, -4], [-15, 9], [16, 9], [0, -15]].forEach(function (p) { ctx.beginPath(); ctx.moveTo(x + 2 * s, base - 55 * s); ctx.quadraticCurveTo(x + (2 + p[0] / 2) * s, base - (63 + p[1] / 3) * s, x + (2 + p[0]) * s, base - (55 - p[1]) * s); ctx.stroke(); });
+  }
+  function shoreWidth(it) { return it.n === "palm" ? 40 : it.h * aspect(HOTELS[it.n], 1) + (it.gap || 30); }
+  function drawShore() {
+    var g = ctx.createLinearGradient(0, 0, 0, SURF);
+    g.addColorStop(0, "#7fd0ef"); g.addColorStop(1, "#d8f1f7");
+    rect(0, 0, W, SURF, g);
+    ctx.fillStyle = "#ffd65a"; ctx.beginPath(); ctx.arc(W - 70, 24, 15, 0, Math.PI * 2); ctx.fill();
+    var base = SURF - 8, off = (world || 0) * 0.15, cycle = 0;
+    SHORE.forEach(function (it) { cycle += shoreWidth(it); });
+    var x = 20 - (off % cycle); if (x > 0) x -= cycle;
+    for (var pass = 0; x < W + 40 && pass < 8; pass++) {
+      for (var i = 0; i < SHORE.length; i++) {
+        var it = SHORE[i], w = shoreWidth(it);
+        if (x + w > -40 && x < W + 40) {
+          if (it.n === "palm") palm(x + 20, base, 0.9);
+          else { var im = HOTELS[it.n]; if (ok(im)) ctx.drawImage(im, x, base - it.h, it.h * aspect(im, 1), it.h); }
+        }
+        x += w;
+      }
+    }
+    rect(0, base, W, 8, "#e9d9b0");                 // the malecón and the beach
+  }
+  function drawWater() {
+    var g = ctx.createLinearGradient(0, SURF, 0, FLOOR);
+    g.addColorStop(0, "#2bb3c9"); g.addColorStop(0.5, "#137fa6"); g.addColorStop(1, "#0b4f7a");
+    rect(0, SURF, W, H - SURF, g);
+    ctx.fillStyle = "rgba(255,255,255,.07)";
+    for (var i = 0; i < 6; i++) {
+      var rx = ((i * 190 - (world || 0) * 0.08) % (W + 300) + W + 300) % (W + 300) - 150;
+      ctx.beginPath(); ctx.moveTo(rx, SURF); ctx.lineTo(rx + 40, SURF); ctx.lineTo(rx + 140, FLOOR); ctx.lineTo(rx + 60, FLOOR); ctx.closePath(); ctx.fill();
+    }
+    ctx.fillStyle = "rgba(255,255,255,.55)"; ctx.beginPath(); ctx.moveTo(0, SURF);
+    for (var x = 0; x <= W + 10; x += 10) ctx.lineTo(x, SURF + 3 + Math.sin(x / 22 + t * 3) * 2.5);
+    ctx.lineTo(W, SURF); ctx.closePath(); ctx.fill();
+  }
+  function drawFloor() {
+    var off = (world || 0) * 0.5;
+    ctx.globalAlpha = 0.75;
+    for (var i = -1; i < W / 150 + 2; i++) {
+      var n = Math.floor(off / 150) + i, x = n * 150 - off, k = ((n % 4) + 4) % 4, im = DECO[k], h = [58, 74, 36, 34][k];
+      if (ok(im)) ctx.drawImage(im, x + ((n * 37) % 50), FLOOR + 6 - h, h * aspect(im, 1), h);
+    }
+    ctx.globalAlpha = 1;
+    var g = ctx.createLinearGradient(0, FLOOR, 0, H);
+    g.addColorStop(0, "#e2c98f"); g.addColorStop(1, "#c7a86a");
+    rect(0, FLOOR, W, H - FLOOR, g);
+    ctx.fillStyle = "rgba(255,255,255,.25)";
+    for (var j = 0; j < 30; j++) { var sx = ((j * 61 - (world || 0)) % (W + 60) + W + 60) % (W + 60) - 30; ctx.fillRect(sx, FLOOR + 10 + (j * 7) % 22, 8, 2); }
+  }
+  // one wall: animals stacked from the edge to the hole
+  function stack(kind, x, w, y0, y1, fromTop, ph) {
+    var im = SEA[kind], a = aspect(im, 1.3), h = Math.min(w / a, kind === "jelly" ? 64 : 46), dw = h * a, n = Math.max(1, Math.ceil((y1 - y0) / (h * 0.82)));
+    var step = (y1 - y0) / n;
+    // a soft band behind the animals so the wall reads as one solid "tube"
+    rr(x + 4, y0, w - 8, y1 - y0, 14, "rgba(10,40,70,.28)");
+    for (var i = 0; i < n; i++) {
+      var cy = fromTop ? y1 - step * (i + 0.5) : y0 + step * (i + 0.5);
+      var wob = Math.sin(t * 2.4 + ph + i) * 3;
+      if (ok(im)) ctx.drawImage(im, x + (w - dw) / 2 + wob, cy - h / 2, dw, h);
+      else rr(x + 6, cy - h / 2, w - 12, h - 4, 10, "#f08a1c");
+    }
+  }
+  function drawWall(w) {
+    var x = w.x - world; if (x > W + 20 || x + w.w < -20) return;
+    var gt = w.gy - w.gap / 2, gb = w.gy + w.gap / 2;
+    if (w.whale) {
+      // jellyfish hang above the whale's whole length
+      for (var c = 0; c < w.w; c += COL) stack("jelly", x + c, Math.min(COL, w.w - c), SURF + 6, gt, true, w.ph + c);
+      var im = SEA.whale, wh = w.w / aspect(im, 3.06), wy = gb - wh * 0.22 + Math.sin(t * 1.5 + w.ph) * 3;
+      if (ok(im)) ctx.drawImage(im, x, wy, w.w, wh); else rr(x, gb, w.w, FLOOR - gb, 30, "#3a4f6b");
+      return;
+    }
+    stack(w.top, x, w.w, SURF + 6, gt, true, w.ph);
+    stack(w.bot, x, w.w, gb, FLOOR + 4, false, w.ph + 2);
+  }
+  function drawShell(it) {
+    var x = it.x - world, y = it.y + Math.sin(t * 3 + it.x) * 4, h = 26;
+    ctx.fillStyle = "rgba(255,240,180,.35)"; ctx.beginPath(); ctx.arc(x, y, 20, 0, Math.PI * 2); ctx.fill();
+    if (ok(SHELL)) { var sw = h * aspect(SHELL, 1.04); ctx.drawImage(SHELL, x - sw / 2, y - h / 2, sw, h); }
+  }
+  function drawBubbles() {
+    ctx.strokeStyle = "rgba(255,255,255,.8)"; ctx.lineWidth = 1.4;
+    bubbles.forEach(function (b) { ctx.globalAlpha = Math.max(0, b.a); ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.stroke(); });
+    ctx.globalAlpha = 1;
+  }
+  function drawDiver() {
+    var x = diver.x, y = diver.y + (state === "start" || state === "ready" ? Math.sin(t * 3) * 6 : 0), hit = state === "over";
+    var tilt = hit ? 0.9 : Math.max(-0.4, Math.min(0.45, diver.vy / 420 * 0.45));
+    ctx.save(); ctx.translate(x, y); ctx.rotate(tilt);
+    if (ok(DIVER)) {
+      var cw = DIVER.naturalWidth / 4, ch = DIVER.naturalHeight, dw = 112, dh = dw * ch / cw;
+      var frame = hit ? 0 : Math.floor(t * (kick > 0 ? 16 : 5)) % 4;   // fast kicks right after a tap
+      ctx.drawImage(DIVER, frame * cw, 0, cw, ch, -dw / 2, -dh / 2, dw, dh);
+    } else { rr(-50, -12, 90, 24, 12, "#2aa3a8"); }
+    ctx.restore();
+  }
+  function drawHud() {
+    ctx.font = "700 48px Fraunces, Georgia, serif"; ctx.textAlign = "center"; ctx.lineJoin = "round";
+    ctx.lineWidth = 7; ctx.strokeStyle = "#14284a"; ctx.strokeText(String(score), W / 2, SURF + 60);
+    ctx.fillStyle = "#ffffff"; ctx.fillText(String(score), W / 2, SURF + 60);
+    if (bannerT > 0) {
+      ctx.globalAlpha = Math.min(1, bannerT * 2); ctx.font = "700 26px Fraunces, Georgia, serif";
+      var bw = ctx.measureText(banner).width; rr(W / 2 - bw / 2 - 16, SURF + 74, bw + 32, 42, 21, "#f08a1c");
+      ctx.fillStyle = "#14284a"; ctx.fillText(banner, W / 2, SURF + 103); ctx.globalAlpha = 1;
+    }
+    ctx.textAlign = "left";
+  }
+  function draw() {
+    ctx.setTransform(scale, 0, 0, scale, 0, 0);
+    drawShore(); drawWater(); drawFloor();
+    if (walls) walls.forEach(drawWall);
+    if (items) items.forEach(function (it) { if (!it.got) drawShell(it); });
+    if (bubbles) drawBubbles();
+    if (diver) drawDiver();
+    if (state === "ready") {                       // like the bird game: wait for the first tap
+      ctx.font = "700 30px Fraunces, Georgia, serif"; ctx.textAlign = "center"; ctx.lineJoin = "round";
+      ctx.lineWidth = 6; ctx.strokeStyle = "#14284a"; ctx.strokeText("Toca para empezar", W / 2, SURF + 70);
+      ctx.fillStyle = "#ffd59a"; ctx.fillText("Toca para empezar", W / 2, SURF + 70);
+      ctx.font = "800 15px Figtree, sans-serif"; ctx.lineWidth = 4; ctx.strokeText("Cada toque es una patada de las aletas", W / 2, SURF + 98);
+      ctx.fillStyle = "#ffffff"; ctx.fillText("Cada toque es una patada de las aletas", W / 2, SURF + 98); ctx.textAlign = "left";
+    } else if (state !== "start") drawHud();
+  }
+  function loop(now) {
+    var dt = Math.min(0.034, (now - last) / 1000); last = now;
+    if (state === "run") update(dt); else t += dt;
+    draw();
+    if (state === "run" || state === "start" || state === "ready") requestAnimationFrame(loop);
+  }
+  resize(); reset();
+  if (location.hash === "#muestra") {             // preview: a few walls and a whale, for checking the drawings
+    state = "demo"; $("start").hidden = true;
+    setTimeout(function () {
+      passed = 0; var x = 240;
+      for (var i = 0; i < 6; i++) { var w = makeWall(x); w.top = TOP_KINDS[i]; w.bot = BOT_KINDS[i]; if (i === 2) { w.whale = true; w.top = "jelly"; w.bot = "whale"; w.w = 360; } walls.push(w); x += w.w + 120; }
+      world = 0; draw();
+    }, 1500);
+  }
+  if (location.hash === "#prueba") window.__estado = function () {   // test hook for the automatic playtest
+    var dx = world + diver.x, next = walls.filter(function (w) { return w.x + w.w > dx - 40; })[0];
+    return { state: state, y: diver.y, vy: diver.vy, gy: next ? next.gy : 224, score: score };
+  };
+  last = performance.now(); requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

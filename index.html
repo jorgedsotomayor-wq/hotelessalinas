@@ -242,7 +242,9 @@ p { margin: 0; }
 .game-link svg { color: #ffd59a !important; }
 .game-link .mascot { display: block; width: 52px; height: 80px; margin-bottom: .5rem; }
 .game-cta { display: inline-block; margin-top: .4rem; font-weight: 700; color: #ffd59a; }
-.game-link:hover .game-cta { text-decoration: underline; }
+.game-ctas { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; }
+.game-cta { padding: .35rem 0; text-decoration: none; }
+.game-cta:hover { text-decoration: underline; }
 .ai-tag { position: absolute; right: 8px; bottom: 8px; background: rgba(20,40,74,.8); color: #fff; font-size: .72rem; font-weight: 600; padding: .2rem .55rem; border-radius: 999px; }
 .place-body { padding: 1.3rem; display: grid; gap: .5rem; }
 .place-body svg { width: 44px; height: 44px; color: var(--ocean); }
@@ -916,9 +918,10 @@ a.rating:hover b { text-decoration: underline; }
           <div class="place-body"><h3>La Chocolatera</h3><p>En la punta de la península de Santa Elena, donde las olas revientan contra las rocas. Un paseo corto desde el centro.</p></div></article>
         <article class="place reveal"><figure><img src="img/montanita-spondylus.jpg" alt="Playa larga de Montañita con el mar y el cielo azul, en la Ruta del Spondylus" loading="lazy"><span class="ai-tag credit">Foto: Andrew Magill, CC BY 2.0</span></figure>
           <div class="place-body"><h3>La Ruta del Spondylus</h3><p>La carretera de la costa que sale de la península y sube por Ballenita, Ayangue, Montañita y Olón. Ideal para un día de paseo desde Salinas.</p></div></article>
-        <article class="place reveal game-card"><a class="game-link" href="juego/index.html"><div class="place-body">
+        <article class="place reveal game-card"><div class="place-body game-link">
           <img class="mascot" src="img/jorge-alberto.png" alt="" width="52" height="80">
-          <h3>Juego: A una cuadra del mar</h3><p>Corre con Jorge Alberto frente a los tres hoteles. Salta sombrillas, bañistas y bananas, y junta conchas Spondylus. El mejor puntaje del mes gana un descuento.</p><span class="game-cta">Jugar ahora →</span></div></a></article>
+          <h3>Juegos con Jorge Alberto</h3><p>Corre con él frente a los tres hoteles, o bucea bajo el mar de Salinas entre peces, medusas y ballenas. Junta conchas Spondylus. El mejor puntaje del mes gana un descuento.</p>
+          <div class="game-ctas"><a class="game-cta" href="juego/index.html">Correr por Salinas →</a><a class="game-cta" href="juego/mar.html">Bucear bajo el mar →</a></div></div></article>
       </div>
     </div>
   </section>
@@ -949,7 +952,7 @@ a.rating:hover b { text-decoration: underline; }
   <div class="wrap">
     <div class="foot-grid">
       <div><h2>Hoteles Salinas</h2><p>Empresa familiar de turismo en Salinas, Santa Elena, Ecuador, desde hace más de 50 años.</p></div>
-      <div><h2>Juega</h2><p><a href="juego/index.html">A una cuadra del mar</a></p></div>
+      <div><h2>Juega</h2><p><a href="juego/index.html">A una cuadra del mar</a></p><p><a href="juego/mar.html">Bajo el mar de Salinas</a></p></div>
       <div><h2>Hoteles</h2><p>Hotel Salinas</p><p>Hotel Salinas Costa Azul</p><p>Suite Salinas</p></div>
       <div><h2>Contacto</h2><p>099 575 5979</p><p>salinashoteles@gmail.com</p><p><a href="https://www.google.com/maps/search/?api=1&amp;query=-2.2063,-80.9707" target="_blank" rel="noopener">Gral. Enríquez Gallo y Calle 27<span class="sr"> (se abre en Google Maps)</span></a></p><div class="soc"><a href="https://www.instagram.com/hoteles.salinas/" target="_blank" rel="noopener" aria-label="Instagram de Hoteles Salinas"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a><a href="https://www.facebook.com/profile.php?id=100057365242051" target="_blank" rel="noopener" aria-label="Facebook de Hoteles Salinas"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 8h3V4h-3c-2.8 0-4.5 1.8-4.5 4.6V11H7v4h2.5v7h4v-7h3l.5-4h-3.5V8.8c0-.5.3-.8.5-.8z"/></svg></a></div></div>
     </div>
