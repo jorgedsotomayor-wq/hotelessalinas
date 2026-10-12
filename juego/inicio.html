@@ -19,8 +19,9 @@
 /* App home: two big game cards on the bay blue, records under each, install button when the phone allows it. */
 :root { --ink: #14284a; --sand: #faf6ef; --sun: #f08a1c; --sea: #0b6a80; --muted: #4c5b70; --display: "Fraunces", Georgia, serif; --body: "Figtree", -apple-system, "Segoe UI", sans-serif; color-scheme: light; }
 * { box-sizing: border-box; }
+html { background: #0b6a80; }
 html, body { margin: 0; min-height: 100%; }
-body { background: linear-gradient(180deg, #14284a 0%, #0b6a80 70%, #e9d3a0 70%, #e9d3a0 100%) fixed; color: #fff; font-family: var(--body); padding: calc(18px + env(safe-area-inset-top, 0px)) 16px calc(24px + env(safe-area-inset-bottom, 0px)); }
+body { min-height: 100vh; min-height: 100svh; background: linear-gradient(180deg, #14284a 0%, #0b6a80 100%); color: #fff; font-family: var(--body); padding: calc(18px + env(safe-area-inset-top, 0px)) 16px calc(24px + env(safe-area-inset-bottom, 0px)); }
 .wrap { max-width: 760px; margin: 0 auto; display: grid; gap: 18px; }
 header { text-align: center; display: grid; gap: 6px; }
 .brand { margin: 0; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; font-size: .78rem; color: #ffd59a; }
@@ -41,7 +42,7 @@ h1 em { color: #ffd59a; }
 .hint { margin: 0; font-size: .85rem; color: rgba(255,255,255,.88); max-width: 34rem; }
 .hint[hidden], .btn[hidden] { display: none; }
 footer { text-align: center; }
-footer a { color: var(--ink); font-weight: 800; }
+footer a { color: #fff; font-weight: 800; }
 </style>
 </head>
 <body>
