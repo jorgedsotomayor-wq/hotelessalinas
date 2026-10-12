@@ -60,14 +60,14 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
 </header>
 
 <main class="stage" id="stage">
-  <canvas id="game" role="img" aria-label="Juego de correr: un niño corre por Salinas frente a los Hoteles Salinas y salta obstáculos."></canvas>
+  <canvas id="game" role="img" aria-label="Juego de correr: Jorge Alberto corre por Salinas frente a los Hoteles Salinas y salta obstáculos."></canvas>
   <p class="tap-hint" aria-hidden="true">Toca en cualquier parte para saltar</p>
 
   <div class="overlay" id="start">
     <div class="card">
       <h1>A una cuadra <em>del mar</em></h1>
-      <p>Corre por Salinas, frente al Hotel Salinas, el Costa Azul y Suite Salinas. Cada vez va más rápido. ¿Hasta dónde llegas?</p>
-      <div class="how"><span>Toca para saltar</span><span>Mantén para saltar más alto</span><span>Pasa por debajo de las gaviotas</span><span>Conchas Spondylus: +10</span></div>
+      <p>Corre con <b>Jorge Alberto</b> por Salinas, frente al Hotel Salinas, el Costa Azul y Suite Salinas. Cada vez va más rápido. ¿Hasta dónde llegas?</p>
+      <div class="how"><span>Toca para saltar</span><span>Mantén para saltar más alto</span><span>Las gaviotas vuelan alto: pasa por debajo sin saltar</span><span>Conchas Spondylus: +10</span></div>
       <button class="btn btn-sun" type="button" id="go">¡A correr!</button>
       <a class="back" href="../">Ver los hoteles</a>
     </div>
@@ -106,6 +106,14 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
   ["sprite-hotel-salinas", "sprite-costa-azul", "sprite-suite-salinas", "sprite-casas"].forEach(function (n) {
     var im = new Image(); im.onload = function () { if (state !== "run") draw(); }; im.src = "img/" + n + ".png"; IMG[n] = im;
   });
+  // obstacles: 2D drawings made with ChatGPT. h = drawn height, a = width / height of the drawing
+  var OBS = {
+    umbrella: { h: 80, a: 0.97 }, banana: { h: 34, a: 2.54 }, cart: { h: 62, a: 0.755 }, castle: { h: 46, a: 1.14 },
+    woman: { h: 78, a: 0.483 }, man: { h: 80, a: 0.435 }, surf: { h: 82, a: 0.303 }, ball: { h: 32, a: 0.99 },
+    cooler: { h: 36, a: 1.52 }, gull: { h: 34, a: 0.9 }
+  };
+  Object.keys(OBS).forEach(function (k) { var im = new Image(); im.onload = function () { if (state !== "run") draw(); }; im.src = "img/ob-" + k + ".png"; OBS[k].img = im; });
+  function mk(k) { var d = OBS[k]; return { k: k, h: d.h, w: Math.round(d.h * d.a) }; }
   var KID = new Image(); KID.onload = function () { if (state !== "run") draw(); }; KID.src = "img/nino.png";   // 4 running poses + 1 jump pose
   // the street, in background units: hotel, houses, hotel, houses, hotel... repeats
   var STREET = [
@@ -151,7 +159,7 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
     reset(); state = "run"; $("start").hidden = true; $("end").hidden = true;
     last = performance.now(); requestAnimationFrame(loop);
   }
-  var NAMES = { umbrella: "con una sombrilla", banana: "con una banana", cart: "con el carrito de helados", castle: "con un castillo de arena", gull: "con una gaviota", person: "con un bañista", surf: "con una tabla de surf", ball: "con una pelota de playa", cooler: "con una hielera" };
+  var NAMES = { umbrella: "con una sombrilla", banana: "con una banana", cart: "con el carrito de helados", castle: "con un castillo de arena", gull: "con una gaviota", woman: "con una bañista", man: "con un bañista", surf: "con una tabla de surf", ball: "con una pelota de playa", cooler: "con una hielera" };
   function gameOver(what) {
     state = "over"; overAt = performance.now();
     var pts = Math.floor(score), isBest = pts > best;
@@ -169,11 +177,8 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
   $("again").addEventListener("click", start);
 
   /* ---------- update: faster and faster, like the dinosaur game ---------- */
-  var KINDS = [
-    { k: "umbrella", w: 34, h: 74 }, { k: "banana", w: 96, h: 30 }, { k: "cart", w: 54, h: 48 }, { k: "castle", w: 50, h: 40 },
-    { k: "person", w: 30, h: 76 }, { k: "surf", w: 24, h: 82 }, { k: "ball", w: 30, h: 30 }, { k: "cooler", w: 46, h: 34 }
-  ];
-  var SKIN = ["#8a5a3c", "#c68863", "#5e3a24", "#e0ac83"], CLOTH = ["#e8546b", "#2aa3a8", "#5b7fbf", "#f6c344", "#9b59b6"];
+  var KINDS = ["umbrella", "banana", "cart", "castle", "woman", "man", "surf", "ball", "cooler"];
+  var GULL_Y = GROUND - 152;   // high enough that Jorge Alberto runs under it without jumping
   function update(dt) {
     speed = Math.min(980, 380 + score * 0.16);
     world += speed * dt;
@@ -188,10 +193,11 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
     // spawn: gaps shrink as speed grows; gulls and pairs appear later
     if (world + W > nextObs) {
       var r = rng(), o;
-      if (score > 300 && r < 0.18) o = { k: "gull", w: 46, h: 22, y: GROUND - 84 };
-      else { var base = KINDS[Math.floor(rng() * KINDS.length)]; o = { k: base.k, w: base.w, h: base.h, c1: CLOTH[Math.floor(rng() * CLOTH.length)], c2: SKIN[Math.floor(rng() * SKIN.length)], ph: rng() * 6 }; }
+      if (score > 300 && r < 0.18) { o = mk("gull"); o.y = GULL_Y; }
+      else o = mk(KINDS[Math.floor(rng() * KINDS.length)]);
+      o.ph = rng() * 6;
       o.x = nextObs; obstacles.push(o);
-      if (score > 700 && o.k !== "gull" && o.k !== "banana" && rng() < 0.25) obstacles.push({ k: "castle", w: 50, h: 40, x: nextObs + o.w + 18 });
+      if (score > 700 && o.k !== "gull" && o.k !== "banana" && rng() < 0.25) { var c2 = mk("castle"); c2.x = nextObs + o.w + 18; c2.ph = 0; obstacles.push(c2); }
       nextObs += speed * (0.62 + rng() * 0.75) + 260;
     }
     if (world + W > nextItem) {
@@ -202,9 +208,9 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
     // collisions (a little forgiving)
     var kx = world + kid.x, kl = kx - 13, kr = kx + 13, kt = kid.y - 70, kb = kid.y - 2;
     for (var j = 0; j < obstacles.length; j++) {
-      var ob = obstacles[j], ol = ob.x + 7, or = ob.x + ob.w - 7;
-      var ot = ob.k === "gull" ? ob.y : GROUND - ob.h + 6, obb = ob.k === "gull" ? ob.y + ob.h : GROUND;
-      if (ob.k === "ball") { var by = ballY(ob); ot = by - ob.h + 4; obb = by - 4; }
+      var ob = obstacles[j], ol = ob.x + ob.w * 0.16, or = ob.x + ob.w * 0.84;
+      var ot = ob.k === "gull" ? gullY(ob) + ob.h * 0.25 : GROUND - ob.h * 0.9, obb = ob.k === "gull" ? gullY(ob) + ob.h * 0.8 : GROUND;
+      if (ob.k === "ball") { var by = ballY(ob); ot = by - ob.h * 0.85; obb = by - 3; }
       if (kr > ol && kl < or && kb > ot && kt < obb) { gameOver(ob.k); return; }
     }
     items.forEach(function (it) { if (it.got) return; var dx = kx - it.x, dy = (kid.y - 34) - it.y; if (dx * dx + dy * dy < 34 * 34) { it.got = true; shellPts += 10; } });
@@ -268,55 +274,24 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
     rect(0, GROUND, W, H - GROUND, "#8f99a4");
     ctx.fillStyle = "#ffffff"; for (var i = 0; i < 20; i++) { var x = i * 120 - ((world || 0) % 120); ctx.fillRect(x, GROUND + 36, 60, 6); }
   }
-  function drawObstacle(o) {
-    var x = o.x - world, b = GROUND;
-    if (o.k === "umbrella") {
-      rect(x + 15, b - 70, 4, 70, "#14284a");
-      var cols = ["#e8546b", "#f6c344", "#2aa3a8", "#f08a1c"]; ctx.fillStyle = cols[Math.floor(o.x) % 4];
-      ctx.beginPath(); ctx.moveTo(x - 18, b - 58); ctx.quadraticCurveTo(x + 17, b - 100, x + 52, b - 58); ctx.closePath(); ctx.fill();
-    } else if (o.k === "banana") {
-      rr(x, b - 30, o.w, 26, 13, "#ffd43b"); rr(x + 4, b - 14, o.w - 8, 10, 5, "#e8546b");
-      ctx.fillStyle = "#14284a"; ctx.beginPath(); ctx.arc(x + o.w - 16, b - 21, 3, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = "#ffd43b"; ctx.beginPath(); ctx.moveTo(x + 6, b - 26); ctx.lineTo(x - 8, b - 46); ctx.lineTo(x + 16, b - 28); ctx.fill();
-    } else if (o.k === "cart") {
-      rr(x, b - 40, o.w, 30, 6, "#ffffff"); rect(x, b - 26, o.w, 6, "#f08a1c");
-      ctx.fillStyle = "#14284a"; ctx.beginPath(); ctx.arc(x + 12, b - 6, 6, 0, Math.PI * 2); ctx.arc(x + o.w - 12, b - 6, 6, 0, Math.PI * 2); ctx.fill();
-      rect(x + o.w / 2 - 2, b - 62, 3, 22, "#14284a");
-      ctx.fillStyle = "#e8546b"; ctx.beginPath(); ctx.moveTo(x - 4, b - 58); ctx.quadraticCurveTo(x + o.w / 2, b - 80, x + o.w + 4, b - 58); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = "#14284a"; ctx.font = "800 9px Figtree, sans-serif"; ctx.fillText("HELADOS", x + 6, b - 30);
-    } else if (o.k === "castle") {
-      ctx.fillStyle = "#e2b86b"; ctx.fillRect(x, b - 26, o.w, 26); ctx.fillRect(x + 6, b - 40, 14, 14); ctx.fillRect(x + 30, b - 40, 14, 14);
-      ctx.fillStyle = "#e8546b"; ctx.beginPath(); ctx.moveTo(x + 13, b - 40); ctx.lineTo(x + 13, b - 54); ctx.lineTo(x + 24, b - 49); ctx.closePath(); ctx.fill();
-    } else if (o.k === "person" || o.k === "surf" || o.k === "ball" || o.k === "cooler") {
-      drawExtra(o, x, b);
-    } else if (o.k === "gull") {
-      var f = Math.sin(performance.now() / 90 + o.x) * 6, y = o.y + 10;
-      ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 5; ctx.lineCap = "round";
-      ctx.beginPath(); ctx.moveTo(x, y - f); ctx.quadraticCurveTo(x + 12, y - 10, x + 23, y); ctx.quadraticCurveTo(x + 34, y - 10, x + 46, y - f); ctx.stroke();
-      ctx.strokeStyle = "#14284a"; ctx.lineWidth = 1.5; ctx.stroke();
-      ctx.fillStyle = "#f08a1c"; ctx.beginPath(); ctx.moveTo(x + 21, y + 1); ctx.lineTo(x + 15, y + 4); ctx.lineTo(x + 21, y + 4); ctx.fill();
-    }
-  }
   function ballY(o) { return GROUND - Math.abs(Math.sin(performance.now() / 260 + o.ph)) * 70; }
-  function drawExtra(o, x, b) {
-    if (o.k === "person") {                       // a beach-goer with a towel
-      ctx.strokeStyle = o.c2; ctx.lineWidth = 6; ctx.lineCap = "round";
-      ctx.beginPath(); ctx.moveTo(x + 10, b - 26); ctx.lineTo(x + 8, b - 2); ctx.moveTo(x + 20, b - 26); ctx.lineTo(x + 22, b - 2); ctx.stroke();
-      rr(x + 4, b - 54, 22, 30, 7, o.c1);
-      ctx.beginPath(); ctx.moveTo(x + 5, b - 50); ctx.lineTo(x - 2, b - 32); ctx.moveTo(x + 25, b - 50); ctx.lineTo(x + 32, b - 34); ctx.stroke();
-      ctx.fillStyle = o.c2; ctx.beginPath(); ctx.arc(x + 15, b - 64, 10, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = "#14284a"; ctx.fillRect(x + 7, b - 68, 16, 4);                 // sunglasses
-      rr(x + 18, b - 48, 8, 26, 3, "#ffffff"); rect(x + 18, b - 40, 8, 4, "#f08a1c");  // towel
-    } else if (o.k === "surf") {                  // surfboard standing in the sand
-      ctx.fillStyle = o.c1; ctx.beginPath(); ctx.ellipse(x + 12, b - 41, 12, 41, 0, 0, Math.PI * 2); ctx.fill();
-      rect(x + 10, b - 80, 4, 76, "rgba(255,255,255,.8)");
-    } else if (o.k === "ball") {                  // bouncing beach ball
-      var y = ballY(o) - 15;
-      ctx.fillStyle = "rgba(0,0,0,.12)"; ctx.beginPath(); ctx.ellipse(x + 15, b + 2, 12, 4, 0, 0, Math.PI * 2); ctx.fill();
-      ["#e8546b", "#ffffff", "#2aa3a8", "#f6c344"].forEach(function (c, i) { ctx.fillStyle = c; ctx.beginPath(); ctx.moveTo(x + 15, y); ctx.arc(x + 15, y, 15, i * Math.PI / 2 + performance.now() / 300, (i + 1) * Math.PI / 2 + performance.now() / 300); ctx.closePath(); ctx.fill(); });
-    } else if (o.k === "cooler") {                // hielera
-      rr(x, b - 30, o.w, 30, 5, "#2f6fc9"); rr(x - 2, b - 34, o.w + 4, 8, 4, "#ffffff"); rect(x + 14, b - 40, 18, 4, "#ffffff");
+  function gullY(o) { return o.y + Math.sin(performance.now() / 300 + o.ph) * 5; }
+  function drawObstacle(o) {
+    var x = o.x - world, d = OBS[o.k], im = d.img;
+    if (x > W + 40 || x + o.w < -40) return;
+    if (o.k === "gull") {                         // flies high above the path, wings flapping
+      var gy = gullY(o), flap = 0.85 + Math.abs(Math.sin(performance.now() / 110 + o.ph)) * 0.15;
+      if (im.complete && im.naturalWidth) { ctx.save(); ctx.translate(x + o.w / 2, gy + o.h / 2); ctx.scale(1, flap); ctx.drawImage(im, -o.w / 2, -o.h / 2, o.w, o.h); ctx.restore(); }
+      return;
     }
+    var bottom = o.k === "ball" ? ballY(o) : GROUND + 3, lift = GROUND + 3 - bottom;
+    // shadow on the path, so every obstacle stands right in Jorge Alberto's lane
+    ctx.fillStyle = "rgba(20,40,74,.22)"; ctx.beginPath();
+    ctx.ellipse(x + o.w / 2, GROUND + 3, Math.max(8, o.w * 0.55 - lift * 0.12), 5, 0, 0, Math.PI * 2); ctx.fill();
+    if (im.complete && im.naturalWidth) {
+      if (o.k === "ball") { ctx.save(); ctx.translate(x + o.w / 2, bottom - o.h / 2); ctx.rotate(performance.now() / 300 + o.ph); ctx.drawImage(im, -o.w / 2, -o.h / 2, o.w, o.h); ctx.restore(); }
+      else ctx.drawImage(im, x, bottom - o.h, o.w, o.h);
+    } else rr(x, bottom - o.h, o.w, o.h, 6, "#f08a1c");
   }
   function drawShell(it) {
     var x = it.x - world, y = it.y + Math.sin(performance.now() / 250 + it.x) * 4;
@@ -377,7 +352,7 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
   resize(); reset();
   if (location.hash === "#muestra") {             // preview of every obstacle, for checking the drawings
     state = "demo"; $("start").hidden = true; world = 0; score = 200;
-    KINDS.concat([{ k: "gull", w: 46, h: 22, y: GROUND - 84 }]).forEach(function (k, i) { obstacles.push({ k: k.k, w: k.w, h: k.h, y: k.y, x: 210 + i * 105, c1: CLOTH[i % CLOTH.length], c2: SKIN[i % SKIN.length], ph: i }); });
+    var px = 200; KINDS.concat(["gull"]).forEach(function (k, i) { var o = mk(k); o.x = px; o.ph = i; if (k === "gull") { o.y = GULL_Y; o.x = 120; } else px += o.w + 34; obstacles.push(o); });
   }
   draw();
 })();
