@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>A una cuadra del mar · Hoteles Salinas</title>
+<meta name="description" content="Juego: corre por Salinas frente a los Hoteles Salinas, salta sombrillas y bananas, y supera tu récord.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,500..700,0..100;1,9..144,500..700,0..100&family=Figtree:wght@500;700;800&display=swap">
+<style>
+/* Layout: a landscape game band (canvas) centered on navy, DOM overlays for start and game over. Same palette as the hotel site. */
+:root {
+  --ink: #14284a; --sand: #faf6ef; --sun: #f08a1c; --ocean: #0b6a80; --wa: #0f7a40; --paper: #ffffff; --muted: #4c5b70;
+  --display: "Fraunces", Georgia, serif; --body: "Figtree", -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--ink); color: var(--ink); font-family: var(--body); overscroll-behavior: none; }
+body { display: flex; flex-direction: column; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 10px; background: var(--ink); color: #fff; }
+.top a { color: #fff; text-decoration: none; font-family: var(--display); font-weight: 600; font-size: 1.1rem; display: flex; align-items: center; gap: .5rem; min-height: 44px; }
+.top a svg { width: 22px; height: 22px; }
+.top .hi { font-weight: 800; font-size: .9rem; color: #ffd59a; }
+.stage { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; touch-action: manipulation; user-select: none; -webkit-user-select: none; background: linear-gradient(180deg, #14284a, #0f2e4f); }
+canvas { display: block; width: 100%; flex: none; cursor: pointer; }
+.tap-hint { text-align: center; color: rgba(255,255,255,.75); font-weight: 700; font-size: .9rem; padding: 14px 16px 0; }
+@media (min-aspect-ratio: 1/1) { .tap-hint { display: none; } }
+.overlay { position: absolute; inset: 0; display: grid; place-items: center; padding: 16px; background: rgba(20,40,74,.6); overflow-y: auto; }
+.overlay[hidden] { display: none !important; }
+.card { background: var(--sand); border-radius: 24px; padding: clamp(1.3rem, 4vw, 2rem); max-width: 440px; width: 100%; text-align: center; display: grid; gap: .8rem; box-shadow: 0 30px 80px rgba(0,0,0,.35); }
+.card h1, .card h2 { font-family: var(--display); font-weight: 600; margin: 0; line-height: 1.05; font-variation-settings: "SOFT" 60; }
+.card h1 { font-size: clamp(2rem, 7vw, 2.7rem); }
+.card h2 { font-size: clamp(1.6rem, 6vw, 2.1rem); }
+.card em { color: var(--ocean); }
+.card p { margin: 0; color: var(--muted); line-height: 1.5; }
+.how { display: flex; justify-content: center; gap: .45rem; flex-wrap: wrap; font-size: .88rem; font-weight: 700; color: var(--ink); }
+.how span { background: #fde7c9; border-radius: 999px; padding: .35rem .8rem; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 50px; padding: 0 1.3rem; border-radius: 999px; border: 0; font: inherit; font-weight: 800; font-size: 1.02rem; cursor: pointer; text-decoration: none; }
+.btn-sun { background: var(--sun); color: var(--ink); }
+.btn-wa { background: var(--wa); color: #fff; }
+.btn-line { background: transparent; color: var(--ink); border: 2px solid var(--ink); }
+.btn svg { width: 20px; height: 20px; fill: currentColor; }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.stats div { background: #fff; border-radius: 14px; padding: .7rem; }
+.stats b { display: block; font-family: var(--display); font-size: 1.9rem; color: var(--ink); font-variant-numeric: tabular-nums; }
+.stats small { color: var(--muted); font-weight: 700; }
+.contest { background: #fde7c9; border-radius: 14px; padding: .8rem 1rem; text-align: left; }
+.contest p { color: var(--ink); font-size: .92rem; }
+.row { display: grid; gap: .55rem; }
+.back { font-weight: 700; color: var(--ocean); }
+:focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
+</style>
+</head>
+<body>
+<header class="top">
+  <a href="../"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="7" fill="#f08a1c"/><path d="M16 2v4M16 26v4M2 16h4M26 16h4M6 6l3 3M23 23l3 3M26 6l-3 3M9 23l-3 3" stroke="#f08a1c" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg>Hoteles Salinas</a>
+  <span class="hi" id="hi-top" aria-live="polite"></span>
+</header>
+
+<main class="stage" id="stage">
+  <canvas id="game" role="img" aria-label="Juego de correr: un niño corre por Salinas frente a los Hoteles Salinas y salta obstáculos."></canvas>
+  <p class="tap-hint" aria-hidden="true">Toca en cualquier parte para saltar</p>
+
+  <div class="overlay" id="start">
+    <div class="card">
+      <h1>A una cuadra <em>del mar</em></h1>
+      <p>Corre por Salinas, frente al Hotel Salinas, el Costa Azul y Suite Salinas. Cada vez va más rápido. ¿Hasta dónde llegas?</p>
+      <div class="how"><span>Toca para saltar</span><span>Mantén para saltar más alto</span><span>Pasa por debajo de las gaviotas</span><span>Conchas Spondylus: +10</span></div>
+      <button class="btn btn-sun" type="button" id="go">¡A correr!</button>
+      <a class="back" href="../">Ver los hoteles</a>
+    </div>
+  </div>
+
+  <div class="overlay" id="end" hidden>
+    <div class="card" role="dialog" aria-labelledby="end-title">
+      <h2 id="end-title">¡Ups! <em id="end-what">Chocaste</em></h2>
+      <div class="stats"><div><b id="end-score">0</b><small>puntos</small></div><div><b id="end-best">0</b><small id="end-best-label">tu récord</small></div></div>
+      <div class="contest"><p><b>Concurso del mes:</b> el mejor puntaje de cada mes gana un descuento en su estadía en Hoteles Salinas. Envía tu puntaje por WhatsApp con una captura de pantalla.</p></div>
+      <div class="row">
+        <a class="btn btn-wa" id="send" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg>Enviar mi puntaje</a>
+        <button class="btn btn-sun" type="button" id="again">Jugar otra vez</button>
+        <a class="btn btn-line" id="dare" href="#" target="_blank" rel="noopener">Retar a un amigo</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var WA = "593995755979";
+  var canvas = document.getElementById("game"), ctx = canvas.getContext("2d");
+  var $ = function (id) { return document.getElementById(id); };
+  var H = 400, W = 700, scale = 1, dpr = 1, GROUND = 318;
+  var state = "start", last = 0, overAt = 0;
+  var world, speed, score, shellPts, kid, obstacles, items, nextObs, nextItem, banner, bannerT, level, rng;
+  var best = 0;
+  try { best = parseInt(localStorage.getItem("hs-best-pts") || "0", 10) || 0; } catch (e) {}
+  function showBest() { $("hi-top").textContent = best ? "Récord: " + best : ""; }
+  showBest();
+
+  /* ---------- the three hotels and the houses (2D drawings made from the real photos) ---------- */
+  var IMG = {};
+  ["sprite-hotel-salinas", "sprite-costa-azul", "sprite-suite-salinas", "sprite-casas"].forEach(function (n) {
+    var im = new Image(); im.onload = function () { if (state !== "run") draw(); }; im.src = "img/" + n + ".png"; IMG[n] = im;
+  });
+  // the street, in background units: hotel, houses, hotel, houses, hotel... repeats
+  var STREET = [
+    { n: "sprite-hotel-salinas", h: 250, gap: 70 }, { n: "palm" }, { n: "sprite-casas", h: 120, gap: 90 },
+    { n: "sprite-costa-azul", h: 200, gap: 80 }, { n: "palm" }, { n: "tower" }, { n: "sprite-casas", h: 120, gap: 90 },
+    { n: "sprite-suite-salinas", h: 246, gap: 80 }, { n: "palm" }, { n: "sprite-casas", h: 120, gap: 140 }
+  ];
+
+  function resize() {
+    var st = $("stage").getBoundingClientRect();
+    var portrait = st.height > st.width;
+    canvas.style.height = Math.round(Math.min(st.height - (portrait ? 40 : 0), st.width * (portrait ? 0.88 : 0.62))) + "px";
+    var r = canvas.getBoundingClientRect();
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(r.width * dpr); canvas.height = Math.round(r.height * dpr);
+    scale = canvas.height / H; W = canvas.width / scale;
+  }
+  window.addEventListener("resize", function () { resize(); if (state !== "run") draw(); });
+
+  function seed(n) { return function () { n = (n * 16807) % 2147483647; return (n - 1) / 2147483646; }; }
+  function reset() {
+    rng = seed((Date.now() % 2147483646) + 1);
+    kid = { x: 110, y: GROUND, vy: 0, air: false, hold: false, step: 0 };
+    obstacles = []; items = []; world = 0; speed = 380; score = 0; shellPts = 0; level = 1; banner = ""; bannerT = 0;
+    nextObs = 900; nextItem = 600;
+  }
+
+  /* ---------- input: tap, click, space or arrow up ---------- */
+  function press() {
+    if (state === "run") { if (!kid.air) { kid.vy = -760; kid.air = true; kid.hold = true; } }
+    else if (state === "over" && performance.now() - overAt > 700) start();
+  }
+  function release() { if (!kid) return; kid.hold = false; if (kid.vy < -300) kid.vy = -300; }
+  $("stage").addEventListener("pointerdown", function (e) { if (e.target.closest("button, a")) return; if (state === "start") return; e.preventDefault(); press(); });
+  window.addEventListener("pointerup", release);
+  window.addEventListener("keydown", function (e) {
+    if (e.code === "Space" || e.code === "ArrowUp" || e.code === "KeyW") { if (state !== "start" && !(e.target.closest && e.target.closest("button, a"))) { e.preventDefault(); if (!e.repeat) press(); } }
+  });
+  window.addEventListener("keyup", function (e) { if (e.code === "Space" || e.code === "ArrowUp" || e.code === "KeyW") release(); });
+
+  /* ---------- flow ---------- */
+  function start() {
+    reset(); state = "run"; $("start").hidden = true; $("end").hidden = true;
+    last = performance.now(); requestAnimationFrame(loop);
+  }
+  var NAMES = { umbrella: "con una sombrilla", banana: "con una banana", cart: "con el carrito de helados", castle: "con un castillo de arena", gull: "con una gaviota", person: "con un bañista", surf: "con una tabla de surf", ball: "con una pelota de playa", cooler: "con una hielera" };
+  function gameOver(what) {
+    state = "over"; overAt = performance.now();
+    var pts = Math.floor(score), isBest = pts > best;
+    if (isBest) { best = pts; try { localStorage.setItem("hs-best-pts", String(best)); } catch (e) {} }
+    showBest();
+    $("end-what").textContent = "Chocaste " + (NAMES[what] || "");
+    $("end-score").textContent = pts; $("end-best").textContent = best;
+    $("end-best-label").textContent = isBest ? "¡nuevo récord!" : "tu récord";
+    $("send").href = "https://wa.me/" + WA + "?text=" + encodeURIComponent("Hola, hice " + pts + " puntos en «A una cuadra del mar» y quiero participar en el concurso del mes. (Adjunto mi captura)");
+    var url = location.href.split("#")[0];
+    $("dare").href = "https://wa.me/?text=" + encodeURIComponent("Hice " + pts + " puntos corriendo por Salinas frente a los Hoteles Salinas. ¿Me ganas? " + url);
+    setTimeout(function () { $("end").hidden = false; $("again").focus(); }, 650);
+  }
+  $("go").addEventListener("click", start);
+  $("again").addEventListener("click", start);
+
+  /* ---------- update: faster and faster, like the dinosaur game ---------- */
+  var KINDS = [
+    { k: "umbrella", w: 34, h: 74 }, { k: "banana", w: 96, h: 30 }, { k: "cart", w: 54, h: 48 }, { k: "castle", w: 50, h: 40 },
+    { k: "person", w: 30, h: 76 }, { k: "surf", w: 24, h: 82 }, { k: "ball", w: 30, h: 30 }, { k: "cooler", w: 46, h: 34 }
+  ];
+  var SKIN = ["#8a5a3c", "#c68863", "#5e3a24", "#e0ac83"], CLOTH = ["#e8546b", "#2aa3a8", "#5b7fbf", "#f6c344", "#9b59b6"];
+  function update(dt) {
+    speed = Math.min(980, 380 + score * 0.16);
+    world += speed * dt;
+    score = world / 12 + shellPts;
+    var lv = 1 + Math.floor(score / 500);
+    if (lv > level) { level = lv; banner = "¡Nivel " + lv + "!"; bannerT = 1.4; }
+    bannerT = Math.max(0, bannerT - dt);
+    kid.vy += (kid.hold && kid.vy < 0 ? 1650 : 2500) * dt;
+    kid.y += kid.vy * dt;
+    if (kid.y >= GROUND) { kid.y = GROUND; kid.vy = 0; kid.air = false; }
+    kid.step += speed * dt * 0.045;
+    // spawn: gaps shrink as speed grows; gulls and pairs appear later
+    if (world + W > nextObs) {
+      var r = rng(), o;
+      if (score > 300 && r < 0.18) o = { k: "gull", w: 46, h: 22, y: GROUND - 84 };
+      else { var base = KINDS[Math.floor(rng() * KINDS.length)]; o = { k: base.k, w: base.w, h: base.h, c1: CLOTH[Math.floor(rng() * CLOTH.length)], c2: SKIN[Math.floor(rng() * SKIN.length)], ph: rng() * 6 }; }
+      o.x = nextObs; obstacles.push(o);
+      if (score > 700 && o.k !== "gull" && o.k !== "banana" && rng() < 0.25) obstacles.push({ k: "castle", w: 50, h: 40, x: nextObs + o.w + 18 });
+      nextObs += speed * (0.62 + rng() * 0.75) + 260;
+    }
+    if (world + W > nextItem) {
+      var high = rng() < 0.5, n = 1 + Math.floor(rng() * 3);
+      for (var i = 0; i < n; i++) items.push({ x: nextItem + i * 44, y: GROUND - (high ? 150 : 72), got: false });
+      nextItem += 520 + rng() * 700;
+    }
+    // collisions (a little forgiving)
+    var kx = world + kid.x, kl = kx - 13, kr = kx + 13, kt = kid.y - 70, kb = kid.y - 2;
+    for (var j = 0; j < obstacles.length; j++) {
+      var ob = obstacles[j], ol = ob.x + 7, or = ob.x + ob.w - 7;
+      var ot = ob.k === "gull" ? ob.y : GROUND - ob.h + 6, obb = ob.k === "gull" ? ob.y + ob.h : GROUND;
+      if (ob.k === "ball") { var by = ballY(ob); ot = by - ob.h + 4; obb = by - 4; }
+      if (kr > ol && kl < or && kb > ot && kt < obb) { gameOver(ob.k); return; }
+    }
+    items.forEach(function (it) { if (it.got) return; var dx = kx - it.x, dy = (kid.y - 34) - it.y; if (dx * dx + dy * dy < 34 * 34) { it.got = true; shellPts += 10; } });
+    obstacles = obstacles.filter(function (o) { return o.x - world > -200; });
+    items = items.filter(function (it) { return it.x - world > -100; });
+  }
+
+  /* ---------- drawing ---------- */
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function mix(c1, c2, t) { var a = parseInt(c1.slice(1), 16), b = parseInt(c2.slice(1), 16);
+    return "rgb(" + Math.round(lerp(a >> 16, b >> 16, t)) + "," + Math.round(lerp(a >> 8 & 255, b >> 8 & 255, t)) + "," + Math.round(lerp(a & 255, b & 255, t)) + ")"; }
+  function rect(x, y, w, h, c) { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); }
+  function rr(x, y, w, h, r, c) { ctx.fillStyle = c; ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); ctx.fill(); }
+
+  function drawSky() {
+    var t = Math.min(1, (score || 0) / 3000);                    // day slowly turns to sunset
+    var g = ctx.createLinearGradient(0, 0, 0, GROUND);
+    g.addColorStop(0, mix("#7fd0ef", "#3a4f8f", t)); g.addColorStop(1, mix("#d8f1f7", "#ffb36b", t));
+    rect(0, 0, W, GROUND, g);
+    ctx.fillStyle = mix("#ffd65a", "#ff7a3d", t); ctx.beginPath(); ctx.arc(W - 90, lerp(70, 200, t), 34, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255," + (0.85 - t * 0.4) + ")";
+    for (var i = 0; i < 4; i++) { var cx = ((i * 260 - (world || 0) * 0.04) % (W + 300) + W + 300) % (W + 300) - 150; ctx.beginPath(); ctx.ellipse(cx, 58 + i * 16, 46, 14, 0, 0, Math.PI * 2); ctx.ellipse(cx + 30, 52 + i * 16, 30, 12, 0, 0, Math.PI * 2); ctx.fill(); }
+  }
+  function drawSkyline() {
+    var off = (world || 0) * 0.15;
+    ctx.globalAlpha = 0.55;
+    for (var i = 0; i < 40; i++) { var x = i * 120 - (off % 120) - 60, h = 80 + ((i * 37) % 5) * 20; rect(x, GROUND - 26 - h - 60, 74, h + 60, "#eef3f8"); }
+    ctx.globalAlpha = 1;
+  }
+  function palm(x, base, s) {
+    ctx.strokeStyle = "#8a5a2b"; ctx.lineWidth = 6 * s; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(x, base); ctx.quadraticCurveTo(x + 8 * s, base - 50 * s, x + 4 * s, base - 110 * s); ctx.stroke();
+    ctx.strokeStyle = "#2e9b5f"; ctx.lineWidth = 7 * s;
+    [[-44, -8], [44, -8], [-30, 18], [32, 18], [0, -30]].forEach(function (p) { ctx.beginPath(); ctx.moveTo(x + 4 * s, base - 110 * s); ctx.quadraticCurveTo(x + (4 + p[0] / 2) * s, base - (126 + p[1] / 3) * s, x + (4 + p[0]) * s, base - (110 - p[1]) * s); ctx.stroke(); });
+  }
+  function streetWidth(it) {
+    if (it.n === "palm") return 90;
+    if (it.n === "tower") return 120;
+    var im = IMG[it.n]; var w = im && im.naturalWidth ? it.h * im.naturalWidth / im.naturalHeight : it.h * 0.9;
+    return w + (it.gap || 60);
+  }
+  function drawStreet() {
+    var par = 0.55, off = (world || 0) * par, base = GROUND - 24;
+    var cycle = 0; STREET.forEach(function (it) { cycle += streetWidth(it); });
+    var x = 30 - (off % cycle) - (off >= cycle ? 0 : 0);
+    if (x > 0) x -= cycle;
+    for (var pass = 0; x < W + 50 && pass < 6; pass++) {
+      for (var i = 0; i < STREET.length; i++) {
+        var it = STREET[i], w = streetWidth(it);
+        if (x + w > -60 && x < W + 60) {
+          if (it.n === "palm") palm(x + 40, base + 2, 0.95);
+          else if (it.n === "tower") { rect(x + 10, base - 200, 96, 200, "#f6f8fb"); ctx.fillStyle = "#9cc3d8"; for (var r2 = 0; r2 < 9; r2++) for (var c = 0; c < 3; c++) ctx.fillRect(x + 22 + c * 26, base - 188 + r2 * 21, 14, 9); }
+          else { var im = IMG[it.n]; if (im && im.complete && im.naturalWidth) ctx.drawImage(im, x, base - it.h, it.h * im.naturalWidth / im.naturalHeight, it.h); }
+        }
+        x += w;
+      }
+    }
+  }
+  function drawGround() {
+    rect(0, GROUND - 26, W, 26, "#d9d4c8");
+    rect(0, GROUND, W, H - GROUND, "#8f99a4");
+    ctx.fillStyle = "#ffffff"; for (var i = 0; i < 20; i++) { var x = i * 120 - ((world || 0) % 120); ctx.fillRect(x, GROUND + 36, 60, 6); }
+  }
+  function drawObstacle(o) {
+    var x = o.x - world, b = GROUND;
+    if (o.k === "umbrella") {
+      rect(x + 15, b - 70, 4, 70, "#14284a");
+      var cols = ["#e8546b", "#f6c344", "#2aa3a8", "#f08a1c"]; ctx.fillStyle = cols[Math.floor(o.x) % 4];
+      ctx.beginPath(); ctx.moveTo(x - 18, b - 58); ctx.quadraticCurveTo(x + 17, b - 100, x + 52, b - 58); ctx.closePath(); ctx.fill();
+    } else if (o.k === "banana") {
+      rr(x, b - 30, o.w, 26, 13, "#ffd43b"); rr(x + 4, b - 14, o.w - 8, 10, 5, "#e8546b");
+      ctx.fillStyle = "#14284a"; ctx.beginPath(); ctx.arc(x + o.w - 16, b - 21, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#ffd43b"; ctx.beginPath(); ctx.moveTo(x + 6, b - 26); ctx.lineTo(x - 8, b - 46); ctx.lineTo(x + 16, b - 28); ctx.fill();
+    } else if (o.k === "cart") {
+      rr(x, b - 40, o.w, 30, 6, "#ffffff"); rect(x, b - 26, o.w, 6, "#f08a1c");
+      ctx.fillStyle = "#14284a"; ctx.beginPath(); ctx.arc(x + 12, b - 6, 6, 0, Math.PI * 2); ctx.arc(x + o.w - 12, b - 6, 6, 0, Math.PI * 2); ctx.fill();
+      rect(x + o.w / 2 - 2, b - 62, 3, 22, "#14284a");
+      ctx.fillStyle = "#e8546b"; ctx.beginPath(); ctx.moveTo(x - 4, b - 58); ctx.quadraticCurveTo(x + o.w / 2, b - 80, x + o.w + 4, b - 58); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "#14284a"; ctx.font = "800 9px Figtree, sans-serif"; ctx.fillText("HELADOS", x + 6, b - 30);
+    } else if (o.k === "castle") {
+      ctx.fillStyle = "#e2b86b"; ctx.fillRect(x, b - 26, o.w, 26); ctx.fillRect(x + 6, b - 40, 14, 14); ctx.fillRect(x + 30, b - 40, 14, 14);
+      ctx.fillStyle = "#e8546b"; ctx.beginPath(); ctx.moveTo(x + 13, b - 40); ctx.lineTo(x + 13, b - 54); ctx.lineTo(x + 24, b - 49); ctx.closePath(); ctx.fill();
+    } else if (o.k === "person" || o.k === "surf" || o.k === "ball" || o.k === "cooler") {
+      drawExtra(o, x, b);
+    } else if (o.k === "gull") {
+      var f = Math.sin(performance.now() / 90 + o.x) * 6, y = o.y + 10;
+      ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 5; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(x, y - f); ctx.quadraticCurveTo(x + 12, y - 10, x + 23, y); ctx.quadraticCurveTo(x + 34, y - 10, x + 46, y - f); ctx.stroke();
+      ctx.strokeStyle = "#14284a"; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.fillStyle = "#f08a1c"; ctx.beginPath(); ctx.moveTo(x + 21, y + 1); ctx.lineTo(x + 15, y + 4); ctx.lineTo(x + 21, y + 4); ctx.fill();
+    }
+  }
+  function ballY(o) { return GROUND - Math.abs(Math.sin(performance.now() / 260 + o.ph)) * 70; }
+  function drawExtra(o, x, b) {
+    if (o.k === "person") {                       // a beach-goer with a towel
+      ctx.strokeStyle = o.c2; ctx.lineWidth = 6; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(x + 10, b - 26); ctx.lineTo(x + 8, b - 2); ctx.moveTo(x + 20, b - 26); ctx.lineTo(x + 22, b - 2); ctx.stroke();
+      rr(x + 4, b - 54, 22, 30, 7, o.c1);
+      ctx.beginPath(); ctx.moveTo(x + 5, b - 50); ctx.lineTo(x - 2, b - 32); ctx.moveTo(x + 25, b - 50); ctx.lineTo(x + 32, b - 34); ctx.stroke();
+      ctx.fillStyle = o.c2; ctx.beginPath(); ctx.arc(x + 15, b - 64, 10, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#14284a"; ctx.fillRect(x + 7, b - 68, 16, 4);                 // sunglasses
+      rr(x + 18, b - 48, 8, 26, 3, "#ffffff"); rect(x + 18, b - 40, 8, 4, "#f08a1c");  // towel
+    } else if (o.k === "surf") {                  // surfboard standing in the sand
+      ctx.fillStyle = o.c1; ctx.beginPath(); ctx.ellipse(x + 12, b - 41, 12, 41, 0, 0, Math.PI * 2); ctx.fill();
+      rect(x + 10, b - 80, 4, 76, "rgba(255,255,255,.8)");
+    } else if (o.k === "ball") {                  // bouncing beach ball
+      var y = ballY(o) - 15;
+      ctx.fillStyle = "rgba(0,0,0,.12)"; ctx.beginPath(); ctx.ellipse(x + 15, b + 2, 12, 4, 0, 0, Math.PI * 2); ctx.fill();
+      ["#e8546b", "#ffffff", "#2aa3a8", "#f6c344"].forEach(function (c, i) { ctx.fillStyle = c; ctx.beginPath(); ctx.moveTo(x + 15, y); ctx.arc(x + 15, y, 15, i * Math.PI / 2 + performance.now() / 300, (i + 1) * Math.PI / 2 + performance.now() / 300); ctx.closePath(); ctx.fill(); });
+    } else if (o.k === "cooler") {                // hielera
+      rr(x, b - 30, o.w, 30, 5, "#2f6fc9"); rr(x - 2, b - 34, o.w + 4, 8, 4, "#ffffff"); rect(x + 14, b - 40, 18, 4, "#ffffff");
+    }
+  }
+  function drawShell(it) {
+    var x = it.x - world, y = it.y + Math.sin(performance.now() / 250 + it.x) * 4;
+    ctx.fillStyle = "#e85d2c"; ctx.beginPath(); ctx.moveTo(x, y + 12);
+    for (var i = 0; i <= 6; i++) { var a = Math.PI + i * Math.PI / 6; ctx.lineTo(x + Math.cos(a) * 15, y + Math.sin(a) * 13); }
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = "#ffb08a"; ctx.lineWidth = 1.5; for (var j = 1; j < 6; j++) { var a2 = Math.PI + j * Math.PI / 6; ctx.beginPath(); ctx.moveTo(x, y + 10); ctx.lineTo(x + Math.cos(a2) * 13, y + Math.sin(a2) * 11); ctx.stroke(); }
+  }
+  function drawKid() {
+    var x = kid.x, y = kid.y, s = Math.sin(kid.step), hit = state === "over";
+    ctx.save();
+    if (hit) { ctx.translate(x, y - 30); ctx.rotate(-0.5); ctx.translate(-x, -(y - 30)); }
+    ctx.fillStyle = "rgba(0,0,0,.15)"; ctx.beginPath(); ctx.ellipse(x, GROUND + 2, Math.max(6, 18 - (GROUND - y) / 12), 5, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = "#8a5a3c"; ctx.lineWidth = 6; ctx.lineCap = "round";
+    var l1 = kid.air ? 0.6 : s * 0.8, l2 = kid.air ? -0.4 : -s * 0.8;
+    [l1, l2].forEach(function (l) { ctx.beginPath(); ctx.moveTo(x, y - 22); ctx.lineTo(x + Math.sin(l) * 14, y - 2); ctx.stroke(); });
+    rr(x - 12, y - 44, 24, 24, 7, "#2aa3a8"); rect(x - 12, y - 26, 24, 8, "#f08a1c");
+    ctx.beginPath(); ctx.moveTo(x - 8, y - 38); ctx.lineTo(x - 8 - Math.cos(kid.step) * 10, y - 26); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x + 8, y - 38); ctx.lineTo(x + 8 + Math.cos(kid.step) * 10, y - 26); ctx.stroke();
+    ctx.fillStyle = "#8a5a3c"; ctx.beginPath(); ctx.arc(x, y - 54, 11, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#ffd43b"; ctx.beginPath(); ctx.ellipse(x, y - 62, 15, 5, 0, 0, Math.PI * 2); ctx.fill(); rr(x - 8, y - 72, 16, 10, 5, "#ffd43b");
+    ctx.fillStyle = "#14284a"; ctx.beginPath(); ctx.arc(x + 5, y - 55, 1.8, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+  function pad(n) { return ("00000" + Math.floor(n)).slice(-5); }
+  function drawHud() {
+    var txt = "PTS " + pad(score) + (best ? "   RÉCORD " + pad(best) : "");
+    ctx.font = "800 15px Figtree, sans-serif"; var tw = ctx.measureText(txt).width;
+    rr(W - tw - 36, 12, tw + 24, 32, 16, "rgba(20,40,74,.8)");
+    ctx.fillStyle = "#ffffff"; ctx.fillText(txt, W - tw - 24, 33);
+    if (bannerT > 0) {
+      ctx.globalAlpha = Math.min(1, bannerT * 2); ctx.font = "700 34px Fraunces, Georgia, serif";
+      var bw = ctx.measureText(banner).width; rr(W / 2 - bw / 2 - 18, 70, bw + 36, 50, 25, "#f08a1c");
+      ctx.fillStyle = "#14284a"; ctx.fillText(banner, W / 2 - bw / 2, 106); ctx.globalAlpha = 1;
+    }
+  }
+  function draw() {
+    ctx.setTransform(scale, 0, 0, scale, 0, 0);
+    drawSky(); drawSkyline(); drawStreet(); drawGround();
+    if (items) items.forEach(function (it) { if (!it.got) drawShell(it); });
+    if (obstacles) obstacles.forEach(drawObstacle);
+    if (kid) drawKid();
+    if (state !== "start") drawHud();
+  }
+  function loop(now) {
+    if (state !== "run") { draw(); return; }
+    var dt = Math.min(0.034, (now - last) / 1000); last = now;
+    update(dt); draw();
+    if (state === "run") requestAnimationFrame(loop);
+  }
+  resize(); reset();
+  if (location.hash === "#muestra") {             // preview of every obstacle, for checking the drawings
+    state = "demo"; $("start").hidden = true; world = 0; score = 200;
+    KINDS.concat([{ k: "gull", w: 46, h: 22, y: GROUND - 84 }]).forEach(function (k, i) { obstacles.push({ k: k.k, w: k.w, h: k.h, y: k.y, x: 210 + i * 105, c1: CLOTH[i % CLOTH.length], c2: SKIN[i % SKIN.length], ph: i }); });
+  }
+  draw();
+})();
+</script>
+</body>
+</html>
