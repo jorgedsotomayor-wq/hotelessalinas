@@ -105,7 +105,8 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
 
   /* ---------- the three hotels and the houses (2D drawings made from the real photos) ---------- */
   var IMG = {};
-  ["sprite-hotel-salinas", "sprite-costa-azul", "sprite-suite-salinas", "sprite-casas"].forEach(function (n) {
+  ["sprite-hotel-salinas", "sprite-costa-azul", "sprite-suite-salinas", "sprite-casas",
+   "calle", "palma-1", "palma-2", "palma-3", "nube-1", "nube-2", "nube-3", "sol", "skyline", "edificio-1", "edificio-2", "edificio-3"].forEach(function (n) {
     var im = new Image(); im.onload = function () { if (state !== "run") draw(); }; im.src = "img/" + n + ".png"; IMG[n] = im;
   });
   // obstacles: 2D drawings made with ChatGPT. h = drawn height, a = width / height of the drawing
@@ -120,8 +121,8 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
   // the street, in background units: hotel, houses, hotel, houses, hotel... repeats
   var STREET = [
     { n: "sprite-hotel-salinas", h: 250, gap: 70 }, { n: "palm" }, { n: "sprite-casas", h: 120, gap: 90 },
-    { n: "sprite-costa-azul", h: 165, gap: 80 }, { n: "palm" }, { n: "tower" }, { n: "sprite-casas", h: 120, gap: 90 },
-    { n: "sprite-suite-salinas", h: 246, gap: 80 }, { n: "palm" }, { n: "sprite-casas", h: 120, gap: 140 }
+    { n: "sprite-costa-azul", h: 165, gap: 80 }, { n: "palm" }, { n: "edificio-1", h: 210, gap: 40 }, { n: "sprite-casas", h: 120, gap: 90 },
+    { n: "sprite-suite-salinas", h: 246, gap: 80 }, { n: "palm" }, { n: "edificio-3", h: 180, gap: 50 }, { n: "sprite-casas", h: 120, gap: 140 }
   ];
 
   function resize() {
@@ -227,30 +228,49 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
   function rect(x, y, w, h, c) { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); }
   function rr(x, y, w, h, r, c) { ctx.fillStyle = c; ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); ctx.fill(); }
 
+  function ok(im) { return im && im.complete && im.naturalWidth > 0; }
+  // repeat a strip across the screen; every other copy is mirrored so the joins always match
+  function tileRow(im, y, h, par) {
+    var w = h * im.naturalWidth / im.naturalHeight, off = (world || 0) * par, x = -(off % (2 * w));
+    for (var k = 0; x < W; x += w, k++) {
+      if (k % 2) { ctx.save(); ctx.translate(x + w, y); ctx.scale(-1, 1); ctx.drawImage(im, 0, 0, w + 0.6, h); ctx.restore(); }
+      else ctx.drawImage(im, x, y, w + 0.6, h);
+    }
+  }
+  var CURB = 0.2;   // where his feet land in the street drawing: on the sidewalk tiles, just above the curb
   function drawSky() {
     var t = Math.min(1, (score || 0) / 3000);                    // day slowly turns to sunset
     var g = ctx.createLinearGradient(0, 0, 0, GROUND);
     g.addColorStop(0, mix("#7fd0ef", "#3a4f8f", t)); g.addColorStop(1, mix("#d8f1f7", "#ffb36b", t));
     rect(0, 0, W, GROUND, g);
-    ctx.fillStyle = mix("#ffd65a", "#ff7a3d", t); ctx.beginPath(); ctx.arc(W - 90, lerp(70, 200, t), 34, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "rgba(255,255,255," + (0.85 - t * 0.4) + ")";
-    for (var i = 0; i < 4; i++) { var cx = ((i * 260 - (world || 0) * 0.04) % (W + 300) + W + 300) % (W + 300) - 150; ctx.beginPath(); ctx.ellipse(cx, 58 + i * 16, 46, 14, 0, 0, Math.PI * 2); ctx.ellipse(cx + 30, 52 + i * 16, 30, 12, 0, 0, Math.PI * 2); ctx.fill(); }
+    var sy = lerp(70, 200, t);
+    if (ok(IMG.sol)) ctx.drawImage(IMG.sol, W - 300, sy - 40, 80, 92 * IMG.sol.naturalHeight / IMG.sol.naturalWidth);
+    else { ctx.fillStyle = mix("#ffd65a", "#ff7a3d", t); ctx.beginPath(); ctx.arc(W - 90, sy, 34, 0, Math.PI * 2); ctx.fill(); }
+    ctx.globalAlpha = 0.95 - t * 0.4;
+    for (var i = 0; i < 4; i++) {
+      var cx = ((i * 260 - (world || 0) * 0.04) % (W + 300) + W + 300) % (W + 300) - 150, cl = IMG["nube-" + (i % 3 + 1)], cw = [130, 80, 150, 100][i];
+      if (ok(cl)) ctx.drawImage(cl, cx - cw / 2, 40 + i * 16, cw, cw * cl.naturalHeight / cl.naturalWidth);
+      else { ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.ellipse(cx, 58 + i * 16, 46, 14, 0, 0, Math.PI * 2); ctx.fill(); }
+    }
+    ctx.globalAlpha = 1;
   }
   function drawSkyline() {
     var off = (world || 0) * 0.15;
+    if (ok(IMG.skyline)) { ctx.globalAlpha = 0.55; tileRow(IMG.skyline, GROUND - 26 - 170, 170, 0.15); ctx.globalAlpha = 1; return; }
     ctx.globalAlpha = 0.55;
     for (var i = 0; i < 40; i++) { var x = i * 120 - (off % 120) - 60, h = 80 + ((i * 37) % 5) * 20; rect(x, GROUND - 26 - h - 60, 74, h + 60, "#eef3f8"); }
     ctx.globalAlpha = 1;
   }
-  function palm(x, base, s) {
+  function palm(x, base, s, v) {
+    var im = IMG["palma-" + ((v || 0) % 3 + 1)];
+    if (ok(im)) { var ph = 150 * s, pw = ph * im.naturalWidth / im.naturalHeight; ctx.drawImage(im, x - pw / 2, base - ph, pw, ph); return; }
     ctx.strokeStyle = "#8a5a2b"; ctx.lineWidth = 6 * s; ctx.lineCap = "round";
     ctx.beginPath(); ctx.moveTo(x, base); ctx.quadraticCurveTo(x + 8 * s, base - 50 * s, x + 4 * s, base - 110 * s); ctx.stroke();
     ctx.strokeStyle = "#2e9b5f"; ctx.lineWidth = 7 * s;
     [[-44, -8], [44, -8], [-30, 18], [32, 18], [0, -30]].forEach(function (p) { ctx.beginPath(); ctx.moveTo(x + 4 * s, base - 110 * s); ctx.quadraticCurveTo(x + (4 + p[0] / 2) * s, base - (126 + p[1] / 3) * s, x + (4 + p[0]) * s, base - (110 - p[1]) * s); ctx.stroke(); });
   }
   function streetWidth(it) {
-    if (it.n === "palm") return 90;
-    if (it.n === "tower") return 120;
+    if (it.n === "palm") return 125;
     var im = IMG[it.n]; var w = im && im.naturalWidth ? it.h * im.naturalWidth / im.naturalHeight : it.h * 0.9;
     return w + (it.gap || 60);
   }
@@ -263,7 +283,7 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
       for (var i = 0; i < STREET.length; i++) {
         var it = STREET[i], w = streetWidth(it);
         if (x + w > -60 && x < W + 60) {
-          if (it.n === "palm") palm(x + 40, base + 2, 0.95);
+          if (it.n === "palm") palm(x + 62, base + 2, 0.95, i + pass);
           else if (it.n === "tower") { rect(x + 10, base - 200, 96, 200, "#f6f8fb"); ctx.fillStyle = "#9cc3d8"; for (var r2 = 0; r2 < 9; r2++) for (var c = 0; c < 3; c++) ctx.fillRect(x + 22 + c * 26, base - 188 + r2 * 21, 14, 9); }
           else { var im = IMG[it.n]; if (im && im.complete && im.naturalWidth) ctx.drawImage(im, x, base - it.h, it.h * im.naturalWidth / im.naturalHeight, it.h); }
         }
@@ -272,6 +292,7 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
     }
   }
   function drawGround() {
+    if (ok(IMG.calle)) { var th = (H - GROUND) / (1 - CURB); tileRow(IMG.calle, GROUND - CURB * th, th, 1); return; }
     rect(0, GROUND - 26, W, 26, "#d9d4c8");
     rect(0, GROUND, W, H - GROUND, "#8f99a4");
     ctx.fillStyle = "#ffffff"; for (var i = 0; i < 20; i++) { var x = i * 120 - ((world || 0) % 120); ctx.fillRect(x, GROUND + 36, 60, 6); }
