@@ -116,7 +116,8 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
   var SHELL = load("img/mar-spondylus.png");
   var DECO = ["coral", "seaweed", "rock", "anchor"].map(function (n) { return load("img/mar-" + n + ".png"); });
   var HOTELS = {};
-  ["sprite-hotel-salinas", "sprite-costa-azul", "sprite-suite-salinas", "sprite-casas"].forEach(function (n) { HOTELS[n] = load("img/" + n + ".png"); });
+  ["sprite-hotel-salinas", "sprite-costa-azul", "sprite-suite-salinas", "sprite-casas",
+   "palma-1", "palma-2", "palma-3", "nube-1", "nube-2", "nube-3", "sol", "skyline", "malecon"].forEach(function (n) { HOTELS[n] = load("img/" + n + ".png"); });
   // the shore at the top: hotel, houses, hotel, houses, hotel... (same order as the street game)
   var SHORE = [
     { n: "sprite-hotel-salinas", h: 74, gap: 26 }, { n: "palm" }, { n: "sprite-casas", h: 34, gap: 30 },
@@ -149,7 +150,7 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
 
   /* ---------- input: every tap is one kick of the fins, like the bird game ---------- */
   function flap() {
-    diver.vy = -330; kick = 0.35;
+    diver.vy = -200; kick = 0.35;
     for (var i = 0; i < 3; i++) bubbles.push({ x: diver.x - 40, y: diver.y + 10 + i * 4, r: 2 + rng() * 2.5, vy: -30 - rng() * 30, a: 0.9 });
   }
   function press() {
@@ -201,7 +202,7 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
     t += dt; kick = Math.max(0, kick - dt); bannerT = Math.max(0, bannerT - dt);
     speed = Math.min(235, 165 + passed * 2);
     world += speed * dt;
-    diver.vy = Math.min(420, diver.vy + 1050 * dt);                   // sinks slowly, like underwater
+    diver.vy = Math.min(165, diver.vy + 520 * dt);                    // floats down gently, like underwater
     diver.y += diver.vy * dt;
     if (diver.y < SURF + 22) { diver.y = SURF + 22; diver.vy = Math.max(0, diver.vy); }
     if (diver.y > FLOOR - 20) { gameOver("urchin"); $("end-what").textContent = "Tocaste el fondo del mar"; return; }
@@ -233,18 +234,34 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
   /* ---------- drawing ---------- */
   function rect(x, y, w, h, c) { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); }
   function rr(x, y, w, h, r, c) { ctx.fillStyle = c; ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); ctx.fill(); }
-  function palm(x, base, s) {
+  // repeat a strip across the screen; every other copy is mirrored so the joins always match
+  function tileRow(im, y, h, par) {
+    var w = h * im.naturalWidth / im.naturalHeight, off = (world || 0) * par, x = -(off % (2 * w));
+    for (var k = 0; x < W; x += w, k++) {
+      if (k % 2) { ctx.save(); ctx.translate(x + w, y); ctx.scale(-1, 1); ctx.drawImage(im, 0, 0, w + 0.6, h); ctx.restore(); }
+      else ctx.drawImage(im, x, y, w + 0.6, h);
+    }
+  }
+  function palm(x, base, s, v) {
+    var im = HOTELS["palma-" + ((v || 0) % 3 + 1)];
+    if (ok(im)) { var ph = 58 * s, pw = ph * aspect(im, 0.8); ctx.drawImage(im, x - pw / 2, base - ph, pw, ph); return; }
     ctx.strokeStyle = "#8a5a2b"; ctx.lineWidth = 3 * s; ctx.lineCap = "round";
     ctx.beginPath(); ctx.moveTo(x, base); ctx.quadraticCurveTo(x + 4 * s, base - 25 * s, x + 2 * s, base - 55 * s); ctx.stroke();
     ctx.strokeStyle = "#2e9b5f"; ctx.lineWidth = 3.5 * s;
     [[-22, -4], [22, -4], [-15, 9], [16, 9], [0, -15]].forEach(function (p) { ctx.beginPath(); ctx.moveTo(x + 2 * s, base - 55 * s); ctx.quadraticCurveTo(x + (2 + p[0] / 2) * s, base - (63 + p[1] / 3) * s, x + (2 + p[0]) * s, base - (55 - p[1]) * s); ctx.stroke(); });
   }
-  function shoreWidth(it) { return it.n === "palm" ? 40 : it.h * aspect(HOTELS[it.n], 1) + (it.gap || 30); }
+  function shoreWidth(it) { return it.n === "palm" ? 50 : it.h * aspect(HOTELS[it.n], 1) + (it.gap || 30); }
   function drawShore() {
     var g = ctx.createLinearGradient(0, 0, 0, SURF);
     g.addColorStop(0, "#7fd0ef"); g.addColorStop(1, "#d8f1f7");
     rect(0, 0, W, SURF, g);
-    ctx.fillStyle = "#ffd65a"; ctx.beginPath(); ctx.arc(W - 70, 24, 15, 0, Math.PI * 2); ctx.fill();
+    if (ok(HOTELS.sol)) ctx.drawImage(HOTELS.sol, W - 92, 4, 38, 38 * HOTELS.sol.naturalHeight / HOTELS.sol.naturalWidth);
+    else { ctx.fillStyle = "#ffd65a"; ctx.beginPath(); ctx.arc(W - 70, 24, 15, 0, Math.PI * 2); ctx.fill(); }
+    for (var c = 0; c < 3; c++) {                    // small 2D clouds drifting slowly
+      var cl = HOTELS["nube-" + (c + 1)], cw = [52, 34, 60][c], cx = ((c * 300 + 80 - (world || 0) * 0.03) % (W + 200) + W + 200) % (W + 200) - 100;
+      if (ok(cl)) ctx.drawImage(cl, cx, 6 + c * 7, cw, cw * cl.naturalHeight / cl.naturalWidth);
+    }
+    if (ok(HOTELS.skyline)) { ctx.globalAlpha = 0.5; tileRow(HOTELS.skyline, SURF - 8 - 52, 52, 0.06); ctx.globalAlpha = 1; }
     var base = SURF - 8, off = (world || 0) * 0.15, cycle = 0;
     SHORE.forEach(function (it) { cycle += shoreWidth(it); });
     var x = 20 - (off % cycle); if (x > 0) x -= cycle;
@@ -252,13 +269,14 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
       for (var i = 0; i < SHORE.length; i++) {
         var it = SHORE[i], w = shoreWidth(it);
         if (x + w > -40 && x < W + 40) {
-          if (it.n === "palm") palm(x + 20, base, 0.9);
+          if (it.n === "palm") palm(x + 24, base + 1, 1, i + pass);
           else { var im = HOTELS[it.n]; if (ok(im)) ctx.drawImage(im, x, base - it.h, it.h * aspect(im, 1), it.h); }
         }
         x += w;
       }
     }
-    rect(0, base, W, 8, "#e9d9b0");                 // the malecón and the beach
+    if (ok(HOTELS.malecon)) tileRow(HOTELS.malecon, base - 1, 10, 0.15);   // the malecón in 2D
+    else rect(0, base, W, 8, "#e9d9b0");
   }
   function drawWater() {
     var g = ctx.createLinearGradient(0, SURF, 0, FLOOR);
@@ -291,8 +309,6 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
   function stack(kind, x, w, y0, y1, fromTop, ph) {
     var im = SEA[kind], a = aspect(im, 1.3), h = Math.min(w / a, kind === "jelly" ? 64 : 46), dw = h * a, n = Math.max(1, Math.ceil((y1 - y0) / (h * 0.82)));
     var step = (y1 - y0) / n;
-    // a soft band behind the animals so the wall reads as one solid "tube"
-    rr(x + 4, y0, w - 8, y1 - y0, 14, "rgba(10,40,70,.28)");
     for (var i = 0; i < n; i++) {
       var cy = fromTop ? y1 - step * (i + 0.5) : y0 + step * (i + 0.5);
       var wob = Math.sin(t * 2.4 + ph + i) * 3;
@@ -325,7 +341,7 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
   }
   function drawDiver() {
     var x = diver.x, y = diver.y + (state === "start" || state === "ready" ? Math.sin(t * 3) * 6 : 0), hit = state === "over";
-    var tilt = hit ? 0.9 : Math.max(-0.4, Math.min(0.45, diver.vy / 420 * 0.45));
+    var tilt = hit ? 0.9 : Math.max(-0.35, Math.min(0.35, diver.vy / 200 * 0.35));
     ctx.save(); ctx.translate(x, y); ctx.rotate(tilt);
     if (ok(DIVER)) {
       var cw = DIVER.naturalWidth / 4, ch = DIVER.naturalHeight, dw = 112, dh = dw * ch / cw;
