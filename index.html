@@ -515,7 +515,7 @@ a.rating:hover b { text-decoration: underline; }
 /* see-through panels: the bay photo shows behind every section, frosted so the text stays easy to read */
 .hotels.panel, .salinas.panel, .faq.panel, .rooms.panel, .mapsec.panel { background: rgba(250, 246, 239, .12); }
 /* the light panels are almost clear so the video shows; each block of text sits on its own frosted card */
-.hotels.panel .sec-head, .rooms.panel .sec-head, .mapsec.panel .sec-head, .salinas.panel .sec-head, .rooms.panel .panel-head, .faq-grid > * { background: rgba(250, 246, 239, .88); border-radius: 20px; padding: clamp(1rem, 2.6vw, 1.7rem); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 14px 40px rgba(8,20,40,.18); }
+.hotels.panel .sec-head, .events.panel .sec-head, .rooms.panel .sec-head, .mapsec.panel .sec-head, .salinas.panel .sec-head, .rooms.panel .panel-head, .faq-grid > * { background: rgba(250, 246, 239, .88); border-radius: 20px; padding: clamp(1rem, 2.6vw, 1.7rem); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 14px 40px rgba(8,20,40,.18); }
 .salinas.panel .sec-head.plate-only { display: inline-block; margin-bottom: 1.4rem; }
 .rooms.panel .panel-head { margin-inline: var(--gutter); }
 .rooms.panel .tab:not([aria-selected="true"]) { background: rgba(250, 246, 239, .94); }
@@ -650,6 +650,16 @@ html.motion .portal-stage { position: relative; height: auto; }
   .helper-btn { right: 16px; bottom: calc(88px + env(safe-area-inset-bottom, 0px)); min-height: 40px; padding: 0 .85rem; font-size: .9rem; }
   .helper { right: 16px; bottom: calc(138px + env(safe-area-inset-bottom, 0px)); max-height: calc(100svh - 230px); }
 }
+
+/* events: the hall, with a WhatsApp quote button */
+.events.panel { background: rgba(250, 246, 239, .12); padding-block: clamp(4rem, 9vw, 6.5rem); --ocean: #05414f; --mist: #283444; }
+.events-grid { display: grid; gap: 1.4rem; align-items: center; }
+@media (min-width: 900px) { .events-grid { grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 2rem; } }
+.events .lead { margin-top: .9rem; }
+.ev-btn { margin-top: 1.2rem; display: inline-flex; }
+.events-photos { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+.events-photos figure { margin: 0; border-radius: 18px; overflow: hidden; box-shadow: 0 16px 40px rgba(8,20,40,.3); }
+.events-photos img { width: 100%; height: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block; }
 </style>
 </head>
 <body>
@@ -685,6 +695,7 @@ html.motion .portal-stage { position: relative; height: auto; }
     <a href="#ubicacion">Ubicación</a>
     <a href="#historia">Historia</a>
     <a href="#que-hacer">Salinas</a>
+    <a href="#eventos">Eventos</a>
     <a href="#preguntas">Preguntas</a>
     <a href="juego/index.html">Juego: correr</a>
     <a href="juego/mar.html">Juego: bucear</a>
@@ -702,6 +713,7 @@ html.motion .portal-stage { position: relative; height: auto; }
   <a href="#que-hacer"><span>Qué hacer</span><i></i></a>
   <a href="#hoteles"><span>Hoteles</span><i></i></a>
   <a href="#habitaciones"><span>Habitaciones</span><i></i></a>
+  <a href="#eventos"><span>Eventos</span><i></i></a>
   <a href="#reservar"><span>Reservar</span><i></i></a>
   <a href="#historia"><span>Historia</span><i></i></a>
   <a href="#ubicacion"><span>Ubicación</span><i></i></a>
@@ -729,7 +741,7 @@ html.motion .portal-stage { position: relative; height: auto; }
         <p id="picker-label">¿Dónde te quieres quedar?</p>
         <div class="chips" role="group" aria-labelledby="picker-label">
           <a class="chip" href="#hotel-salinas" style="--c:#e0a458"><img class="chip-thumb" src="img/hotel-salinas-edificio.jpg" alt="">Hotel Salinas</a>
-          <a class="chip" href="#costa-azul" style="--c:#2aa3a8"><img class="chip-thumb" src="img/costa-azul-piscina.jpg" alt="">Costa Azul</a>
+          <a class="chip" href="#costa-azul" style="--c:#2aa3a8"><img class="chip-thumb" src="img/piscina-costa-azul.jpg" alt="">Costa Azul</a>
           <a class="chip" href="#suites-salinas" style="--c:#5b7fbf"><img class="chip-thumb" src="img/suites-salinas-edificio.jpg" alt="">Suite Salinas</a>
         </div>
       </div>
@@ -802,7 +814,7 @@ html.motion .portal-stage { position: relative; height: auto; }
           <div class="hcard-media">
             <span class="sticker" style="--r:5deg"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 18c2-1.5 3.5-1.5 5 0s3.5 1.5 5 0 3.5-1.5 5 0 3.5 1.5 5 0"/><path d="M7 15V5a2 2 0 0 1 4 0M15 15V5a2 2 0 0 1 4 0M7 9h8"/></svg>Piscina para los 3 hoteles</span>
             <img src="img/costa-azul-edificio.jpg" alt="Edificio del Hotel Salinas Costa Azul, blanco con franjas azules" loading="lazy">
-            <figure class="hcard-inset"><img src="img/costa-azul-piscina.jpg" alt="Piscina del Costa Azul con su puente de baldosas azules" loading="lazy"><figcaption>La piscina</figcaption></figure>
+            <figure class="hcard-inset"><img src="img/piscina-costa-azul.jpg" alt="Piscina del Hotel Salinas Costa Azul con jacuzzi y un mural de playa, vista desde arriba" loading="lazy"><figcaption>La piscina</figcaption></figure>
           </div>
           <div class="hcard-body">
             <p class="kicker">La piscina de la familia</p>
@@ -887,7 +899,7 @@ html.motion .portal-stage { position: relative; height: auto; }
         <li class="room"><figure><img src="img/ca-suite.jpg" alt="Sala de una suite del Costa Azul con sofá y refrigeradora" loading="lazy"></figure>
           <div class="room-body"><h3>Suite</h3><p class="beds">Con sala, refrigeradora y espacio para la familia</p><span class="pax">Familias</span>
           <div class="room-foot"><p class="price">Desde <b>$20</b>por persona</p><button class="btn btn-sun" type="button" data-room="Suite" data-for="Hotel Salinas Costa Azul">Reservar</button></div></div></li>
-        <li class="room"><figure><img src="img/costa-azul-piscina.jpg" alt="Piscina del Costa Azul" loading="lazy"></figure>
+        <li class="room"><figure><img src="img/piscina-costa-azul.jpg" alt="Piscina del Costa Azul con jacuzzi, vista desde arriba" loading="lazy"></figure>
           <div class="room-body"><h3>La piscina</h3><p class="beds">En la planta baja, con sillas para tomar sol. Abierta para los huéspedes de los tres hoteles.</p><span class="pax">Para huéspedes</span>
           <div class="room-foot"><p class="price">Incluido<b>Sin costo extra</b></p><button class="btn btn-sun" type="button" data-room="La que me recomienden" data-for="Hotel Salinas Costa Azul">Reservar</button></div></div></li>
       </ul>
@@ -911,6 +923,21 @@ html.motion .portal-stage { position: relative; height: auto; }
       <div class="rates-note">
         <p><b>Grupos: desde $15 por persona por noche</b> en habitaciones múltiples.</p>
         <p>Tarifas por noche en temporada regular. En feriados y fechas especiales pueden cambiar. Pregúntanos por descuentos para grupos, estadías largas y temporada baja.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="events panel" id="eventos" aria-labelledby="ev-title">
+    <div class="wrap events-grid">
+      <div class="sec-head"><div>
+        <p class="kicker">Eventos</p>
+        <h2 id="ev-title" class="lines"><span class="line"><span>Celebra</span></span> <span class="line"><span><em>en Salinas</em></span></span></h2>
+        <p class="lead">Tenemos un salón con tarima y mezzanine para bodas, quinceañeras, graduaciones, congresos y reuniones de empresa. Cuéntanos la fecha y cuántas personas son, y te enviamos una cotización.</p>
+        <a class="btn btn-wa ev-btn" href="https://wa.me/593995755979?text=Hola%2C%20vi%20la%20p%C3%A1gina%20hotelessalinas.com%20y%20quiero%20informaci%C3%B3n%20sobre%20el%20sal%C3%B3n%20de%20eventos." target="_blank" rel="noopener">Cotizar mi evento por WhatsApp</a>
+      </div></div>
+      <div class="events-photos">
+        <figure><img src="img/eventos-salon.jpg" alt="Salón de eventos preparado para un congreso, con mesas de manteles azules y tarima al fondo" loading="lazy"></figure>
+        <figure><img src="img/eventos-fiesta.jpg" alt="Fiesta en el salón de eventos, con mesas decoradas y el mezzanine arriba" loading="lazy"></figure>
       </div>
     </div>
   </section>
@@ -1060,6 +1087,7 @@ html.motion .portal-stage { position: relative; height: auto; }
         <details><summary>¿Cuándo se ven las ballenas?</summary><p>De junio a septiembre. Los tours en bote para verlas salen desde Salinas.</p></details>
         <details><summary>¿Cómo llego desde Guayaquil?</summary><p>Son unos 140 km, más o menos 2 horas en carro por la vía a la costa. También hay buses frecuentes desde el Terminal Terrestre de Guayaquil hasta Salinas.</p></details>
         <details><summary>¿Cuándo hay mejores precios?</summary><p>Los precios cambian según la temporada, los feriados y el tamaño del grupo. Fuera de feriados hay más disponibilidad. Escríbenos por WhatsApp con tus fechas y te damos el precio exacto.</p></details>
+        <details><summary>¿Tienen salón de eventos?</summary><p>Sí. Tenemos un salón con tarima y mezzanine para bodas, quinceañeras, graduaciones, congresos y reuniones de empresa. Escríbenos por WhatsApp con la fecha y cuántas personas son, y te enviamos una cotización.</p></details>
         <details><summary>Accesibilidad de esta página</summary><p>Hicimos esta página siguiendo las pautas de accesibilidad WCAG 2.2 nivel AA: se puede usar con teclado y lector de pantalla, tiene buen contraste y respeta la opción de reducir movimiento de tu teléfono. Si algo no te funciona, escríbenos y lo arreglamos.</p></details>
       </div>
     </div>
@@ -1170,7 +1198,7 @@ document.querySelectorAll(".todo .flip-in").forEach(function (b) {
   var open = document.getElementById("helper-open"), box = document.getElementById("helper"), log = document.getElementById("helper-log"),
       chips = document.getElementById("helper-chips"), wa = document.getElementById("helper-wa"), close = document.getElementById("helper-close");
   if (!open || !box) return;
-  var WANT = ["¿Qué tan cerca están de la playa?", "¿Hay piscina?", "¿Cuál es la temporada alta?", "¿Cómo es el clima?", "¿Cuándo se ven las ballenas?", "¿Cómo llego desde Guayaquil?", "¿Hay parqueo?", "¿A qué hora es la entrada y la salida?", "¿Cuánto cuesta?", "¿Cuándo hay mejores precios?", "¿Cómo se paga?", "¿Cómo reservo?"];
+  var WANT = ["¿Qué tan cerca están de la playa?", "¿Hay piscina?", "¿Cuál es la temporada alta?", "¿Cómo es el clima?", "¿Cuándo se ven las ballenas?", "¿Cómo llego desde Guayaquil?", "¿Hay parqueo?", "¿A qué hora es la entrada y la salida?", "¿Cuánto cuesta?", "¿Cuándo hay mejores precios?", "¿Cómo se paga?", "¿Tienen salón de eventos?", "¿Cómo reservo?"];
   var faq = {};
   document.querySelectorAll(".faq details").forEach(function (d) { var q = d.querySelector("summary"); if (q) faq[q.textContent.trim()] = d.textContent.replace(q.textContent, "").trim(); });
   var base = "https://wa.me/593995755979?text=";
@@ -1194,7 +1222,7 @@ document.querySelectorAll(".todo .flip-in").forEach(function (b) {
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !box.hidden) show(false); });
 })();
 </script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "¿Cómo reservo?", "acceptedAnswer": {"@type": "Answer", "text": "Llena el formulario de reservas o escríbenos al 099 575 5979 por WhatsApp. Te respondemos con disponibilidad y precio, y tu reserva queda lista cuando la confirmamos."}}, {"@type": "Question", "name": "¿Qué tan cerca están de la playa?", "acceptedAnswer": {"@type": "Answer", "text": "Los tres hoteles están en Gral. Enríquez Gallo y Calle 27, a una cuadra del malecón y de la playa de San Lorenzo."}}, {"@type": "Question", "name": "¿Hay piscina?", "acceptedAnswer": {"@type": "Answer", "text": "Sí. Los huéspedes de los tres hoteles pueden usar la piscina del Costa Azul."}}, {"@type": "Question", "name": "¿Hay parqueo?", "acceptedAnswer": {"@type": "Answer", "text": "Sí, hay garaje para los huéspedes de los tres hoteles, según disponibilidad. Pregúntanos cuando reserves."}}, {"@type": "Question", "name": "¿A qué hora es la entrada y la salida?", "acceptedAnswer": {"@type": "Answer", "text": "La entrada (check-in) es desde las 13h00 y la salida (check-out) hasta las 12h00."}}, {"@type": "Question", "name": "¿Cuánto cuesta?", "acceptedAnswer": {"@type": "Answer", "text": "En temporada regular, la habitación matrimonial cuesta desde $50 por noche y las habitaciones múltiples desde $20 por persona. Para grupos, desde $15 por persona. En feriados los precios pueden cambiar; escríbenos con tus fechas y te damos el precio exacto."}}, {"@type": "Question", "name": "¿Cómo se paga?", "acceptedAnswer": {"@type": "Answer", "text": "Por transferencia bancaria o en efectivo. Te damos los datos cuando confirmamos tu reserva."}}, {"@type": "Question", "name": "¿Y si tengo que cancelar?", "acceptedAnswer": {"@type": "Answer", "text": "Si nos avisas con anticipación, cambiamos tu reserva para otra fecha. No hacemos devoluciones de dinero."}}, {"@type": "Question", "name": "¿Hay ascensor? ¿Tienen habitaciones accesibles?", "acceptedAnswer": {"@type": "Answer", "text": "Hotel Salinas y Suite Salinas tienen ascensor. Por ahora no tenemos habitaciones en planta baja ni instalaciones para personas con discapacidad. Escríbenos y te ayudamos a ver qué opción te sirve."}}, {"@type": "Question", "name": "¿Cuál es la temporada alta?", "acceptedAnswer": {"@type": "Answer", "text": "La temporada de playa va de diciembre a abril, y Carnaval y Semana Santa son los días más llenos. Los feriados nacionales y las vacaciones escolares de la Sierra (julio y agosto) también traen mucha gente. En esas fechas conviene reservar con tiempo."}}, {"@type": "Question", "name": "¿Cómo es el clima?", "acceptedAnswer": {"@type": "Answer", "text": "De diciembre a abril hace más calor, con más sol y el mar más tibio; a veces llueve. De junio a noviembre es más fresco y nublado, con garúa en las mañanas. Salinas se disfruta todo el año."}}, {"@type": "Question", "name": "¿Cuándo se ven las ballenas?", "acceptedAnswer": {"@type": "Answer", "text": "De junio a septiembre. Los tours en bote para verlas salen desde Salinas."}}, {"@type": "Question", "name": "¿Cómo llego desde Guayaquil?", "acceptedAnswer": {"@type": "Answer", "text": "Son unos 140 km, más o menos 2 horas en carro por la vía a la costa. También hay buses frecuentes desde el Terminal Terrestre de Guayaquil hasta Salinas."}}, {"@type": "Question", "name": "¿Cuándo hay mejores precios?", "acceptedAnswer": {"@type": "Answer", "text": "Los precios cambian según la temporada, los feriados y el tamaño del grupo. Fuera de feriados hay más disponibilidad. Escríbenos por WhatsApp con tus fechas y te damos el precio exacto."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "¿Cómo reservo?", "acceptedAnswer": {"@type": "Answer", "text": "Llena el formulario de reservas o escríbenos al 099 575 5979 por WhatsApp. Te respondemos con disponibilidad y precio, y tu reserva queda lista cuando la confirmamos."}}, {"@type": "Question", "name": "¿Qué tan cerca están de la playa?", "acceptedAnswer": {"@type": "Answer", "text": "Los tres hoteles están en Gral. Enríquez Gallo y Calle 27, a una cuadra del malecón y de la playa de San Lorenzo."}}, {"@type": "Question", "name": "¿Hay piscina?", "acceptedAnswer": {"@type": "Answer", "text": "Sí. Los huéspedes de los tres hoteles pueden usar la piscina del Costa Azul."}}, {"@type": "Question", "name": "¿Hay parqueo?", "acceptedAnswer": {"@type": "Answer", "text": "Sí, hay garaje para los huéspedes de los tres hoteles, según disponibilidad. Pregúntanos cuando reserves."}}, {"@type": "Question", "name": "¿A qué hora es la entrada y la salida?", "acceptedAnswer": {"@type": "Answer", "text": "La entrada (check-in) es desde las 13h00 y la salida (check-out) hasta las 12h00."}}, {"@type": "Question", "name": "¿Cuánto cuesta?", "acceptedAnswer": {"@type": "Answer", "text": "En temporada regular, la habitación matrimonial cuesta desde $50 por noche y las habitaciones múltiples desde $20 por persona. Para grupos, desde $15 por persona. En feriados los precios pueden cambiar; escríbenos con tus fechas y te damos el precio exacto."}}, {"@type": "Question", "name": "¿Cómo se paga?", "acceptedAnswer": {"@type": "Answer", "text": "Por transferencia bancaria o en efectivo. Te damos los datos cuando confirmamos tu reserva."}}, {"@type": "Question", "name": "¿Y si tengo que cancelar?", "acceptedAnswer": {"@type": "Answer", "text": "Si nos avisas con anticipación, cambiamos tu reserva para otra fecha. No hacemos devoluciones de dinero."}}, {"@type": "Question", "name": "¿Hay ascensor? ¿Tienen habitaciones accesibles?", "acceptedAnswer": {"@type": "Answer", "text": "Hotel Salinas y Suite Salinas tienen ascensor. Por ahora no tenemos habitaciones en planta baja ni instalaciones para personas con discapacidad. Escríbenos y te ayudamos a ver qué opción te sirve."}}, {"@type": "Question", "name": "¿Cuál es la temporada alta?", "acceptedAnswer": {"@type": "Answer", "text": "La temporada de playa va de diciembre a abril, y Carnaval y Semana Santa son los días más llenos. Los feriados nacionales y las vacaciones escolares de la Sierra (julio y agosto) también traen mucha gente. En esas fechas conviene reservar con tiempo."}}, {"@type": "Question", "name": "¿Cómo es el clima?", "acceptedAnswer": {"@type": "Answer", "text": "De diciembre a abril hace más calor, con más sol y el mar más tibio; a veces llueve. De junio a noviembre es más fresco y nublado, con garúa en las mañanas. Salinas se disfruta todo el año."}}, {"@type": "Question", "name": "¿Cuándo se ven las ballenas?", "acceptedAnswer": {"@type": "Answer", "text": "De junio a septiembre. Los tours en bote para verlas salen desde Salinas."}}, {"@type": "Question", "name": "¿Cómo llego desde Guayaquil?", "acceptedAnswer": {"@type": "Answer", "text": "Son unos 140 km, más o menos 2 horas en carro por la vía a la costa. También hay buses frecuentes desde el Terminal Terrestre de Guayaquil hasta Salinas."}}, {"@type": "Question", "name": "¿Cuándo hay mejores precios?", "acceptedAnswer": {"@type": "Answer", "text": "Los precios cambian según la temporada, los feriados y el tamaño del grupo. Fuera de feriados hay más disponibilidad. Escríbenos por WhatsApp con tus fechas y te damos el precio exacto."}}, {"@type": "Question", "name": "¿Tienen salón de eventos?", "acceptedAnswer": {"@type": "Answer", "text": "Sí. Tenemos un salón con tarima y mezzanine para bodas, quinceañeras, graduaciones, congresos y reuniones de empresa. Escríbenos por WhatsApp con la fecha y cuántas personas son, y te enviamos una cotización."}}]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://hotelessalinas.com/#empresa", "name": "Hoteles Salinas", "legalName": "Empresa de Turismo Salinas S.A. (EMTURISA)", "url": "https://hotelessalinas.com/", "email": "reservas@hotelessalinas.com", "telephone": "+593995755979", "sameAs": ["https://www.instagram.com/hoteles.salinas/", "https://www.facebook.com/profile.php?id=100057365242051"]}, {"@type": "Hotel", "@id": "https://hotelessalinas.com/#hotel-salinas", "name": "Hotel Salinas", "url": "https://hotelessalinas.com/#hotel-salinas", "image": "https://hotelessalinas.com/img/hotel-salinas-edificio.jpg", "description": "El primer hotel de la familia, a una cuadra del malecón de Salinas.", "address": {"@type": "PostalAddress", "streetAddress": "Gral. Enríquez Gallo y Calle 27", "addressLocality": "Salinas", "addressRegion": "Santa Elena", "addressCountry": "EC"}, "geo": {"@type": "GeoCoordinates", "latitude": -2.2063, "longitude": -80.9707}, "telephone": "+593995755979", "email": "reservas@hotelessalinas.com", "checkinTime": "13:00", "checkoutTime": "12:00", "amenityFeature": [{"@type": "LocationFeatureSpecification", "name": "Piscina (en el Costa Azul, compartida)", "value": true}, {"@type": "LocationFeatureSpecification", "name": "Parqueo según disponibilidad", "value": true}, {"@type": "LocationFeatureSpecification", "name": "Aire acondicionado", "value": true}, {"@type": "LocationFeatureSpecification", "name": "WiFi", "value": true}], "priceRange": "Desde $20 por persona", "parentOrganization": {"@id": "https://hotelessalinas.com/#empresa"}}, {"@type": "Hotel", "@id": "https://hotelessalinas.com/#costa-azul", "name": "Hotel Salinas Costa Azul", "url": "https://hotelessalinas.com/#costa-azul", "image": "https://hotelessalinas.com/img/costa-azul-edificio.jpg", "description": "Hotel con la piscina que comparten los huéspedes de los tres hoteles, a una cuadra del mar.", "address": {"@type": "PostalAddress", "streetAddress": "Gral. Enríquez Gallo y Calle 27", "addressLocality": "Salinas", "addressRegion": "Santa Elena", "addressCountry": "EC"}, "geo": {"@type": "GeoCoordinates", "latitude": -2.2063, "longitude": -80.9707}, "telephone": "+593995755979", "email": "reservas@hotelessalinas.com", "checkinTime": "13:00", "checkoutTime": "12:00", "amenityFeature": [{"@type": "LocationFeatureSpecification", "name": "Piscina (en el Costa Azul, compartida)", "value": true}, {"@type": "LocationFeatureSpecification", "name": "Parqueo según disponibilidad", "value": true}, {"@type": "LocationFeatureSpecification", "name": "Aire acondicionado", "value": true}, {"@type": "LocationFeatureSpecification", "name": "WiFi", "value": true}], "priceRange": "Desde $20 por persona", "parentOrganization": {"@id": "https://hotelessalinas.com/#empresa"}}, {"@type": "Hotel", "@id": "https://hotelessalinas.com/#suites-salinas", "name": "Suite Salinas", "url": "https://hotelessalinas.com/#suites-salinas", "image": "https://hotelessalinas.com/img/suites-salinas-edificio.jpg", "description": "Habitaciones para familias y grupos, a una cuadra del malecón de Salinas.", "address": {"@type": "PostalAddress", "streetAddress": "Gral. Enríquez Gallo y Calle 27", "addressLocality": "Salinas", "addressRegion": "Santa Elena", "addressCountry": "EC"}, "geo": {"@type": "GeoCoordinates", "latitude": -2.2063, "longitude": -80.9707}, "telephone": "+593995755979", "email": "reservas@hotelessalinas.com", "checkinTime": "13:00", "checkoutTime": "12:00", "amenityFeature": [{"@type": "LocationFeatureSpecification", "name": "Piscina (en el Costa Azul, compartida)", "value": true}, {"@type": "LocationFeatureSpecification", "name": "Parqueo según disponibilidad", "value": true}, {"@type": "LocationFeatureSpecification", "name": "Aire acondicionado", "value": true}, {"@type": "LocationFeatureSpecification", "name": "WiFi", "value": true}], "priceRange": "Desde $20 por persona", "parentOrganization": {"@id": "https://hotelessalinas.com/#empresa"}}]}</script>
 <script>
 (function () {
