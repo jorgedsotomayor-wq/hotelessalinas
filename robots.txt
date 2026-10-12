@@ -1,3 +1,4 @@
-# Borrador: el sitio no se indexa hasta el lanzamiento
 User-agent: *
-Disallow: /
+Allow: /
+
+Sitemap: https://hotelessalinas.com/sitemap.xml
