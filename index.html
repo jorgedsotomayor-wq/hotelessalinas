@@ -160,7 +160,7 @@ p { margin: 0; }
 .chip i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); flex: none; }
 .rating { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .7rem; font-size: .95rem; color: rgba(255,255,255,.94); }
 .rating .stars { color: #ffd59a; letter-spacing: .1em; }
-.weather { display: flex; align-items: center; flex-wrap: wrap; gap: .2rem .55rem; margin: -.8rem 0 0; font-size: .95rem; color: rgba(255,255,255,.94); }
+.weather { display: flex; align-items: center; flex-wrap: wrap; gap: .2rem .55rem; margin: -1rem 0 -.4rem; font-size: .95rem; color: rgba(255,255,255,.94); text-shadow: 0 1px 6px rgba(8,20,40,.5); }
 .weather svg { width: 22px; height: 22px; flex: none; }
 .weather b { font-weight: 700; }
 
@@ -646,6 +646,7 @@ a.rating:hover b { text-decoration: underline; }
         <div class="play-btns"><a href="juego/index.html">Correr</a><a href="juego/mar.html">Bucear</a></div>
       </div>
       <p class="kicker hero-in">Salinas · Santa Elena · Ecuador</p>
+      <p class="weather" id="weather" hidden></p>
       <h1 id="hero-title"><span class="line"><span>A una cuadra</span></span><span class="line"><span><em>del mar.</em></span></span></h1>
       <p class="sub hero-in">Ven con tu familia a Salinas y quédate a pasos de la playa. Tres hoteles de una misma familia, con buen precio y atención de casa.</p>
       <div class="picker hero-in">
@@ -657,7 +658,6 @@ a.rating:hover b { text-decoration: underline; }
         </div>
       </div>
       <a class="rating hero-in" href="https://www.google.com/maps/search/?api=1&amp;query=Hoteles+Salinas+Gral+Enrique+Gallo+Salinas+Ecuador" target="_blank" rel="noopener"><span class="stars" aria-hidden="true">★★★★☆</span><span><b>4,1 en Google</b> · 803 opiniones<span class="sr"> (se abre en Google Maps)</span></span></a>
-      <p class="weather" id="weather" hidden></p>
     </div>
   </section>
 
@@ -1064,9 +1064,9 @@ a.rating:hover b { text-decoration: underline; }
   Promise.all([air, sea]).then(function (res) {
     var c = res[0] && res[0].current; if (!c || typeof c.temperature_2m !== "number") return;
     var d = describe(c.weather_code, c.is_day === 1);
-    var html = d[0] + '<span>Ahora en Salinas: <b>' + Math.round(c.temperature_2m) + ' °C</b>, ' + d[1] + '</span>';
+    var html = d[0] + '<span>Ahora: <b>' + Math.round(c.temperature_2m) + ' °C</b>, ' + d[1] + '</span>';
     var w = res[1] && res[1].current && res[1].current.sea_surface_temperature;
-    if (typeof w === "number") html += '<span aria-hidden="true">·</span><span>Agua del mar: <b>' + Math.round(w) + ' °C</b></span>';
+    if (typeof w === "number") html += '<span aria-hidden="true">·</span><span>Mar: <b>' + Math.round(w) + ' °C</b></span>';
     box.innerHTML = html; box.hidden = false;
   }).catch(function () {});
 })();
