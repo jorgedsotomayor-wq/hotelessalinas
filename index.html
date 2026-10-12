@@ -104,6 +104,7 @@ p { margin: 0; }
 .kid.lg { background-size: 156px 60px; width: 39px; height: 60px; animation-name: kid-run-lg; }
 .kid.dive { background: url(img/jorge-buzo.png) 0 0 / 168px 33px no-repeat; width: 42px; height: 33px; animation: kid-dive .6s steps(4) infinite; }
 @keyframes kid-run { to { background-position: -104px 0; } }
+@keyframes kid-run-xs { to { background-position: -80px 0; } }
 @keyframes kid-run-lg { to { background-position: -156px 0; } }
 @keyframes kid-dive { to { background-position: -168px 0; } }
 .play { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: .3rem 1rem; align-self: flex-start; width: min(100%, 440px); padding: 0 .9rem .7rem; border-radius: 22px; border: 1.5px solid rgba(255,255,255,.55); background: rgba(8,24,46,.18); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: #fff; text-shadow: 0 1px 6px rgba(8,20,40,.45); }
@@ -119,11 +120,14 @@ p { margin: 0; }
 .play-btns a:hover { filter: brightness(1.06); }
 @media (max-width: 600px) {
   .play { grid-template-columns: 1fr; width: calc(100% - 112px); }
-  .play { padding: 0 .8rem .7rem; gap: .35rem; }
+  .play { padding: 0 .7rem .6rem; gap: .3rem; width: min(calc(100% - 112px), 230px); border-radius: 18px; }
+  .play-run { height: 32px; }
+  .play-run .kid { width: 20px; height: 30px; background-size: 80px 30px; animation-name: kid-run-xs, kid-cross; }
+  .play-txt b { font-size: .9rem; }
+  .play-btns { gap: .35rem; }
+  .play-btns a { min-height: 36px; font-size: .88rem; }
   .play-run .kid { animation-duration: .5s, 3.2s; }
-  .play-btns a { min-height: 44px; }
   .play-txt small { display: none; }
-  .play-txt b { font-size: 1.02rem; }
   .play-btns a { flex: 1; justify-content: center; padding: 0 .6rem; }
 }
 /* nothing pins the screen: the video stays still and the page slides up over it */
