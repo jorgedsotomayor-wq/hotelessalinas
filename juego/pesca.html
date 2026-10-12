@@ -216,6 +216,13 @@ canvas { display: block; margin: 0 auto; flex: none; cursor: pointer; border-rad
     } else { ctx.fillStyle = "#14284a"; ctx.beginPath(); ctx.arc(cx, cy, size / 3, 0, 7); ctx.fill(); }
     ctx.globalAlpha = 1;
   }
+  function sparkle(cx, cy, r, turn) {
+    ctx.save(); ctx.translate(cx, cy); ctx.rotate(turn); ctx.fillStyle = "#ffffff"; ctx.shadowColor = "#ffd23d"; ctx.shadowBlur = r * 1.5;
+    ctx.beginPath();
+    for (var i = 0; i < 8; i++) { var a = i * Math.PI / 4, d = i % 2 ? r * 0.28 : r; ctx.lineTo(Math.cos(a) * d, Math.sin(a) * d); }
+    ctx.closePath(); ctx.fill(); ctx.restore();
+  }
+  function hasShell() { for (var c = 0; c < COLS; c++) for (var r = 0; r < ROWS; r++) if (game.grid[c][r] === SHELL) return true; return false; }
   function draw() {
     if (!game) game = new P.Game();
     if (!off) off = zeros();
@@ -230,10 +237,17 @@ canvas { display: block; margin: 0 auto; flex: none; cursor: pointer; border-rad
       var k = game.grid[c][r]; if (k < 0) continue;
       var y = (r + off[c][r]) * S, x = c * S;
       if (shake && shake.c === c && shake.r === r) x += Math.sin((now - shake.t) / 22) * S * 0.06 * Math.max(0, 1 - (now - shake.t) / 300);
+      var pulse = k === SHELL ? (reduce ? 0.6 : 0.5 + 0.5 * Math.sin(now / 260 + c + r)) : 0;
+      if (k === SHELL) {
+        var glow = ctx.createRadialGradient(x + S / 2, y + S / 2, S * 0.2, x + S / 2, y + S / 2, S * (0.62 + pulse * 0.12));
+        glow.addColorStop(0, "rgba(255,226,120," + (0.55 + pulse * 0.4) + ")"); glow.addColorStop(1, "rgba(255,226,120,0)");
+        ctx.fillStyle = glow; ctx.fillRect(x - S * 0.3, y - S * 0.3, S * 1.6, S * 1.6);
+      }
       ctx.fillStyle = k === SHELL ? "#ffe7a3" : KINDS[k].tint;
       rrect(x + pad, y + pad, S - pad * 2, S - pad * 2, S * 0.22); ctx.fill();
-      if (k === SHELL) { ctx.strokeStyle = "#f08a1c"; ctx.lineWidth = Math.max(2, S * 0.06); ctx.stroke(); }
+      if (k === SHELL) { ctx.strokeStyle = pulse > 0.5 ? "#ffc23d" : "#f08a1c"; ctx.lineWidth = Math.max(2, S * 0.06); ctx.stroke(); }
       sprite(k, x + S / 2, y + S / 2, S * 0.74, 1);
+      if (k === SHELL) sparkle(x + S * 0.78, y + S * 0.22, S * (0.1 + pulse * 0.09), reduce ? 0 : now / 900);
     }
     pops.forEach(function (p) {
       var a = Math.min(1, (now - p.t) / 260), s = 1 - a * 0.6;
@@ -269,7 +283,7 @@ canvas { display: block; margin: 0 auto; flex: none; cursor: pointer; border-rad
     if (shake && now - shake.t > 300) shake = null;
     draw();
     if (busy && !moving && !pops.length) settle();
-    if (moving || pops.length || floats.length || shake) raf = requestAnimationFrame(loop);
+    if (moving || pops.length || floats.length || shake || (!reduce && state === "run" && hasShell())) raf = requestAnimationFrame(loop);
   }
   function settle() {
     busy = false;

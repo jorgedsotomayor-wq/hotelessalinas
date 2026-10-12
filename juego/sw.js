@@ -1,5 +1,5 @@
 /* Offline support for the Jorge A games: pages load from the network when possible, everything else from the cache. */
-var CACHE = "jorge-a-v2";
+var CACHE = "jorge-a-v3";
 var FILES = [
 "/juego/inicio.html",
 "/juego/index.html",
