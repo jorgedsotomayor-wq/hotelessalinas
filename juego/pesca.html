@@ -6,7 +6,7 @@
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://hotelessalinas.com/juego/pesca.html">
 <title>Pesca en Salinas · Hoteles Salinas</title>
-<meta name="description" content="Juego: pesca con Jorge A en el mar de Salinas. Junta peces iguales, atrapa grupos grandes con tu red y supera el récord del mes.">
+<meta name="description" content="Juego: pesca con Jorge A frente a los Hoteles Salinas. Niveles con retos: lleva anclas al fondo, rompe rocas y pesca pulpos. Supera el récord del mes.">
 <link rel="manifest" href="/juego/manifest.webmanifest">
 <meta name="theme-color" content="#14284a">
 <link rel="apple-touch-icon" href="/juego/img/app-icon-180.png">
@@ -33,13 +33,23 @@ canvas { display: block; margin: 0 auto; flex: none; cursor: pointer; border-rad
 .stage { justify-content: flex-start; align-items: center; padding: 10px 12px calc(14px + env(safe-area-inset-bottom, 0px)); gap: 0; background: #0b6a80; }
 #scene { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 0; cursor: default; }
 .hud, #game { position: relative; z-index: 1; }
-.shore { flex: none; height: clamp(84px, 17vh, 170px); }
+.shore { flex: none; height: clamp(40px, 11vh, 130px); }
 #game { margin-top: 10px; box-shadow: 0 14px 40px rgba(4,20,40,.35); }
 .hud { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; max-width: 520px; }
 .hud div { background: rgba(20,40,74,.8); border-radius: 14px; padding: 6px 8px; text-align: center; color: #fff; }
 .hud b { display: block; font-family: var(--display); font-size: 1.5rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
 .hud small { font-weight: 700; font-size: .78rem; color: rgba(255,255,255,.85); }
 .hud .low b { color: #ffd59a; }
+.goals { position: relative; z-index: 1; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 8px; max-width: 520px; }
+.goals span { display: inline-flex; align-items: center; gap: 6px; background: var(--sand); color: var(--ink); border-radius: 999px; padding: 3px 12px 3px 4px; font-weight: 800; font-size: .92rem; font-variant-numeric: tabular-nums; box-shadow: 0 4px 12px rgba(8,20,40,.25); }
+.goals span.txt { padding-left: 12px; }
+.goals img { width: 28px; height: 28px; object-fit: contain; }
+.goals .done { background: #dcf3e4; color: #0d4a26; }
+.challenge { display: grid; gap: .5rem; justify-items: center; }
+.challenge ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .45rem; }
+.challenge li { display: flex; align-items: center; gap: .6rem; background: #fff; border-radius: 14px; padding: .45rem .9rem .45rem .5rem; font-weight: 700; text-align: left; }
+.challenge li img { width: 40px; height: 40px; object-fit: contain; flex: none; }
+.lvl-tag { font-weight: 800; letter-spacing: .12em; text-transform: uppercase; font-size: .8rem; color: #b3560a; margin: 0; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .overlay { position: absolute; inset: 0; display: grid; place-items: center; padding: 16px; background: rgba(20,40,74,.6); overflow-y: auto; }
 .overlay { z-index: 5; }
@@ -81,10 +91,11 @@ canvas { display: block; margin: 0 auto; flex: none; cursor: pointer; border-rad
 
 <main class="stage" id="stage">
   <div class="hud" aria-hidden="true">
+    <div><b id="hud-level">1</b><small>nivel</small></div>
     <div><b id="hud-score">0</b><small>puntos</small></div>
-    <div id="hud-nets-box"><b id="hud-nets">18</b><small>redes</small></div>
-    <div><b id="hud-goal">2000</b><small>récord del mes</small></div>
+    <div id="hud-nets-box"><b id="hud-nets">10</b><small>redes</small></div>
   </div>
+  <div class="goals" id="goals" aria-hidden="true"></div>
   <canvas id="scene" aria-hidden="true"></canvas>
   <div class="shore" aria-hidden="true"></div>
   <canvas id="game" tabindex="0" role="img" aria-label="Tablero de pesca en el mar frente al Hotel Salinas, el Costa Azul y Suite Salinas: peces, pulpos, tortugas y medusas del mar de Salinas. Toca un grupo de dos o más iguales para pescarlos. Con el teclado: flechas para moverte y Enter para pescar."></canvas>
@@ -93,17 +104,29 @@ canvas { display: block; margin: 0 auto; flex: none; cursor: pointer; border-rad
   <div class="overlay" id="start">
     <div class="card">
       <h1>Pesca <em>en Salinas</em></h1>
-      <p>Sal a pescar con <b>Jorge A</b> frente a los Hoteles Salinas. Toca un grupo de animales iguales que se toquen y atrápalos con tu red. Tienes <b>18 redes</b>: mientras más grande el grupo, muchos más puntos.</p>
-      <p class="goal">Récord a vencer este mes: <b id="goal-start">2000</b></p>
-      <div class="how"><span>2 o más iguales juntos</span><span>Grupo de 7 o más: red extra</span><span>Grupo de 10 o más: 2 redes extra</span><span>Concha Spondylus: limpia fila y columna</span></div>
+      <p>Sal a pescar con <b>Jorge A</b> frente a los Hoteles Salinas. Toca un grupo de animales iguales que se toquen y atrápalos con tu red. Cada nivel trae un reto: puntos, pulpos, anclas o rocas. Tus puntos se suman de nivel en nivel.</p>
+      <p class="goal">Récord a vencer este mes: <b id="goal-start">4000</b></p>
+      <div class="how"><span>2 o más iguales juntos</span><span>Grupo de 7 o más: red extra</span><span>Ancla: pesca a su lado y se hunde</span><span>Roca: pesca a su lado y se rompe</span><span>Concha Spondylus: limpia fila y columna</span></div>
       <button class="btn btn-sun" type="button" id="go">¡A pescar!</button>
       <p><a class="back" href="inicio.html">Todos los juegos</a> · <a class="back" href="../">Ver los hoteles</a></p>
+    </div>
+  </div>
+
+  <div class="overlay" id="lvl" hidden>
+    <div class="card challenge" role="dialog" aria-labelledby="lvl-title">
+      <p class="lvl-tag" id="lvl-done" hidden></p>
+      <h2 id="lvl-title">Nivel 1</h2>
+      <p>Tu reto:</p>
+      <ul id="lvl-list"></ul>
+      <p id="lvl-nets"></p>
+      <button class="btn btn-sun" type="button" id="lvl-go">¡Vamos!</button>
     </div>
   </div>
 
   <div class="overlay" id="end" hidden>
     <div class="card" role="dialog" aria-labelledby="end-title">
       <h2 id="end-title">¡Se acabaron <em>las redes!</em></h2>
+      <p class="lvl-tag" id="end-level"></p>
       <div class="stats"><div><b id="end-score">0</b><small>puntos</small></div><div><b id="end-best">0</b><small id="end-best-label">tu récord</small></div></div>
       <p id="end-catch"></p>
       <p class="goal-res" id="goal-res"></p>
@@ -118,13 +141,13 @@ canvas { display: block; margin: 0 auto; flex: none; cursor: pointer; border-rad
   </div>
 </main>
 
-<script src="pesca-reglas.js"></script>
+<script src="pesca-niveles.js"></script>
 <script>
 (function () {
   "use strict";
   var WA = "593995755979";
-  var GOAL = 2000;   // score to beat this month: update it to the best score the family receives
-  var P = window.Pesca, COLS = P.COLS, ROWS = P.ROWS, SHELL = P.SHELL;
+  var GOAL = 4000;   // score to beat this month (points add up across levels, so it is higher than the other games)
+  var P = window.Pesca, COLS = P.COLS, ROWS = P.ROWS, SHELL = P.SHELL, ANCHOR = P.ANCHOR, ROCK = P.ROCK;
   var canvas = document.getElementById("game"), ctx = canvas.getContext("2d");
   var $ = function (id) { return document.getElementById(id); };
   var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -138,18 +161,20 @@ canvas { display: block; margin: 0 auto; flex: none; cursor: pointer; border-rad
   ];
   function load(src) { var im = new Image(); im.onload = function () { draw(); }; im.src = src; return im; }
   KINDS.forEach(function (k) { k.im = load("img/mar-" + k.n + ".png"); });
-  var SHELL_IM = load("img/mar-spondylus.png");
+  var SHELL_IM = load("img/mar-spondylus.png"), ANCHOR_IM = load("img/mar-anchor.png"), ROCK_IM = load("img/mar-rock.png");
 
   var game, state = "start", S = 50, dpr = 1, off, pops = [], floats = [], cursor = { c: 3, r: 4 }, showCursor = false, busy = false, overAt = 0, raf = 0, last = 0, shake = null;
   var best = 0;
   try { best = parseInt(localStorage.getItem("hs-best-pesca") || "0", 10) || 0; } catch (e) {}
   function showBest() { $("hi-top").textContent = best ? "Récord: " + best : ""; }
   showBest();
-  $("hud-goal").textContent = GOAL; $("goal-start").textContent = GOAL;
+  $("goal-start").textContent = GOAL;
+  var bestLevel = 0;
+  try { bestLevel = parseInt(localStorage.getItem("hs-best-pesca-nivel") || "0", 10) || 0; } catch (e) {}
 
   function resize() {
     var st = $("stage").getBoundingClientRect(), hud = document.querySelector(".hud").getBoundingClientRect(), sh = document.querySelector(".shore").getBoundingClientRect();
-    var maxW = Math.min(st.width - 24, 560), maxH = st.height - hud.height - sh.height - 44;
+    var gl = $("goals").getBoundingClientRect(), maxW = Math.min(st.width - 24, 560), maxH = st.height - hud.height - gl.height - sh.height - 52;
     S = Math.max(30, Math.floor(Math.min(maxW / COLS, maxH / ROWS)));
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas.style.width = S * COLS + "px"; canvas.style.height = S * ROWS + "px";
@@ -168,6 +193,7 @@ canvas { display: block; margin: 0 auto; flex: none; cursor: pointer; border-rad
   var SHORE_PHONE = [["sprite-hotel-salinas", .84], ["palma-1", .62], ["sprite-costa-azul", .56], ["palma-3", .6], ["sprite-suite-salinas", .82]];
   function drawScene() {
     var st = $("stage").getBoundingClientRect(), sh = document.querySelector(".shore").getBoundingClientRect();
+    sh = { bottom: Math.max(sh.bottom, canvas.getBoundingClientRect().top - 10) };
     var W = st.width, H = st.height, base = sh.bottom - st.top, d = Math.min(window.devicePixelRatio || 1, 2);
     scene.width = Math.round(W * d); scene.height = Math.round(H * d);
     var x = sctx; x.setTransform(d, 0, 0, d, 0, 0);
@@ -200,14 +226,37 @@ canvas { display: block; margin: 0 auto; flex: none; cursor: pointer; border-rad
 
   function hud() {
     $("hud-score").textContent = game ? game.score : 0;
-    $("hud-nets").textContent = game ? game.nets : P.cfg.nets;
+    $("hud-nets").textContent = game ? game.nets : 10;
+    $("hud-level").textContent = game ? game.level : 1;
+    $("goals").innerHTML = goalItems().map(function (g) {
+      return '<span class="' + (g.img ? "" : "txt ") + (g.have >= g.need ? "done" : "") + '">' + (g.img ? '<img src="' + g.img + '" alt="">' : "") + g.short + " " + Math.min(g.have, g.need) + "/" + g.need + "</span>";
+    }).join("");
     $("hud-nets-box").className = game && game.nets <= 3 ? "low" : "";
+  }
+
+  function goalItems() {
+    if (!game) return [];
+    var L = game.L, g = game.got, out = [];
+    if (L.score) out.push({ short: "Puntos", have: g.score, need: L.score, long: "Haz " + L.score + " puntos en este nivel" });
+    if (L.kind) out.push({ img: "img/mar-" + KINDS[L.kind[0]].n + ".png", short: "", have: g.kind, need: L.kind[1], long: "Pesca " + L.kind[1] + " " + KINDS[L.kind[0]].many });
+    if (L.anchors) out.push({ img: "img/mar-anchor.png", short: "", have: g.anchors, need: L.anchors, long: "Lleva " + L.anchors + " anclas al fondo: pesca a su lado y se hunden" });
+    if (L.rocks) out.push({ img: "img/mar-rock.png", short: "", have: g.rocks, need: L.rocks, long: "Rompe " + L.rocks + " rocas: pesca a su lado y se rompen" });
+    return out;
+  }
+  function showLevel(done) {
+    var L = game.L;
+    $("lvl-done").hidden = !done;
+    if (done) $("lvl-done").textContent = done;
+    $("lvl-title").textContent = "Nivel " + game.level;
+    $("lvl-list").innerHTML = goalItems().map(function (g) { return "<li>" + (g.img ? '<img src="' + g.img + '" alt="">' : "") + "<span>" + g.long + "</span></li>"; }).join("");
+    $("lvl-nets").innerHTML = "Tienes <b>" + L.nets + " redes</b>. Las que sobren valen " + P.cfg.leftover + " puntos cada una.";
+    $("lvl").hidden = false; $("lvl-go").focus();
   }
 
   /* ---------- drawing ---------- */
   function rrect(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
   function sprite(k, cx, cy, size, alpha) {
-    var im = k === SHELL ? SHELL_IM : KINDS[k].im;
+    var im = k === SHELL ? SHELL_IM : k === ANCHOR ? ANCHOR_IM : k === ROCK ? ROCK_IM : KINDS[k].im;
     ctx.globalAlpha = alpha;
     if (im.complete && im.naturalWidth) {
       var ar = im.naturalWidth / im.naturalHeight, w = size, h = size;
@@ -243,12 +292,17 @@ canvas { display: block; margin: 0 auto; flex: none; cursor: pointer; border-rad
         glow.addColorStop(0, "rgba(255,226,120," + (0.55 + pulse * 0.4) + ")"); glow.addColorStop(1, "rgba(255,226,120,0)");
         ctx.fillStyle = glow; ctx.fillRect(x - S * 0.3, y - S * 0.3, S * 1.6, S * 1.6);
       }
-      ctx.fillStyle = k === SHELL ? "#ffe7a3" : KINDS[k].tint;
+      ctx.fillStyle = k === SHELL ? "#ffe7a3" : k === ANCHOR ? "#f4efe6" : k === ROCK ? "#b9ad9b" : KINDS[k].tint;
       rrect(x + pad, y + pad, S - pad * 2, S - pad * 2, S * 0.22); ctx.fill();
       if (k === SHELL) { ctx.strokeStyle = pulse > 0.5 ? "#ffc23d" : "#f08a1c"; ctx.lineWidth = Math.max(2, S * 0.06); ctx.stroke(); }
       sprite(k, x + S / 2, y + S / 2, S * 0.74, 1);
+      if (k === ANCHOR) {                         // a small arrow: this one goes down to the bottom
+        ctx.fillStyle = "#b3560a"; var ax = x + S * 0.82, ay = y + S * 0.74, a = S * 0.09;
+        ctx.beginPath(); ctx.moveTo(ax - a, ay - a); ctx.lineTo(ax + a, ay - a); ctx.lineTo(ax, ay + a * 0.6); ctx.closePath(); ctx.fill();
+      }
       if (k === SHELL) sparkle(x + S * 0.78, y + S * 0.22, S * (0.1 + pulse * 0.09), reduce ? 0 : now / 900);
     }
+    if (game.L.anchors) { ctx.fillStyle = "rgba(240,138,28,.85)"; ctx.fillRect(0, Hd - Math.max(4, S * 0.07), Wd, Math.max(4, S * 0.07)); }
     pops.forEach(function (p) {
       var a = Math.min(1, (now - p.t) / 260), s = 1 - a * 0.6;
       ctx.fillStyle = "rgba(255,255,255," + (0.55 * (1 - a)) + ")";
@@ -287,8 +341,15 @@ canvas { display: block; margin: 0 auto; flex: none; cursor: pointer; border-rad
   }
   function settle() {
     busy = false;
-    if (game.over && state === "run") gameOver();
+    if (state !== "run") return;
+    if (game.won) {
+      state = "between";
+      var msg = "¡Nivel " + game.level + " superado!" + (game.lastLeftover ? " +" + game.lastLeftover + " por redes que sobraron" : "");
+      if (game.level > bestLevel) { bestLevel = game.level; try { localStorage.setItem("hs-best-pesca-nivel", String(bestLevel)); } catch (e) {} }
+      setTimeout(function () { game.nextLevel(); off = zeros(); for (var c = 0; c < COLS; c++) for (var r = 0; r < ROWS; r++) off[c][r] = reduce ? 0 : -ROWS - (COLS - c) * 0.3; hud(); resize(); showLevel(msg); }, 650);
+    } else if (game.over) gameOver();
   }
+  $("lvl-go").addEventListener("click", function () { $("lvl").hidden = true; state = "run"; animate(); canvas.focus({ preventScroll: true }); });
 
   /* ---------- playing ---------- */
   function say(t) { $("live").textContent = t; }
@@ -300,14 +361,18 @@ canvas { display: block; margin: 0 auto; flex: none; cursor: pointer; border-rad
     var now = performance.now();
     res.removed.forEach(function (p) { pops.push({ c: p.c, r: p.r, k: p.k, t: now }); });
     if (res.shuffled) { off = zeros(); for (var cc = 0; cc < COLS; cc++) for (var rr = 0; rr < ROWS; rr++) off[cc][rr] = -ROWS; }
-    else res.moves.forEach(function (m) { off[m.c][m.to] = m.from - m.to; });
+    else for (var oc = 0; oc < COLS; oc++) for (var orr = 0; orr < ROWS; orr++) off[oc][orr] = res.origin[oc][orr] - orr;
+    res.anchors.forEach(function (p) { pops.push({ c: p.c, r: p.r, k: ANCHOR, t: now }); floats.push({ text: "¡Ancla al fondo! +100", x: (p.c + 0.5) * S, y: (ROWS - 0.6) * S, t: now + 100, size: 0.42, color: "#ffffff" }); });
+    if (res.rocks) floats.push({ text: res.rocks === 1 ? "¡Roca rota!" : "¡" + res.rocks + " rocas rotas!", x: S * COLS / 2, y: S * ROWS * 0.7, t: now + 80, size: 0.5, color: "#ffffff" });
+    game.lastLeftover = res.leftover;
     var cx = c * S + S / 2, cy = r * S + S / 2;
     floats.push({ text: "+" + res.points, x: cx, y: cy, t: now, size: res.points >= 300 ? 0.75 : 0.55, color: "#ffd59a" });
     if (res.bonusNets) floats.push({ text: res.bonusNets === 2 ? "¡+2 redes!" : "¡Red extra!", x: S * COLS / 2, y: S * ROWS * 0.45, t: now + 120, size: 0.7, color: "#ffffff" });
     if (res.shell) floats.push({ text: "¡Concha Spondylus!", x: S * COLS / 2, y: S * ROWS * 0.35, t: now, size: 0.6, color: "#ffffff" });
     if (res.shuffled) floats.push({ text: "Nuevo cardumen", x: S * COLS / 2, y: S * ROWS * 0.55, t: now + 200, size: 0.55, color: "#ffffff" });
     var n = res.removed.length, kind = res.removed[0].k;
-    say(res.shell ? "Concha Spondylus: " + n + " animales, " + res.points + " puntos." : "Pescaste " + n + " " + KINDS[kind].many + ", " + res.points + " puntos. Quedan " + game.nets + " redes.");
+    say((res.shell ? "Concha Spondylus: " + n + " piezas, " : "Pescaste " + n + " " + KINDS[kind].many + ", ") + res.points + " puntos." +
+      (res.rocks ? " Rompiste " + res.rocks + " rocas." : "") + (res.anchors.length ? " Un ancla llegó al fondo." : "") + (res.won ? " ¡Nivel superado!" : " Quedan " + game.nets + " redes."));
     hud(); animate();
   }
   function cellAt(e) {
@@ -320,7 +385,7 @@ canvas { display: block; margin: 0 auto; flex: none; cursor: pointer; border-rad
     if (state !== "run") return;
     var d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
     if (d) { e.preventDefault(); showCursor = true; cursor.c = Math.max(0, Math.min(COLS - 1, cursor.c + d[0])); cursor.r = Math.max(0, Math.min(ROWS - 1, cursor.r + d[1]));
-      var k = game.grid[cursor.c][cursor.r]; say(k === SHELL ? "Concha Spondylus" : KINDS[k].one + ", grupo de " + game.group(cursor.c, cursor.r).length); draw(); }
+      var k = game.grid[cursor.c][cursor.r]; say(k === SHELL ? "Concha Spondylus" : k === ANCHOR ? "Ancla" : k === ROCK ? "Roca" : KINDS[k].one + ", grupo de " + game.group(cursor.c, cursor.r).length); draw(); }
     else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); showCursor = true; play(cursor.c, cursor.r); }
   });
 
@@ -328,22 +393,24 @@ canvas { display: block; margin: 0 auto; flex: none; cursor: pointer; border-rad
   function start() {
     game = new P.Game(); off = zeros(); pops = []; floats = []; busy = false; state = "run";
     for (var c = 0; c < COLS; c++) for (var r = 0; r < ROWS; r++) off[c][r] = reduce ? 0 : -ROWS - (COLS - c) * 0.3;
-    $("start").hidden = true; $("end").hidden = true; hud(); resize(); animate(); canvas.focus({ preventScroll: true });
+    state = "between"; $("start").hidden = true; $("end").hidden = true; hud(); resize(); animate(); showLevel("");
   }
   function gameOver() {
     state = "over"; overAt = performance.now();
     var pts = game.score, isBest = pts > best;
+    if (game.level > bestLevel) { bestLevel = game.level; try { localStorage.setItem("hs-best-pesca-nivel", String(bestLevel)); } catch (e) {} }
     if (isBest) { best = pts; try { localStorage.setItem("hs-best-pesca", String(best)); } catch (e) {} }
     showBest();
     $("end-score").textContent = pts; $("end-best").textContent = best;
     $("end-best-label").textContent = isBest ? "¡nuevo récord!" : "tu récord";
+    $("end-level").textContent = "Llegaste al nivel " + game.level + (game.level >= bestLevel ? "" : " · tu mejor: nivel " + bestLevel);
     $("end-catch").textContent = "Pescaste " + game.caught + " animales. Tu mejor red atrapó " + game.biggest + " de una vez.";
     var gr = $("goal-res");
     if (pts >= GOAL) { gr.textContent = "¡Superaste el récord del mes (" + GOAL + ")! Envía tu captura por WhatsApp para participar."; gr.className = "goal-res win"; }
     else { gr.textContent = "Te faltaron " + (GOAL - pts) + " puntos para el récord del mes (" + GOAL + "). ¡Otra vez!"; gr.className = "goal-res"; }
-    $("send").href = "https://wa.me/" + WA + "?text=" + encodeURIComponent("Hola, hice " + pts + " puntos en «Pesca en Salinas» y quiero participar en el concurso del mes. (Adjunto mi captura)");
+    $("send").href = "https://wa.me/" + WA + "?text=" + encodeURIComponent("Hola, hice " + pts + " puntos (nivel " + game.level + ") en «Pesca en Salinas» y quiero participar en el concurso del mes. (Adjunto mi captura)");
     var url = location.href.split("#")[0];
-    $("dare").href = "https://wa.me/?text=" + encodeURIComponent("Hice " + pts + " puntos pescando con Jorge A en Salinas. ¿Me ganas? " + url);
+    $("dare").href = "https://wa.me/?text=" + encodeURIComponent("Llegué al nivel " + game.level + " con " + pts + " puntos pescando con Jorge A en Salinas. ¿Me ganas? " + url);
     setTimeout(function () { $("end").hidden = false; $("again").focus(); }, 700);
   }
   $("go").addEventListener("click", start);
@@ -351,7 +418,7 @@ canvas { display: block; margin: 0 auto; flex: none; cursor: pointer; border-rad
   resize(); hud();
 
   if (location.hash === "#prueba") {   // test hook for the automatic playtest
-    window.__estado = function () { return { state: state, busy: busy, score: game.score, nets: game.nets, grid: game.grid.map(function (c) { return c.slice(); }), S: S }; };
+    window.__estado = function () { return { state: state, busy: busy, score: game.score, nets: game.nets, level: game.level, L: game.L, got: game.got, grid: game.grid.map(function (c) { return c.slice(); }), S: S }; };
   }
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("/juego/sw.js", { scope: "/juego/" }).catch(function () {});
 })();

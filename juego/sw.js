@@ -1,11 +1,11 @@
-/* Offline support for the Jorge A games: pages load from the network when possible, everything else from the cache. */
-var CACHE = "jorge-a-v3";
+/* Offline support for the Jorge A games: pages and scripts load from the network when possible, pictures from the cache. */
+var CACHE = "jorge-a-v4";
 var FILES = [
 "/juego/inicio.html",
 "/juego/index.html",
 "/juego/mar.html",
 "/juego/pesca.html",
-"/juego/pesca-reglas.js",
+"/juego/pesca-niveles.js",
 "/juego/manifest.webmanifest",
 "/juego/img/app-bucear.png",
 "/juego/img/app-correr.png",
@@ -65,7 +65,7 @@ self.addEventListener("fetch", function (e) {
   var r = e.request; if (r.method !== "GET") return;
   var url = new URL(r.url);
   if (url.origin !== location.origin) return;
-  if (r.mode === "navigate" || url.pathname.endsWith(".html")) {
+  if (r.mode === "navigate" || url.pathname.endsWith(".html") || url.pathname.endsWith(".js")) {
     e.respondWith(fetch(r).then(function (res) { var copy = res.clone(); caches.open(CACHE).then(function (c) { c.put(r, copy); }); return res; }).catch(function () { return caches.match(r, { ignoreSearch: true }).then(function (m) { return m || caches.match("/juego/inicio.html"); }); }));
   } else {
     e.respondWith(caches.match(r, { ignoreSearch: true }).then(function (m) { return m || fetch(r).then(function (res) { var copy = res.clone(); caches.open(CACHE).then(function (c) { c.put(r, copy); }); return res; }); }));
