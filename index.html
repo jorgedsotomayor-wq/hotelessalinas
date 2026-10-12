@@ -45,7 +45,7 @@
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; background: var(--sand); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+body { margin: 0; background: var(--ink); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 img { max-width: 100%; display: block; }
 a { color: inherit; }
 :focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; border-radius: 2px; }
@@ -220,6 +220,8 @@ p { margin: 0; }
 .included { margin-top: 1.4rem; display: flex; flex-wrap: wrap; gap: .5rem; }
 .included span { background: var(--sand); border-radius: 999px; padding: .45rem .9rem; font-size: .92rem; font-weight: 600; }
 .draft-note { margin-top: 1.2rem; font-size: .88rem; color: var(--mist); }
+.rates-note { margin-top: 1.4rem; padding: 1rem 1.2rem; border-radius: 16px; background: var(--sun-soft); display: grid; gap: .35rem; max-width: 46rem; }
+.rates-note p { color: var(--ink); font-size: .95rem; }
 
 /* salinas */
 .salinas { padding-block: clamp(4.5rem, 10vw, 7.5rem); }
@@ -442,6 +444,26 @@ a.rating { text-decoration: none; color: inherit; }
 a.rating:hover b { text-decoration: underline; }
 @media (max-width: 819px) { .places { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: min(80vw, 340px); overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: .6rem; } .place { scroll-snap-align: start; } }
 
+/* slides over the bay: a fixed photo behind floating section panels */
+.bg-fixed { position: fixed; inset: 0; z-index: -1; }
+.bg-fixed img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.05); }
+.bg-fixed::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,24,46,.55), rgba(10,24,46,.7)); }
+.panel { position: relative; margin: clamp(12px, 2.2vw, 30px) clamp(10px, 2.2vw, 30px); border-radius: clamp(22px, 3vw, 38px); overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.3); }
+.hotels.panel, .salinas.panel, .faq.panel { background: var(--sand); }
+.story.panel, .book.panel { border: 1px solid rgba(255,255,255,.1); }
+.panel .wave-top { display: none; }
+@media (min-width: 1100px) { .panel { margin-inline: 70px; } }
+.doors-sec { padding: 3rem var(--gutter); background: var(--ink); }
+.motion .doors-sec { padding: 0; background: transparent; }
+.dots { position: fixed; right: 16px; top: 50%; translate: 0 -50%; z-index: 40; display: none; flex-direction: column; gap: 6px; }
+@media (min-width: 1100px) { .dots { display: flex; } }
+.dots a { display: flex; align-items: center; justify-content: flex-end; gap: 10px; min-height: 24px; text-decoration: none; }
+.dots i { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.55); box-shadow: 0 0 0 2px rgba(20,40,74,.35); transition: transform .3s ease, background-color .3s ease; flex: none; }
+.dots a.on i { background: var(--sun); transform: scale(1.45); }
+.dots span { opacity: 0; translate: 6px 0; font-size: .8rem; font-weight: 700; color: #fff; background: rgba(20,40,74,.88); padding: .25rem .65rem; border-radius: 999px; transition: opacity .25s ease, translate .25s ease; white-space: nowrap; }
+.dots a:hover span, .dots a:focus-visible span, .dots a.on span { opacity: 1; translate: 0 0; }
+.dots a:not(:hover):not(:focus-visible).on span { opacity: 0; }
+
 /* what to do in Salinas (revealed behind the doors) */
 .todos { list-style: none; padding: 0; margin: 1.4rem 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; }
 @media (min-width: 760px) { .todos { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; max-width: 980px; } }
@@ -532,6 +554,18 @@ a.rating:hover b { text-decoration: underline; }
   </div>
 </div>
 
+<div class="bg-fixed" aria-hidden="true"><img src="img/hero-playa.jpg" alt=""></div>
+<nav class="dots" aria-label="Ir a una sección">
+  <a href="#inicio"><span>Inicio</span><i></i></a>
+  <a href="#que-hacer"><span>Qué hacer</span><i></i></a>
+  <a href="#hoteles"><span>Hoteles</span><i></i></a>
+  <a href="#habitaciones"><span>Habitaciones</span><i></i></a>
+  <a href="#reservar"><span>Reservar</span><i></i></a>
+  <a href="#historia"><span>Historia</span><i></i></a>
+  <a href="#ubicacion"><span>Ubicación</span><i></i></a>
+  <a href="#salinas"><span>Salinas</span><i></i></a>
+  <a href="#preguntas"><span>Preguntas</span><i></i></a>
+</nav>
 <main id="contenido">
   <section class="hero" id="inicio" aria-labelledby="hero-title">
     <div class="hero-media"><img src="img/hero-playa.jpg" alt="Playa de Salinas con agua turquesa y el malecón al fondo" fetchpriority="high"></div>
@@ -578,8 +612,7 @@ a.rating:hover b { text-decoration: underline; }
   </div>
 
 
-  <section class="hotels" id="hoteles" aria-labelledby="hoteles-title">
-    <div class="wrap">
+  <section class="doors-sec" aria-labelledby="que-hacer-title">
       <div class="doors" id="doors">
         <div class="doors-stage">
           <figure class="doors-back"><img src="img/hero-playa.jpg" alt="" loading="lazy"></figure>
@@ -593,6 +626,10 @@ a.rating:hover b { text-decoration: underline; }
           <div class="door d-r" aria-hidden="true"><img src="img/suites-salinas-edificio.jpg" alt=""><span>Suite Salinas</span></div>
         </div>
       </div>
+  </section>
+
+  <section class="hotels panel" id="hoteles" aria-labelledby="hoteles-title">
+    <div class="wrap">
       <div class="sec-head">
         <div>
           <p class="kicker">Nuestros hoteles</p>
@@ -648,7 +685,7 @@ a.rating:hover b { text-decoration: underline; }
     </div>
   </section>
 
-  <section class="rooms" id="habitaciones" aria-labelledby="hab-title">
+  <section class="rooms panel" id="habitaciones" aria-labelledby="hab-title">
     <div class="wrap">
       <div class="sec-head">
         <div>
@@ -672,22 +709,22 @@ a.rating:hover b { text-decoration: underline; }
       <ul class="rail" aria-label="Suites de Suite Salinas">
         <li class="room"><figure><img src="img/su-matrimonial.jpg" alt="Suite matrimonial con cama de dos plazas" loading="lazy"></figure>
           <div class="room-body"><h3>Matrimonial</h3><p class="beds">1 cama de 2 plazas</p><span class="pax">2 personas</span>
-          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Matrimonial" data-for="Suite Salinas">Reservar</button></div></div></li>
+          <div class="room-foot"><p class="price">Desde <b>$50</b>por noche</p><button class="btn btn-sun" type="button" data-room="Matrimonial" data-for="Suite Salinas">Reservar</button></div></div></li>
         <li class="room"><figure><img src="img/su-2ambientes.jpg" alt="Suite de dos ambientes con sillón y cama" loading="lazy"></figure>
           <div class="room-body"><h3>Suite 2 Ambientes</h3><p class="beds">1 cama de 2 plazas y 3 camas sencillas</p><span class="pax">Hasta 5 personas</span>
-          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Suite 2 Ambientes" data-for="Suite Salinas">Reservar</button></div></div></li>
+          <div class="room-foot"><p class="price">Desde <b>$20</b>por persona</p><button class="btn btn-sun" type="button" data-room="Suite 2 Ambientes" data-for="Suite Salinas">Reservar</button></div></div></li>
         <li class="room"><figure><img src="img/su-triple.jpg" alt="Suite triple con ventanas a la ciudad" loading="lazy"></figure>
           <div class="room-body"><h3>Triple</h3><p class="beds">1 cama de 2 plazas y 1 de plaza y media</p><span class="pax">3 personas</span>
-          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Triple" data-for="Suite Salinas">Reservar</button></div></div></li>
+          <div class="room-foot"><p class="price">Desde <b>$20</b>por persona</p><button class="btn btn-sun" type="button" data-room="Triple" data-for="Suite Salinas">Reservar</button></div></div></li>
         <li class="room"><figure><img src="img/su-cuadruple.jpg" alt="Suite cuádruple" loading="lazy"></figure>
           <div class="room-body"><h3>Cuádruple</h3><p class="beds">1 cama de 2 plazas o 2 de plaza y media</p><span class="pax">4 personas</span>
-          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Cuádruple" data-for="Suite Salinas">Reservar</button></div></div></li>
+          <div class="room-foot"><p class="price">Desde <b>$20</b>por persona</p><button class="btn btn-sun" type="button" data-room="Cuádruple" data-for="Suite Salinas">Reservar</button></div></div></li>
         <li class="room"><figure><img src="img/su-quintuple.jpg" alt="Suite quíntuple con varias camas" loading="lazy"></figure>
           <div class="room-body"><h3>Quíntuple</h3><p class="beds">1 cama de 2 plazas y 3 de plaza y media</p><span class="pax">5 personas</span>
-          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Quíntuple" data-for="Suite Salinas">Reservar</button></div></div></li>
+          <div class="room-foot"><p class="price">Desde <b>$20</b>por persona</p><button class="btn btn-sun" type="button" data-room="Quíntuple" data-for="Suite Salinas">Reservar</button></div></div></li>
         <li class="room"><figure><img src="img/su-sextuple.jpg" alt="Suite séxtuple para familias grandes" loading="lazy"></figure>
           <div class="room-body"><h3>Séxtuple</h3><p class="beds">1 cama de 2 plazas y 4 de plaza y media</p><span class="pax">6 personas</span>
-          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Séxtuple" data-for="Suite Salinas">Reservar</button></div></div></li>
+          <div class="room-foot"><p class="price">Desde <b>$20</b>por persona</p><button class="btn btn-sun" type="button" data-room="Séxtuple" data-for="Suite Salinas">Reservar</button></div></div></li>
       </ul>
     </div>
 
@@ -696,13 +733,13 @@ a.rating:hover b { text-decoration: underline; }
       <ul class="rail" aria-label="Habitaciones del Costa Azul">
         <li class="room"><figure><img src="img/ca-hab-1.jpg" alt="Habitación matrimonial azul del Costa Azul con vista a los edificios del malecón" loading="lazy"></figure>
           <div class="room-body"><h3>Matrimonial</h3><p class="beds">Cama de 2 plazas, baño privado y aire acondicionado</p><span class="pax">2 personas</span>
-          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Matrimonial" data-for="Hotel Salinas Costa Azul">Reservar</button></div></div></li>
+          <div class="room-foot"><p class="price">Desde <b>$50</b>por noche</p><button class="btn btn-sun" type="button" data-room="Matrimonial" data-for="Hotel Salinas Costa Azul">Reservar</button></div></div></li>
         <li class="room"><figure><img src="img/ca-hab-2.jpg" alt="Habitación del Costa Azul con cama y sillón" loading="lazy"></figure>
           <div class="room-body"><h3>Sencilla</h3><p class="beds">Para viajar solo o en pareja, con sillón y baño privado</p><span class="pax">1 a 2 personas</span>
-          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Sencilla" data-for="Hotel Salinas Costa Azul">Reservar</button></div></div></li>
+          <div class="room-foot"><p class="price">Precio <b>a consultar</b>según fecha</p><button class="btn btn-sun" type="button" data-room="Sencilla" data-for="Hotel Salinas Costa Azul">Reservar</button></div></div></li>
         <li class="room"><figure><img src="img/ca-suite.jpg" alt="Sala de una suite del Costa Azul con sofá y refrigeradora" loading="lazy"></figure>
           <div class="room-body"><h3>Suite</h3><p class="beds">Con sala, refrigeradora y espacio para la familia</p><span class="pax">Familias</span>
-          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Suite" data-for="Hotel Salinas Costa Azul">Reservar</button></div></div></li>
+          <div class="room-foot"><p class="price">Desde <b>$20</b>por persona</p><button class="btn btn-sun" type="button" data-room="Suite" data-for="Hotel Salinas Costa Azul">Reservar</button></div></div></li>
         <li class="room"><figure><img src="img/costa-azul-piscina.jpg" alt="Piscina del Costa Azul" loading="lazy"></figure>
           <div class="room-body"><h3>La piscina</h3><p class="beds">En la planta baja, con sillas para tomar sol. Abierta para los huéspedes de los tres hoteles.</p><span class="pax">Para huéspedes</span>
           <div class="room-foot"><p class="price">Incluido<b>Sin costo extra</b></p><button class="btn btn-sun" type="button" data-room="La que me recomienden" data-for="Hotel Salinas Costa Azul">Reservar</button></div></div></li>
@@ -714,21 +751,24 @@ a.rating:hover b { text-decoration: underline; }
       <ul class="rail" aria-label="Habitaciones del Hotel Salinas">
         <li class="room"><figure><img src="img/hs-hab-1.jpg" alt="Habitación del Hotel Salinas con dos camas y ventanas con vista al mar" loading="lazy"></figure>
           <div class="room-body"><h3>Múltiple con vista</h3><p class="beds">Dos camas grandes y ventanales a la ciudad y el mar</p><span class="pax">Hasta 4 personas</span>
-          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Múltiple" data-for="Hotel Salinas">Reservar</button></div></div></li>
+          <div class="room-foot"><p class="price">Desde <b>$20</b>por persona</p><button class="btn btn-sun" type="button" data-room="Múltiple" data-for="Hotel Salinas">Reservar</button></div></div></li>
         <li class="room"><figure><img src="img/hs-hab-3.jpg" alt="Habitación matrimonial del Hotel Salinas" loading="lazy"></figure>
           <div class="room-body"><h3>Matrimonial</h3><p class="beds">Cama de 2 plazas y baño privado</p><span class="pax">2 personas</span>
-          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Matrimonial" data-for="Hotel Salinas">Reservar</button></div></div></li>
+          <div class="room-foot"><p class="price">Desde <b>$50</b>por noche</p><button class="btn btn-sun" type="button" data-room="Matrimonial" data-for="Hotel Salinas">Reservar</button></div></div></li>
         <li class="room"><figure><img src="img/hs-hab-2.jpg" alt="Habitación múltiple del Hotel Salinas con tres camas" loading="lazy"></figure>
           <div class="room-body"><h3>Múltiple</h3><p class="beds">Tres camas para familias o amigos</p><span class="pax">3 o más personas</span>
-          <div class="room-foot"><p class="price">Precio <b>según fecha</b>y grupo</p><button class="btn btn-sun" type="button" data-room="Múltiple" data-for="Hotel Salinas">Reservar</button></div></div></li>
+          <div class="room-foot"><p class="price">Desde <b>$20</b>por persona</p><button class="btn btn-sun" type="button" data-room="Múltiple" data-for="Hotel Salinas">Reservar</button></div></div></li>
       </ul>
     </div>
     <div class="wrap">
-      <p class="draft-note">Los precios cambian según la temporada, los feriados y el tamaño del grupo. Escríbenos con tus fechas y te damos el precio exacto.</p>
+      <div class="rates-note">
+        <p><b>Grupos: desde $15 por persona por noche</b> en habitaciones múltiples.</p>
+        <p>Tarifas por noche en temporada regular. En feriados y fechas especiales pueden cambiar. Pregúntanos por descuentos para grupos, estadías largas y temporada baja.</p>
+      </div>
     </div>
   </section>
 
-  <section class="book" id="reservar" aria-labelledby="book-title">
+  <section class="book panel" id="reservar" aria-labelledby="book-title">
     <div class="wrap book-grid">
       <div>
         <p class="kicker">Reservas</p>
@@ -774,7 +814,7 @@ a.rating:hover b { text-decoration: underline; }
     </div>
   </section>
 
-  <section class="story" id="historia" aria-labelledby="historia-title">
+  <section class="story panel" id="historia" aria-labelledby="historia-title">
     <div class="wrap story-grid">
       <div class="then-now">
         <figure class="polaroid">
@@ -800,7 +840,7 @@ a.rating:hover b { text-decoration: underline; }
     </div>
   </section>
 
-  <section class="mapsec" id="ubicacion" aria-labelledby="map-title">
+  <section class="mapsec panel" id="ubicacion" aria-labelledby="map-title">
     <div class="wave-top" aria-hidden="true"><svg viewBox="0 0 1200 46" preserveAspectRatio="none"><path fill="currentColor" d="M0 46V22c50 0 50-18 100-18s50 18 100 18 50-18 100-18 50 18 100 18 50-18 100-18 50 18 100 18 50-18 100-18 50 18 100 18 50-18 100-18 50 18 100 18 50-18 100-18 50 18 100 18V46z"/></svg></div>
     <div class="wrap">
       <div class="sec-head">
@@ -852,7 +892,7 @@ a.rating:hover b { text-decoration: underline; }
 
 
 
-  <section class="salinas" id="salinas" aria-labelledby="sal-title">
+  <section class="salinas panel" id="salinas" aria-labelledby="sal-title">
     <div class="wrap">
       <p class="kicker">Salinas</p>
       <h2 id="sal-title" class="lines"><span class="line"><span>Todo queda</span></span> <span class="line"><span><em>a pie</em></span></span></h2>
@@ -870,7 +910,7 @@ a.rating:hover b { text-decoration: underline; }
       </div>
     </div>
   </section>
-  <section class="faq" id="preguntas" aria-labelledby="faq-title">
+  <section class="faq panel" id="preguntas" aria-labelledby="faq-title">
     <div class="wrap faq-grid">
       <div>
         <p class="kicker">Preguntas</p>
@@ -882,6 +922,7 @@ a.rating:hover b { text-decoration: underline; }
         <details><summary>¿Hay piscina?</summary><p>Sí. Los huéspedes de los tres hoteles pueden usar la piscina del Costa Azul.</p></details>
         <details><summary>¿Hay parqueo?</summary><p>Sí, hay garaje para los huéspedes de los tres hoteles, según disponibilidad. Pregúntanos cuando reserves.</p></details>
         <details><summary>¿A qué hora es la entrada y la salida?</summary><p>La entrada (check-in) es desde las 13h00 y la salida (check-out) hasta las 12h00.</p></details>
+        <details><summary>¿Cuánto cuesta?</summary><p>En temporada regular, la habitación matrimonial cuesta desde $50 por noche y las habitaciones múltiples desde $20 por persona. Para grupos, desde $15 por persona. En feriados los precios pueden cambiar; escríbenos con tus fechas y te damos el precio exacto.</p></details>
         <details><summary>¿Cómo se paga?</summary><p>Por transferencia bancaria o en efectivo. Te damos los datos cuando confirmamos tu reserva.</p></details>
         <details><summary>¿Y si tengo que cancelar?</summary><p>Si nos avisas con anticipación, cambiamos tu reserva para otra fecha. No hacemos devoluciones de dinero.</p></details>
         <details><summary>¿Hay ascensor? ¿Tienen habitaciones accesibles?</summary><p>Hotel Salinas y Suite Salinas tienen ascensor. Por ahora no tenemos habitaciones en planta baja ni instalaciones para personas con discapacidad. Escríbenos y te ayudamos a ver qué opción te sirve.</p></details>
@@ -943,6 +984,18 @@ a.rating:hover b { text-decoration: underline; }
     }
   });
   $$("a", menu).forEach(function (a) { a.addEventListener("click", function () { closeMenu(false); }); });
+
+  /* slide dots: mark the section in view */
+  var dotLinks = $$(".dots a");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        dotLinks.forEach(function (a) { var on = a.getAttribute("href") === "#" + en.target.id; a.classList.toggle("on", on); if (on) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); });
+      });
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    dotLinks.forEach(function (a) { var t = document.getElementById(a.getAttribute("href").slice(1)); if (t) io.observe(t); });
+  }
 
   /* ticker pause (moving content must be pausable) */
   var ticker = $("#ticker"), tBtn = $("#ticker-btn");
