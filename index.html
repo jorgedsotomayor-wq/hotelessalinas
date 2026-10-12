@@ -442,6 +442,16 @@ a.rating { text-decoration: none; color: inherit; }
 a.rating:hover b { text-decoration: underline; }
 @media (max-width: 819px) { .places { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: min(80vw, 340px); overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: .6rem; } .place { scroll-snap-align: start; } }
 
+/* what to do in Salinas (revealed behind the doors) */
+.todos { list-style: none; padding: 0; margin: 1.4rem 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; }
+@media (min-width: 760px) { .todos { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; max-width: 980px; } }
+.todo { position: relative; border-radius: 14px; overflow: hidden; aspect-ratio: 4 / 3; background: var(--ink); }
+.todo img { width: 100%; height: 100%; object-fit: cover; }
+.todo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,20,40,0) 40%, rgba(8,20,40,.8)); }
+.todo-label { position: absolute; left: .7rem; right: .7rem; bottom: .55rem; z-index: 1; color: #fff; font-weight: 700; font-size: clamp(.82rem, 1.4vw, 1rem); line-height: 1.2; }
+.todo small { position: absolute; right: .45rem; top: .45rem; z-index: 1; background: rgba(20,40,74,.75); color: #fff; font-size: .62rem; padding: .1rem .4rem; border-radius: 999px; }
+.doors-copy .kicker { margin-bottom: .4rem; }
+
 /* doors: the three hotels side by side open like doors onto the sea */
 .doors { margin-bottom: clamp(2rem, 5vw, 3.5rem); }
 .doors-stage { position: relative; }
@@ -449,13 +459,13 @@ a.rating:hover b { text-decoration: underline; }
 .doors-copy { display: grid; gap: .8rem; margin-bottom: 1.6rem; }
 .doors-copy h2 { font-size: var(--t-h2); }
 .door { display: none; }
-.motion .doors { height: 135vh; width: 100vw; margin-left: calc(50% - 50vw); }
+.motion .doors { height: 150vh; width: 100vw; margin-left: calc(50% - 50vw); }
 .motion .hotels { padding-top: 0; }
 .motion .doors-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; perspective: 1400px; }
 .motion .doors-back { display: block; position: absolute; inset: 0; }
 .motion .doors-back img { width: 100%; height: 100%; object-fit: cover; }
-.motion .doors-back::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,20,40,.15), rgba(8,20,40,.62)); }
-.motion .doors-copy { position: absolute; inset: auto 0 0 0; z-index: 1; padding: 0 var(--gutter) clamp(3rem, 10vh, 6rem); color: #fff; margin: 0; }
+.motion .doors-back::after { content: ""; position: absolute; inset: 0; background: rgba(8,20,40,.62); }
+.motion .doors-copy { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: center; padding: calc(var(--bar-h) + 1rem) var(--gutter) 2rem; color: #fff; margin: 0; max-width: 1100px; margin-inline: auto; }
 .motion .doors-copy .kicker { color: #ffd59a; }
 .motion .doors-copy h2 { color: #fff; }
 .motion .doors-copy h2 em { color: #ffd59a; }
@@ -466,7 +476,7 @@ a.rating:hover b { text-decoration: underline; }
 .motion .d-l { left: 0; transform-origin: 0% 50%; border-right: 3px solid var(--sand); }
 .motion .d-c { left: 33.3%; transform-origin: 50% 50%; }
 .motion .d-r { right: 0; transform-origin: 100% 50%; border-left: 3px solid var(--sand); }
-@media (max-width: 860px) { .motion .doors { height: 125vh; } .motion .doors-copy { padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px)); } .motion .door span { bottom: calc(120px + env(safe-area-inset-bottom, 0px)); } }
+@media (max-width: 860px) { .motion .doors { height: 140vh; } .motion .doors-copy { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); } .motion .door span { bottom: calc(120px + env(safe-area-inset-bottom, 0px)); } }
 
 @media (prefers-reduced-motion: reduce) {
   .badge .ring, .wave-top svg, .m-waves, .m-whale, .m-boat, .m-sunrays, .m-hotel .pulse { animation: none !important; }
@@ -496,7 +506,7 @@ a.rating:hover b { text-decoration: underline; }
       <a href="#habitaciones">Habitaciones</a>
       <a href="#ubicacion">Ubicación</a>
       <a href="#historia">Historia</a>
-      <a href="#salinas">Salinas</a>
+      <a href="#que-hacer">Salinas</a>
       <a class="btn btn-sun" href="#reservar">Reservar</a>
     </nav>
     <button class="menu-btn" id="menu-open" type="button" aria-expanded="false" aria-controls="menu">
@@ -512,7 +522,7 @@ a.rating:hover b { text-decoration: underline; }
     <a href="#hoteles">Hoteles</a>
     <a href="#habitaciones">Habitaciones</a>
     <a href="#historia">Historia</a>
-    <a href="#salinas">Salinas</a>
+    <a href="#que-hacer">Salinas</a>
     <a href="#preguntas">Preguntas</a>
   </nav>
   <div class="menu-foot">
@@ -554,6 +564,7 @@ a.rating:hover b { text-decoration: underline; }
         <span><svg viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18c4 6 14 7 20 2 2-2 3-5 3-8 1 0 3-1 3-3-2 0-3 1-4 2-1-1-3-1-4 0 1 0 2 1 2 2-5 6-12 6-20 5z"/><circle cx="20" cy="15" r=".6" fill="currentColor"/></svg>Ballenas de junio a septiembre</span>
         <span><svg viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 24l7-9 5 6 4-4 8 7z"/><path d="M22 8c2 0 3 1 3 3"/></svg>La Chocolatera</span>
         <span><svg viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 15h22a11 11 0 0 1-22 0z"/><path d="M12 10c0-2 2-2 2-4M18 10c0-2 2-2 2-4"/></svg>Ceviche y encebollado</span>
+        <span><svg viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 26c6-2 8-8 12-12s8-6 12-8"/><path d="M8 26l2-6M14 22l3-5M20 16l3-4"/></svg>Ruta del Spondylus</span>
         <span><svg viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 20a10 10 0 0 1 20 0"/><path d="M3 24h26M16 4v4M7 9l2 2M25 9l-2 2"/></svg>Atardeceres en el Pacífico</span>
         <span aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 20c3-3 5-3 8 0s5 3 8 0 5-3 8 0"/><path d="M3 26c3-3 5-3 8 0s5 3 8 0 5-3 8 0"/></svg>Malecón de Salinas</span>
         <span aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 6v20M6 14a10 8 0 0 1 20 0z"/><path d="M4 28h24"/></svg>Playa de San Lorenzo</span>
@@ -571,16 +582,23 @@ a.rating:hover b { text-decoration: underline; }
     <div class="wrap">
       <div class="doors" id="doors">
         <div class="doors-stage">
-          <figure class="doors-back"><img src="img/playa-atardecer.jpg" alt="" loading="lazy"></figure>
-          <div class="doors-copy">
-            <p class="kicker">Nuestros hoteles</p>
-            <h2 id="hoteles-title">Tres hoteles, <em>una misma calle</em></h2>
-            <p class="lead">Están en la esquina de Gral. Enríquez Gallo y Calle 27, uno junto al otro, a una cuadra del mar. Los huéspedes de los tres comparten la piscina del Costa Azul.</p>
+          <figure class="doors-back"><img src="img/hero-playa.jpg" alt="" loading="lazy"></figure>
+          <div class="doors-copy" id="que-hacer">
+            <p class="kicker">Qué hacer en Salinas</p>
+            <h2 id="que-hacer-title">Todo esto, <em>a una cuadra</em></h2>
+            <ul class="todos" aria-label="Cosas para hacer en Salinas"><li class="todo"><img src="img/ia-ninos-al-agua.jpg" alt="" loading="lazy"><span class="todo-label">Playa de San Lorenzo</span><small>Imagen ilustrativa</small></li><li class="todo"><img src="img/playa-atardecer.jpg" alt="" loading="lazy"><span class="todo-label">Paseos en lancha y banana</span></li><li class="todo"><img src="img/ballena-jorobada.jpg" alt="" loading="lazy"><span class="todo-label">Ballenas, de junio a septiembre</span></li><li class="todo"><img src="img/la-chocolatera.jpg" alt="" loading="lazy"><span class="todo-label">La Chocolatera</span><small>Foto: Mlucero99, CC BY-SA 4.0</small></li><li class="todo"><img src="img/ia-ceviche.jpg" alt="" loading="lazy"><span class="todo-label">Ceviche y encebollado</span><small>Imagen ilustrativa</small></li><li class="todo"><img src="img/montanita-spondylus.jpg" alt="" loading="lazy"><span class="todo-label">La Ruta del Spondylus</span><small>Foto: Andrew Magill, CC BY 2.0</small></li></ul>
           </div>
           <div class="door d-l" aria-hidden="true"><img src="img/hotel-salinas-edificio.jpg" alt=""><span>Hotel Salinas</span></div>
           <div class="door d-c" aria-hidden="true"><img src="img/costa-azul-edificio.jpg" alt=""><span>Costa Azul</span></div>
           <div class="door d-r" aria-hidden="true"><img src="img/suites-salinas-edificio.jpg" alt=""><span>Suite Salinas</span></div>
         </div>
+      </div>
+      <div class="sec-head">
+        <div>
+          <p class="kicker">Nuestros hoteles</p>
+          <h2 id="hoteles-title" class="lines"><span class="line"><span>Tres hoteles,</span></span> <span class="line"><span><em>una misma calle</em></span></span></h2>
+        </div>
+        <p class="lead">Están en la esquina de Gral. Enríquez Gallo y Calle 27, uno junto al otro. Los huéspedes de los tres comparten la piscina del Costa Azul.</p>
       </div>
       <div class="stack" id="stack">
         <article class="hcard" id="hotel-salinas" style="--tint: var(--shell); --i: 0" aria-labelledby="hs-title">
@@ -756,29 +774,6 @@ a.rating:hover b { text-decoration: underline; }
     </div>
   </section>
 
-  <section class="portal" aria-labelledby="portal-title">
-    <h2 id="portal-title" class="sr">De tu habitación al mar</h2>
-    <div class="portal-stage" id="portal">
-      <figure class="p-sea"><img src="img/malecon-baranda.jpg" alt="El malecón de Salinas con su baranda azul y el mar turquesa" loading="lazy"></figure>
-      <div class="wall" aria-hidden="true">
-        <div class="win">
-          <span class="rod"></span>
-          <figure class="past"><img src="img/hotel-salinas-antes.jpg" alt=""><span>Años 70</span></figure>
-          <span class="mul-v"></span><span class="mul-h"></span>
-          <span class="curtain l"></span><span class="curtain r"></span>
-          <span class="sill"><span class="plant"><svg viewBox="0 0 40 44"><path d="M8 26h24l-3 16H11z" fill="#c8693a"/><path d="M20 26c0-8-6-14-12-16 4 6 6 10 12 16zM20 26c0-9 5-16 12-19-3 7-6 12-12 19zM20 26c-1-10 0-17 2-22 2 7 1 14-2 22z" fill="#2e9b5f"/></svg></span></span>
-        </div>
-      </div>
-      <div class="p-shade" aria-hidden="true"></div>
-      <div class="p-copy">
-        <p class="p-line1">Abre la cortina…</p>
-        <p class="p-mid" aria-hidden="true">Así empezó, hace más de 50 años.</p>
-        <p class="p-line2">…y hoy el mar sigue <em>a una cuadra.</em></p>
-        <span class="hint" aria-hidden="true">Desliza</span>
-      </div>
-    </div>
-  </section>
-
   <section class="story" id="historia" aria-labelledby="historia-title">
     <div class="wrap story-grid">
       <div class="then-now">
@@ -855,6 +850,8 @@ a.rating:hover b { text-decoration: underline; }
     </div>
   </section>
 
+
+
   <section class="salinas" id="salinas" aria-labelledby="sal-title">
     <div class="wrap">
       <p class="kicker">Salinas</p>
@@ -868,10 +865,11 @@ a.rating:hover b { text-decoration: underline; }
           <h3>Ballenas jorobadas</h3><p>De junio a septiembre salen excursiones desde Salinas para verlas saltar en el Pacífico.</p></div></article>
         <article class="place reveal"><figure><img src="img/la-chocolatera.jpg" alt="Rocas oscuras y olas que revientan en La Chocolatera, la punta de la península de Santa Elena" loading="lazy"><span class="ai-tag credit">Foto: Mlucero99, CC BY-SA 4.0</span></figure>
           <div class="place-body"><h3>La Chocolatera</h3><p>En la punta de la península de Santa Elena, donde las olas revientan contra las rocas. Un paseo corto desde el centro.</p></div></article>
+        <article class="place reveal"><figure><img src="img/montanita-spondylus.jpg" alt="Playa larga de Montañita con el mar y el cielo azul, en la Ruta del Spondylus" loading="lazy"><span class="ai-tag credit">Foto: Andrew Magill, CC BY 2.0</span></figure>
+          <div class="place-body"><h3>La Ruta del Spondylus</h3><p>La carretera de la costa que sale de la península y sube por Ballenita, Ayangue, Montañita y Olón. Ideal para un día de paseo desde Salinas.</p></div></article>
       </div>
     </div>
   </section>
-
   <section class="faq" id="preguntas" aria-labelledby="faq-title">
     <div class="wrap faq-grid">
       <div>
@@ -901,7 +899,7 @@ a.rating:hover b { text-decoration: underline; }
       <div><h2>Hoteles</h2><p>Hotel Salinas</p><p>Hotel Salinas Costa Azul</p><p>Suite Salinas</p></div>
       <div><h2>Contacto</h2><p>099 575 5979</p><p>salinashoteles@gmail.com</p><p><a href="https://www.google.com/maps/search/?api=1&amp;query=-2.2063,-80.9707" target="_blank" rel="noopener">Gral. Enríquez Gallo y Calle 27<span class="sr"> (se abre en Google Maps)</span></a></p><div class="soc"><a href="https://www.instagram.com/hoteles.salinas/" target="_blank" rel="noopener" aria-label="Instagram de Hoteles Salinas"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a><a href="https://www.facebook.com/profile.php?id=100057365242051" target="_blank" rel="noopener" aria-label="Facebook de Hoteles Salinas"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 8h3V4h-3c-2.8 0-4.5 1.8-4.5 4.6V11H7v4h2.5v7h4v-7h3l.5-4h-3.5V8.8c0-.5.3-.8.5-.8z"/></svg></a></div></div>
     </div>
-    <div class="foot-bottom"><span>En memoria de Jorge Sotomayor Zambrano</span><span>Empresa de Turismo Salinas S.A. (EMTURISA) · RUC 0990376719001</span><span>Foto de la ballena: Astrid Osborne, dominio público (CC0). Las imágenes marcadas como ilustrativas fueron creadas con IA. Foto de La Chocolatera: <a href="https://commons.wikimedia.org/wiki/File:LaChocolatera.jpg" target="_blank" rel="noopener">Mlucero99</a>, licencia <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.es" target="_blank" rel="noopener">CC BY-SA 4.0</a>. · hotelessalinas.com · Borrador para la familia, octubre 2026</span></div>
+    <div class="foot-bottom"><span>En memoria de Jorge Sotomayor Zambrano</span><span>Empresa de Turismo Salinas S.A. (EMTURISA) · RUC 0990376719001</span><span>Foto de la ballena: Astrid Osborne, dominio público (CC0). Las imágenes marcadas como ilustrativas fueron creadas con IA. Foto de Montañita: <a href="https://commons.wikimedia.org/wiki/File:PlayaDeMonta%C3%B1ita.jpg" target="_blank" rel="noopener">Andrew Magill</a>, licencia <a href="https://creativecommons.org/licenses/by/2.0/deed.es" target="_blank" rel="noopener">CC BY 2.0</a>. Foto de La Chocolatera: <a href="https://commons.wikimedia.org/wiki/File:LaChocolatera.jpg" target="_blank" rel="noopener">Mlucero99</a>, licencia <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.es" target="_blank" rel="noopener">CC BY-SA 4.0</a>. · hotelessalinas.com · Borrador para la familia, octubre 2026</span></div>
   </div>
 </footer>
 
@@ -1090,28 +1088,16 @@ a.rating:hover b { text-decoration: underline; }
     // Portal: zoom through the Hotel Salinas window, land on the malecón.
     document.documentElement.classList.add("motion");
     // Doors: the three hotels open like doors onto the sea.
-    var dtl = gsap.timeline({ defaults: { ease: "none" }, scrollTrigger: { trigger: "#doors", start: "top top", end: "bottom bottom", scrub: 0.4 } });
-    dtl.to({}, { duration: 0.12 }, 0)
-       .to(".d-l", { rotateY: 78, xPercent: -18, ease: "power2.in", duration: 0.5 }, 0.12)
-       .to(".d-r", { rotateY: -78, xPercent: 18, ease: "power2.in", duration: 0.5 }, 0.12)
-       .to(".d-c", { scale: 0.55, yPercent: -6, opacity: 0, ease: "power2.in", duration: 0.45 }, 0.16)
-       .fromTo(".doors-back img", { scale: 1.25 }, { scale: 1, duration: 0.7 }, 0.12)
-       .fromTo(".doors-copy > *", { opacity: 0, y: 30 }, { opacity: 1, y: 0, stagger: 0.05, duration: 0.15 }, 0.52)
-       .to({}, { duration: 0.2 }, 0.8);
-    // CSS sticky holds the scene (smooth with iPhone momentum scrolling); the timeline only scrubs.
-    var ptl = gsap.timeline({ defaults: { ease: "none" }, scrollTrigger: { trigger: ".portal", start: "top top", end: "bottom bottom", scrub: 0.4 } });
-    ptl.to(".curtain.l", { xPercent: -30, scaleX: 0.3, ease: "power2.inOut", duration: 0.24 }, 0.02)       // curtains open...
-       .to(".curtain.r", { xPercent: 30, scaleX: 0.3, ease: "power2.inOut", duration: 0.24 }, 0.02)
-       .to(".p-line1, .p-copy .hint", { opacity: 0, y: -20, duration: 0.1 }, 0.08)
-       .fromTo(".p-mid", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.1 }, 0.18)                // ...onto the 1970s hotel
-       .fromTo(".past", { clipPath: "inset(0% 0% 0% 0%)" }, { clipPath: "inset(0% 50% 0% 50%)", ease: "power2.inOut", duration: 0.14 }, 0.38) // the past parts in the middle...
-       .to(".p-mid", { opacity: 0, y: -20, duration: 0.08 }, 0.44)
-       .to(".mul-v, .mul-h", { opacity: 0, duration: 0.06 }, 0.5)
-       .fromTo(".p-sea img", { scale: 1.18 }, { scale: 1, duration: 0.5 }, 0.36)
-       .to(".win", { scale: 9, ease: "power2.in", duration: 0.34 }, 0.5)                                    // ...and you step out onto today's malecón
-       .to(".p-shade", { opacity: 1, duration: 0.12 }, 0.7)
-       .fromTo(".p-line2", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.12 }, 0.74)
-       .to({}, { duration: 0.14 }, 0.86);
+    var dtl = gsap.timeline({ defaults: { ease: "none" }, scrollTrigger: { trigger: "#doors", start: "top top", end: "bottom bottom", scrub: 0.5 } });
+    dtl.to({}, { duration: 0.08 }, 0)
+       .to(".d-l", { xPercent: -105, rotateY: 18, opacity: 0, ease: "power1.inOut", duration: 0.4 }, 0.08)
+       .to(".d-r", { xPercent: 105, rotateY: -18, opacity: 0, ease: "power1.inOut", duration: 0.4 }, 0.08)
+       .to(".d-c", { scale: 0.9, opacity: 0, ease: "power1.inOut", duration: 0.32 }, 0.1)
+       .fromTo(".doors-back img", { scale: 1.12 }, { scale: 1, duration: 0.6 }, 0.08)
+       .fromTo(".doors-copy .kicker, .doors-copy h2", { opacity: 0, y: 24 }, { opacity: 1, y: 0, stagger: 0.04, duration: 0.12 }, 0.4)
+       .fromTo(".todo", { opacity: 0, y: 24, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, stagger: 0.035, duration: 0.14, ease: "power2.out" }, 0.48)
+       .to({}, { duration: 0.22 }, 0.78);
+
     // Hero depth: photo and words drift apart with the mouse (desktop only).
     if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
       var hx = gsap.quickTo(".hero-media", "x", { duration: 1.2, ease: "power3" }), hy = gsap.quickTo(".hero-media", "y", { duration: 1.2, ease: "power3" });
