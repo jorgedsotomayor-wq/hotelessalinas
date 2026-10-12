@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Juegos con Jorge A · Hoteles Salinas</title>
+<meta name="description" content="Dos juegos con Jorge A: corre por Salinas frente a los Hoteles Salinas o bucea bajo el mar. Supera el récord del mes.">
+<link rel="canonical" href="https://hotelessalinas.com/juego/inicio.html">
+<link rel="manifest" href="/juego/manifest.webmanifest">
+<meta name="theme-color" content="#14284a">
+<link rel="apple-touch-icon" href="/juego/img/app-icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Jorge A">
+<link rel="icon" href="/juego/img/app-icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,500..700,0..100;1,9..144,500..700,0..100&family=Figtree:wght@500;700;800&display=swap">
+<style>
+/* App home: two big game cards on the bay blue, records under each, install button when the phone allows it. */
+:root { --ink: #14284a; --sand: #faf6ef; --sun: #f08a1c; --sea: #0b6a80; --muted: #4c5b70; --display: "Fraunces", Georgia, serif; --body: "Figtree", -apple-system, "Segoe UI", sans-serif; color-scheme: light; }
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body { background: linear-gradient(180deg, #14284a 0%, #0b6a80 70%, #e9d3a0 70%, #e9d3a0 100%) fixed; color: #fff; font-family: var(--body); padding: calc(18px + env(safe-area-inset-top, 0px)) 16px calc(24px + env(safe-area-inset-bottom, 0px)); }
+.wrap { max-width: 760px; margin: 0 auto; display: grid; gap: 18px; }
+header { text-align: center; display: grid; gap: 6px; }
+.brand { margin: 0; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; font-size: .78rem; color: #ffd59a; }
+h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(2rem, 8vw, 3rem); line-height: 1.05; }
+h1 em { color: #ffd59a; }
+.goal { margin: 0; font-weight: 700; }
+.goal b { color: #ffd59a; font-family: var(--display); font-size: 1.2rem; }
+.games { display: grid; gap: 14px; }
+@media (min-width: 640px) { .games { grid-template-columns: 1fr 1fr; } }
+.game { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 14px; padding: 16px; border-radius: 22px; background: var(--sand); color: var(--ink); text-decoration: none; box-shadow: 0 16px 40px rgba(8,20,40,.35); }
+.game img { width: 96px; height: 96px; object-fit: contain; }
+.game h2 { margin: 0 0 4px; font-family: var(--display); font-weight: 600; font-size: 1.35rem; }
+.game p { margin: 0; color: var(--muted); font-size: .92rem; line-height: 1.35; }
+.game .rec { margin-top: 8px; font-weight: 800; color: var(--sea); font-size: .9rem; }
+.game:focus-visible, .btn:focus-visible, a:focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
+.install { display: grid; gap: 8px; justify-items: center; text-align: center; }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 1.4rem; border: 0; border-radius: 999px; background: var(--sun); color: var(--ink); font: inherit; font-weight: 800; cursor: pointer; text-decoration: none; }
+.hint { margin: 0; font-size: .85rem; color: rgba(255,255,255,.88); max-width: 34rem; }
+.hint[hidden], .btn[hidden] { display: none; }
+footer { text-align: center; }
+footer a { color: var(--ink); font-weight: 800; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <p class="brand">Hoteles Salinas</p>
+    <h1>Juegos con <em>Jorge A</em></h1>
+    <p class="goal">Récord a vencer este mes: <b>2000</b></p>
+  </header>
+  <div class="games">
+    <a class="game" href="index.html"><img src="img/app-correr.png" alt=""><div><h2>Correr por Salinas</h2><p>Corre frente a los tres hoteles y salta sombrillas, bañistas y bananas.</p><p class="rec" id="rec-run">Tu récord: 0</p></div></a>
+    <a class="game" href="mar.html"><img src="img/app-bucear.png" alt=""><div><h2>Bucear bajo el mar</h2><p>Pasa entre peces, medusas y tiburones, y cuidado con la ballena.</p><p class="rec" id="rec-dive">Tu récord: 0</p></div></a>
+  </div>
+  <div class="install">
+    <button class="btn" id="install" type="button" hidden>Instalar la app en tu celular</button>
+    <p class="hint" id="hint-android" hidden>En Android: abre el menú ⋮ de Chrome y toca «Instalar app» o «Agregar a la pantalla principal».</p>
+    <p class="hint" id="hint-ios" hidden>En iPhone: toca el botón Compartir y luego «Agregar a inicio».</p>
+  </div>
+  <footer><a href="/">Ver los Hoteles Salinas</a></footer>
+</main>
+<script>
+(function () {
+  function rec(id, key) { var v = 0; try { v = parseInt(localStorage.getItem(key) || "0", 10) || 0; } catch (e) {} document.getElementById(id).textContent = "Tu récord: " + v; }
+  rec("rec-run", "hs-best-pts"); rec("rec-dive", "hs-best-buceo2");
+  var standalone = matchMedia("(display-mode: fullscreen), (display-mode: standalone)").matches || navigator.standalone;
+  var ios = /iphone|ipad|ipod/i.test(navigator.userAgent), btn = document.getElementById("install"), ask = null;
+  if (!standalone) {
+    if (ios) document.getElementById("hint-ios").hidden = false;
+    else document.getElementById("hint-android").hidden = false;
+  }
+  window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); ask = e; btn.hidden = false; document.getElementById("hint-android").hidden = true; });
+  btn.addEventListener("click", function () { if (!ask) return; ask.prompt(); ask.userChoice.then(function () { ask = null; btn.hidden = true; }); });
+  window.addEventListener("appinstalled", function () { btn.hidden = true; });
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("/juego/sw.js", { scope: "/juego/" }).catch(function () {});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "Juegos con Jorge A · Hoteles Salinas",
+  "short_name": "Jorge A",
+  "description": "Corre por Salinas o bucea bajo el mar con Jorge A. Juegos de Hoteles Salinas.",
+  "lang": "es",
+  "start_url": "/juego/inicio.html",
+  "scope": "/juego/",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#0b6a80",
+  "theme_color": "#14284a",
+  "icons": [
+    { "src": "/juego/img/app-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/juego/img/app-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/juego/img/app-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

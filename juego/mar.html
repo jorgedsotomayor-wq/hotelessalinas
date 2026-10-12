@@ -7,6 +7,10 @@
 <link rel="canonical" href="https://hotelessalinas.com/juego/mar.html">
 <title>Bajo el mar de Salinas · Hoteles Salinas</title>
 <meta name="description" content="Juego: bucea con Jorge A bajo el mar de Salinas, esquiva peces, medusas y ballenas, y supera tu récord.">
+<link rel="manifest" href="/juego/manifest.webmanifest">
+<meta name="theme-color" content="#14284a">
+<link rel="apple-touch-icon" href="/juego/img/app-icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,500..700,0..100;1,9..144,500..700,0..100&family=Figtree:wght@500;700;800&display=swap">
@@ -77,7 +81,7 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
       <div class="how"><span>Toca: patalea y sube</span><span>No toques: se hunde</span><span>Pasa por el hueco</span><span>Conchas Spondylus: +25</span></div>
       <button class="btn btn-sun" type="button" id="go">¡A bucear!</button>
       <a class="alt" href="index.html">¿Prefieres correr? Juega «A una cuadra del mar»</a>
-      <a class="back" href="../">Ver los hoteles</a>
+      <a class="back" href="inicio.html">Todos los juegos</a> · <a class="back" href="../">Ver los hoteles</a>
     </div>
   </div>
 
@@ -409,5 +413,6 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
   last = performance.now(); requestAnimationFrame(loop);
 })();
 </script>
+<script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("/juego/sw.js", { scope: "/juego/" }).catch(function () {});</script>
 </body>
 </html>

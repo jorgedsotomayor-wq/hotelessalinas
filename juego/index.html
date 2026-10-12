@@ -7,6 +7,10 @@
 <link rel="canonical" href="https://hotelessalinas.com/juego/">
 <title>A una cuadra del mar · Hoteles Salinas</title>
 <meta name="description" content="Juego: corre por Salinas frente a los Hoteles Salinas, salta sombrillas y bananas, y supera tu récord.">
+<link rel="manifest" href="/juego/manifest.webmanifest">
+<meta name="theme-color" content="#14284a">
+<link rel="apple-touch-icon" href="/juego/img/app-icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,500..700,0..100;1,9..144,500..700,0..100&family=Figtree:wght@500;700;800&display=swap">
@@ -77,7 +81,7 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
       <div class="how"><span>Toca para saltar</span><span>Mantén para saltar más alto</span><span>Las gaviotas vuelan alto: pasa por debajo sin saltar</span><span>Conchas Spondylus: +10</span></div>
       <button class="btn btn-sun" type="button" id="go">¡A correr!</button>
       <a class="alt" href="mar.html">¿Prefieres el mar? Bucea con Jorge A</a>
-      <a class="back" href="../">Ver los hoteles</a>
+      <a class="back" href="inicio.html">Todos los juegos</a> · <a class="back" href="../">Ver los hoteles</a>
     </div>
   </div>
 
@@ -391,5 +395,6 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
   draw();
 })();
 </script>
+<script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("/juego/sw.js", { scope: "/juego/" }).catch(function () {});</script>
 </body>
 </html>
