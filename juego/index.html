@@ -106,10 +106,11 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
   ["sprite-hotel-salinas", "sprite-costa-azul", "sprite-suite-salinas", "sprite-casas"].forEach(function (n) {
     var im = new Image(); im.onload = function () { if (state !== "run") draw(); }; im.src = "img/" + n + ".png"; IMG[n] = im;
   });
+  var KID = new Image(); KID.onload = function () { if (state !== "run") draw(); }; KID.src = "img/nino.png";   // 4 running poses + 1 jump pose
   // the street, in background units: hotel, houses, hotel, houses, hotel... repeats
   var STREET = [
     { n: "sprite-hotel-salinas", h: 250, gap: 70 }, { n: "palm" }, { n: "sprite-casas", h: 120, gap: 90 },
-    { n: "sprite-costa-azul", h: 200, gap: 80 }, { n: "palm" }, { n: "tower" }, { n: "sprite-casas", h: 120, gap: 90 },
+    { n: "sprite-costa-azul", h: 165, gap: 80 }, { n: "palm" }, { n: "tower" }, { n: "sprite-casas", h: 120, gap: 90 },
     { n: "sprite-suite-salinas", h: 246, gap: 80 }, { n: "palm" }, { n: "sprite-casas", h: 120, gap: 140 }
   ];
 
@@ -328,6 +329,13 @@ canvas { display: block; width: 100%; flex: none; cursor: pointer; }
     var x = kid.x, y = kid.y, s = Math.sin(kid.step), hit = state === "over";
     ctx.save();
     if (hit) { ctx.translate(x, y - 30); ctx.rotate(-0.5); ctx.translate(-x, -(y - 30)); }
+    if (KID.complete && KID.naturalWidth) {
+      var cw = KID.naturalWidth / 5, chh = KID.naturalHeight, dh = 92, dw = dh * cw / chh;
+      var frame = kid.air ? 4 : Math.floor(kid.step * 0.55) % 4;
+      ctx.fillStyle = "rgba(0,0,0,.15)"; ctx.beginPath(); ctx.ellipse(x, GROUND + 2, Math.max(6, 18 - (GROUND - y) / 12), 5, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.drawImage(KID, frame * cw, 0, cw, chh, x - dw / 2, y - dh + 4, dw, dh);
+      ctx.restore(); return;
+    }
     ctx.fillStyle = "rgba(0,0,0,.15)"; ctx.beginPath(); ctx.ellipse(x, GROUND + 2, Math.max(6, 18 - (GROUND - y) / 12), 5, 0, 0, Math.PI * 2); ctx.fill();
     ctx.strokeStyle = "#8a5a3c"; ctx.lineWidth = 6; ctx.lineCap = "round";
     var l1 = kid.air ? 0.6 : s * 0.8, l2 = kid.air ? -0.4 : -s * 0.8;
