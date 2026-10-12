@@ -1,7 +1,7 @@
 {
   "name": "Juegos con Jorge A · Hoteles Salinas",
   "short_name": "Jorge A",
-  "description": "Corre por Salinas o bucea bajo el mar con Jorge A. Juegos de Hoteles Salinas.",
+  "description": "Corre por Salinas, bucea bajo el mar o sal a pescar con Jorge A. Juegos de Hoteles Salinas.",
   "lang": "es",
   "start_url": "/juego/inicio.html",
   "scope": "/juego/",

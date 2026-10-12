@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Juegos con Jorge A · Hoteles Salinas</title>
-<meta name="description" content="Dos juegos con Jorge A: corre por Salinas frente a los Hoteles Salinas o bucea bajo el mar. Supera el récord del mes.">
+<meta name="description" content="Tres juegos con Jorge A: corre por Salinas frente a los Hoteles Salinas, bucea bajo el mar o sal a pescar. Supera el récord del mes.">
 <link rel="canonical" href="https://hotelessalinas.com/juego/inicio.html">
 <link rel="manifest" href="/juego/manifest.webmanifest">
 <meta name="theme-color" content="#14284a">
@@ -30,7 +30,7 @@ h1 em { color: #ffd59a; }
 .goal { margin: 0; font-weight: 700; }
 .goal b { color: #ffd59a; font-family: var(--display); font-size: 1.2rem; }
 .games { display: grid; gap: 14px; }
-@media (min-width: 640px) { .games { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 640px) { .games { grid-template-columns: 1fr 1fr; } .games .game:last-child { grid-column: 1 / -1; max-width: 50%; justify-self: center; width: 100%; } }
 .game { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 14px; padding: 16px; border-radius: 22px; background: var(--sand); color: var(--ink); text-decoration: none; box-shadow: 0 16px 40px rgba(8,20,40,.35); }
 .game img { width: 96px; height: 96px; object-fit: contain; }
 .game h2 { margin: 0 0 4px; font-family: var(--display); font-weight: 600; font-size: 1.35rem; }
@@ -55,6 +55,7 @@ footer a { color: #fff; font-weight: 800; }
   <div class="games">
     <a class="game" href="index.html"><img src="img/app-correr.png" alt=""><div><h2>Correr por Salinas</h2><p>Corre frente a los tres hoteles y salta sombrillas, bañistas y bananas.</p><p class="rec" id="rec-run">Tu récord: 0</p></div></a>
     <a class="game" href="mar.html"><img src="img/app-bucear.png" alt=""><div><h2>Bucear bajo el mar</h2><p>Pasa entre peces, medusas y tiburones, y cuidado con la ballena.</p><p class="rec" id="rec-dive">Tu récord: 0</p></div></a>
+    <a class="game" href="pesca.html"><img src="img/app-pescar.png" alt=""><div><h2>Pesca en Salinas</h2><p>Junta peces, pulpos y tortugas iguales y atrápalos con tu red. Nuevo.</p><p class="rec" id="rec-fish">Tu récord: 0</p></div></a>
   </div>
   <div class="install">
     <button class="btn" id="install" type="button" hidden>Instalar la app en tu celular</button>
@@ -66,7 +67,7 @@ footer a { color: #fff; font-weight: 800; }
 <script>
 (function () {
   function rec(id, key) { var v = 0; try { v = parseInt(localStorage.getItem(key) || "0", 10) || 0; } catch (e) {} document.getElementById(id).textContent = "Tu récord: " + v; }
-  rec("rec-run", "hs-best-pts"); rec("rec-dive", "hs-best-buceo2");
+  rec("rec-run", "hs-best-pts"); rec("rec-dive", "hs-best-buceo2"); rec("rec-fish", "hs-best-pesca");
   var standalone = matchMedia("(display-mode: fullscreen), (display-mode: standalone)").matches || navigator.standalone;
   var ios = /iphone|ipad|ipod/i.test(navigator.userAgent), btn = document.getElementById("install"), ask = null;
   if (!standalone) {

@@ -1,12 +1,15 @@
 /* Offline support for the Jorge A games: pages load from the network when possible, everything else from the cache. */
-var CACHE = "jorge-a-v1";
+var CACHE = "jorge-a-v2";
 var FILES = [
 "/juego/inicio.html",
 "/juego/index.html",
 "/juego/mar.html",
+"/juego/pesca.html",
+"/juego/pesca-reglas.js",
 "/juego/manifest.webmanifest",
 "/juego/img/app-bucear.png",
 "/juego/img/app-correr.png",
+"/juego/img/app-pescar.png",
 "/juego/img/app-icon-180.png",
 "/juego/img/app-icon-192.png",
 "/juego/img/app-icon-512.png",

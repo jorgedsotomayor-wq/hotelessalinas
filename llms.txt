@@ -21,3 +21,4 @@
 - [Home](https://hotelessalinas.com/): hotels, rooms, location, history, booking request
 - [Game: A una cuadra del mar](https://hotelessalinas.com/juego/)
 - [Game: Bajo el mar de Salinas](https://hotelessalinas.com/juego/mar.html)
+- [Game: Pesca en Salinas](https://hotelessalinas.com/juego/pesca.html)

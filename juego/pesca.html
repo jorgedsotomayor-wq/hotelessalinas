@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://hotelessalinas.com/juego/pesca.html">
+<title>Pesca en Salinas · Hoteles Salinas</title>
+<meta name="description" content="Juego: pesca con Jorge A en el mar de Salinas. Junta peces iguales, atrapa grupos grandes con tu red y supera el récord del mes.">
+<link rel="manifest" href="/juego/manifest.webmanifest">
+<meta name="theme-color" content="#14284a">
+<link rel="apple-touch-icon" href="/juego/img/app-icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,500..700,0..100;1,9..144,500..700,0..100&family=Figtree:wght@500;700;800&display=swap">
+<style>
+/* Layout: score bar, a square-ish board of sea animals, DOM overlays for start and game over. Same palette as the hotel site. */
+:root {
+  --ink: #14284a; --sand: #faf6ef; --sun: #f08a1c; --ocean: #0b6a80; --wa: #0f7a40; --paper: #ffffff; --muted: #4c5b70;
+  --display: "Fraunces", Georgia, serif; --body: "Figtree", -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--ink); color: var(--ink); font-family: var(--body); overscroll-behavior: none; }
+body { display: flex; flex-direction: column; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 10px; background: var(--ink); color: #fff; }
+.top a { color: #fff; text-decoration: none; font-family: var(--display); font-weight: 600; font-size: 1.1rem; display: flex; align-items: center; gap: .5rem; min-height: 44px; }
+.top a svg { width: 22px; height: 22px; }
+.top .hi { font-weight: 800; font-size: .9rem; color: #ffd59a; }
+.stage { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; touch-action: manipulation; user-select: none; -webkit-user-select: none; background: linear-gradient(180deg, #14284a, #0f2e4f); }
+canvas { display: block; margin: 0 auto; flex: none; cursor: pointer; border-radius: 18px; }
+.stage { justify-content: flex-start; align-items: center; padding: 10px 12px calc(14px + env(safe-area-inset-bottom, 0px)); gap: 0; background: #0b6a80; }
+#scene { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 0; cursor: default; }
+.hud, #game { position: relative; z-index: 1; }
+.shore { flex: none; height: clamp(84px, 17vh, 170px); }
+#game { margin-top: 10px; box-shadow: 0 14px 40px rgba(4,20,40,.35); }
+.hud { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; max-width: 520px; }
+.hud div { background: rgba(20,40,74,.8); border-radius: 14px; padding: 6px 8px; text-align: center; color: #fff; }
+.hud b { display: block; font-family: var(--display); font-size: 1.5rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.hud small { font-weight: 700; font-size: .78rem; color: rgba(255,255,255,.85); }
+.hud .low b { color: #ffd59a; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.overlay { position: absolute; inset: 0; display: grid; place-items: center; padding: 16px; background: rgba(20,40,74,.6); overflow-y: auto; }
+.overlay { z-index: 5; }
+.overlay[hidden] { display: none !important; }
+.card { background: var(--sand); border-radius: 24px; padding: clamp(1.3rem, 4vw, 2rem); max-width: 440px; width: 100%; text-align: center; display: grid; gap: .8rem; box-shadow: 0 30px 80px rgba(0,0,0,.35); }
+.card h1, .card h2 { font-family: var(--display); font-weight: 600; margin: 0; line-height: 1.05; font-variation-settings: "SOFT" 60; }
+.card h1 { font-size: clamp(2rem, 7vw, 2.7rem); }
+.card h2 { font-size: clamp(1.6rem, 6vw, 2.1rem); }
+.card em { color: var(--ocean); }
+.card p { margin: 0; color: var(--muted); line-height: 1.5; }
+.how { display: flex; justify-content: center; gap: .45rem; flex-wrap: wrap; font-size: .88rem; font-weight: 700; color: var(--ink); }
+.how span { background: #fde7c9; border-radius: 999px; padding: .35rem .8rem; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 50px; padding: 0 1.3rem; border-radius: 999px; border: 0; font: inherit; font-weight: 800; font-size: 1.02rem; cursor: pointer; text-decoration: none; }
+.btn-sun { background: var(--sun); color: var(--ink); }
+.btn-wa { background: var(--wa); color: #fff; }
+.btn-line { background: transparent; color: var(--ink); border: 2px solid var(--ink); }
+.btn svg { width: 20px; height: 20px; fill: currentColor; }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.stats div { background: #fff; border-radius: 14px; padding: .7rem; }
+.stats b { display: block; font-family: var(--display); font-size: 1.9rem; color: var(--ink); font-variant-numeric: tabular-nums; }
+.stats small { color: var(--muted); font-weight: 700; }
+.contest { background: #fde7c9; border-radius: 14px; padding: .8rem 1rem; text-align: left; }
+.contest p { color: var(--ink); font-size: .92rem; }
+.row { display: grid; gap: .55rem; }
+.back { font-weight: 700; color: var(--ocean); }
+:focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
+.alt { font-weight: 700; color: var(--ocean); }
+.goal { margin: 0; font-weight: 700; color: var(--ink); }
+.goal b { font-family: var(--display); font-size: 1.25rem; color: #b3560a; }
+.goal-res { margin: 0; font-weight: 700; color: var(--ink); background: #fff; border-radius: 12px; padding: .6rem .8rem; }
+.goal-res.win { background: #dcf3e4; color: #0d4a26; }
+</style>
+</head>
+<body>
+<header class="top">
+  <a href="../"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="7" fill="#f08a1c"/><path d="M16 2v4M16 26v4M2 16h4M26 16h4M6 6l3 3M23 23l3 3M26 6l-3 3M9 23l-3 3" stroke="#f08a1c" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg>Hoteles Salinas</a>
+  <span class="hi" id="hi-top"></span>
+</header>
+
+<main class="stage" id="stage">
+  <div class="hud" aria-hidden="true">
+    <div><b id="hud-score">0</b><small>puntos</small></div>
+    <div id="hud-nets-box"><b id="hud-nets">18</b><small>redes</small></div>
+    <div><b id="hud-goal">2000</b><small>récord del mes</small></div>
+  </div>
+  <canvas id="scene" aria-hidden="true"></canvas>
+  <div class="shore" aria-hidden="true"></div>
+  <canvas id="game" tabindex="0" role="img" aria-label="Tablero de pesca en el mar frente al Hotel Salinas, el Costa Azul y Suite Salinas: peces, pulpos, tortugas y medusas del mar de Salinas. Toca un grupo de dos o más iguales para pescarlos. Con el teclado: flechas para moverte y Enter para pescar."></canvas>
+  <p class="sr" id="live" aria-live="polite"></p>
+
+  <div class="overlay" id="start">
+    <div class="card">
+      <h1>Pesca <em>en Salinas</em></h1>
+      <p>Sal a pescar con <b>Jorge A</b> frente a los Hoteles Salinas. Toca un grupo de animales iguales que se toquen y atrápalos con tu red. Tienes <b>18 redes</b>: mientras más grande el grupo, muchos más puntos.</p>
+      <p class="goal">Récord a vencer este mes: <b id="goal-start">2000</b></p>
+      <div class="how"><span>2 o más iguales juntos</span><span>Grupo de 7 o más: red extra</span><span>Grupo de 10 o más: 2 redes extra</span><span>Concha Spondylus: limpia fila y columna</span></div>
+      <button class="btn btn-sun" type="button" id="go">¡A pescar!</button>
+      <p><a class="back" href="inicio.html">Todos los juegos</a> · <a class="back" href="../">Ver los hoteles</a></p>
+    </div>
+  </div>
+
+  <div class="overlay" id="end" hidden>
+    <div class="card" role="dialog" aria-labelledby="end-title">
+      <h2 id="end-title">¡Se acabaron <em>las redes!</em></h2>
+      <div class="stats"><div><b id="end-score">0</b><small>puntos</small></div><div><b id="end-best">0</b><small id="end-best-label">tu récord</small></div></div>
+      <p id="end-catch"></p>
+      <p class="goal-res" id="goal-res"></p>
+      <div class="contest"><p><b>Concurso del mes:</b> el mejor puntaje de cada mes gana un descuento en su estadía en Hoteles Salinas. Envía tu puntaje por WhatsApp con una captura de pantalla.</p></div>
+      <div class="row">
+        <a class="btn btn-wa" id="send" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg>Enviar mi puntaje</a>
+        <button class="btn btn-sun" type="button" id="again">Pescar otra vez</button>
+        <a class="btn btn-line" id="dare" href="#" target="_blank" rel="noopener">Retar a un amigo</a>
+        <a class="back" href="inicio.html">Todos los juegos</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="pesca-reglas.js"></script>
+<script>
+(function () {
+  "use strict";
+  var WA = "593995755979";
+  var GOAL = 2000;   // score to beat this month: update it to the best score the family receives
+  var P = window.Pesca, COLS = P.COLS, ROWS = P.ROWS, SHELL = P.SHELL;
+  var canvas = document.getElementById("game"), ctx = canvas.getContext("2d");
+  var $ = function (id) { return document.getElementById(id); };
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var KINDS = [
+    { n: "angel", tint: "#d6e6ff", one: "pez ángel", many: "peces ángel" },
+    { n: "puffer", tint: "#fff1c2", one: "pez globo", many: "peces globo" },
+    { n: "octopus", tint: "#ffd9d4", one: "pulpo", many: "pulpos" },
+    { n: "turtle", tint: "#d8f2d4", one: "tortuga", many: "tortugas" },
+    { n: "jelly", tint: "#ece0f7", one: "medusa", many: "medusas" },
+    { n: "tropical", tint: "#ffe3c9", one: "pez payaso", many: "peces payaso" }
+  ];
+  function load(src) { var im = new Image(); im.onload = function () { draw(); }; im.src = src; return im; }
+  KINDS.forEach(function (k) { k.im = load("img/mar-" + k.n + ".png"); });
+  var SHELL_IM = load("img/mar-spondylus.png");
+
+  var game, state = "start", S = 50, dpr = 1, off, pops = [], floats = [], cursor = { c: 3, r: 4 }, showCursor = false, busy = false, overAt = 0, raf = 0, last = 0, shake = null;
+  var best = 0;
+  try { best = parseInt(localStorage.getItem("hs-best-pesca") || "0", 10) || 0; } catch (e) {}
+  function showBest() { $("hi-top").textContent = best ? "Récord: " + best : ""; }
+  showBest();
+  $("hud-goal").textContent = GOAL; $("goal-start").textContent = GOAL;
+
+  function resize() {
+    var st = $("stage").getBoundingClientRect(), hud = document.querySelector(".hud").getBoundingClientRect(), sh = document.querySelector(".shore").getBoundingClientRect();
+    var maxW = Math.min(st.width - 24, 560), maxH = st.height - hud.height - sh.height - 44;
+    S = Math.max(30, Math.floor(Math.min(maxW / COLS, maxH / ROWS)));
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.style.width = S * COLS + "px"; canvas.style.height = S * ROWS + "px";
+    canvas.width = Math.round(S * COLS * dpr); canvas.height = Math.round(S * ROWS * dpr);
+    draw(); drawScene();
+  }
+  window.addEventListener("resize", resize);
+
+  /* ---------- the shore behind the board: sky, Salinas skyline, the three hotels on the malecón, then the sea ---------- */
+  var scene = $("scene"), sctx = scene.getContext("2d"), BG = {};
+  ["sprite-hotel-salinas", "sprite-costa-azul", "sprite-suite-salinas", "sprite-casas", "palma-1", "palma-2", "palma-3",
+   "nube-1", "nube-2", "sol", "skyline", "malecon"].forEach(function (n) { var im = new Image(); im.onload = function () { drawScene(); }; im.src = "img/" + n + ".png"; BG[n] = im; });
+  function ok(im) { return im && im.complete && im.naturalWidth > 0; }
+  function ar(im, f) { return ok(im) ? im.naturalWidth / im.naturalHeight : f; }
+  var SHORE = [["palma-2", .6], ["sprite-hotel-salinas", .84], ["palma-1", .62], ["sprite-casas", .36], ["sprite-costa-azul", .56], ["palma-3", .6], ["sprite-casas", .36], ["sprite-suite-salinas", .82], ["palma-1", .62]];
+  var SHORE_PHONE = [["sprite-hotel-salinas", .84], ["palma-1", .62], ["sprite-costa-azul", .56], ["palma-3", .6], ["sprite-suite-salinas", .82]];
+  function drawScene() {
+    var st = $("stage").getBoundingClientRect(), sh = document.querySelector(".shore").getBoundingClientRect();
+    var W = st.width, H = st.height, base = sh.bottom - st.top, d = Math.min(window.devicePixelRatio || 1, 2);
+    scene.width = Math.round(W * d); scene.height = Math.round(H * d);
+    var x = sctx; x.setTransform(d, 0, 0, d, 0, 0);
+    var g = x.createLinearGradient(0, 0, 0, base); g.addColorStop(0, "#7fd0ef"); g.addColorStop(1, "#d8f1f7");
+    x.fillStyle = g; x.fillRect(0, 0, W, base);
+    if (ok(BG.sol)) x.drawImage(BG.sol, W - 70, base * 0.08 + 46, 40, 40 * BG.sol.naturalHeight / BG.sol.naturalWidth);
+    if (ok(BG["nube-1"])) x.drawImage(BG["nube-1"], W * 0.08, base * 0.12 + 50, 64, 64 / ar(BG["nube-1"], 1.5));
+    if (ok(BG["nube-2"])) x.drawImage(BG["nube-2"], W * 0.55, base * 0.06 + 58, 44, 44 / ar(BG["nube-2"], 1.5));
+    var hh = Math.max(60, base - 70), sky = Math.min(hh * 0.5, 70);
+    if (ok(BG.skyline)) { x.globalAlpha = 0.45; var sw = sky * ar(BG.skyline, 4); for (var sx = -20; sx < W; sx += sw) x.drawImage(BG.skyline, sx, base - 6 - sky, sw + 0.5, sky); x.globalAlpha = 1; }
+    var row = W < 700 ? SHORE_PHONE : SHORE;
+    var total = 0; row.forEach(function (p) { total += hh * p[1] * ar(BG[p[0]], 1) * 0.92; });
+    var k = Math.min(1, (W - 8) / total), px = (W - total * k) / 2;
+    row.forEach(function (p) {
+      var im = BG[p[0]], h = hh * p[1] * k, w = h * ar(im, 1);
+      if (ok(im)) x.drawImage(im, px, base - 5 - h, w, h);
+      px += w * 0.92;
+    });
+    if (ok(BG.malecon)) { var mh = 10, mw = mh * ar(BG.malecon, 8); for (var mx = 0; mx < W; mx += mw) x.drawImage(BG.malecon, mx, base - mh + 2, mw + 0.5, mh); }
+    var w2 = x.createLinearGradient(0, base, 0, H); w2.addColorStop(0, "#2bb3c9"); w2.addColorStop(0.35, "#137fa6"); w2.addColorStop(1, "#0b4f7a");
+    x.fillStyle = w2; x.fillRect(0, base + 2, W, H - base);
+    x.fillStyle = "rgba(255,255,255,.55)"; x.beginPath(); x.moveTo(0, base + 2);
+    for (var wx = 0; wx <= W + 10; wx += 10) x.lineTo(wx, base + 5 + Math.sin(wx / 22) * 2.5);
+    x.lineTo(W, base + 2); x.closePath(); x.fill();
+    x.fillStyle = "rgba(255,255,255,.06)";
+    for (var i = 0; i < 5; i++) { var rx = i * W / 4 - 40; x.beginPath(); x.moveTo(rx, base); x.lineTo(rx + 40, base); x.lineTo(rx + 160, H); x.lineTo(rx + 70, H); x.closePath(); x.fill(); }
+  }
+
+  function zeros() { var a = []; for (var c = 0; c < COLS; c++) { a.push([]); for (var r = 0; r < ROWS; r++) a[c].push(0); } return a; }
+
+  function hud() {
+    $("hud-score").textContent = game ? game.score : 0;
+    $("hud-nets").textContent = game ? game.nets : P.cfg.nets;
+    $("hud-nets-box").className = game && game.nets <= 3 ? "low" : "";
+  }
+
+  /* ---------- drawing ---------- */
+  function rrect(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+  function sprite(k, cx, cy, size, alpha) {
+    var im = k === SHELL ? SHELL_IM : KINDS[k].im;
+    ctx.globalAlpha = alpha;
+    if (im.complete && im.naturalWidth) {
+      var ar = im.naturalWidth / im.naturalHeight, w = size, h = size;
+      if (ar > 1) h = size / ar; else w = size * ar;
+      ctx.drawImage(im, cx - w / 2, cy - h / 2, w, h);
+    } else { ctx.fillStyle = "#14284a"; ctx.beginPath(); ctx.arc(cx, cy, size / 3, 0, 7); ctx.fill(); }
+    ctx.globalAlpha = 1;
+  }
+  function draw() {
+    if (!game) game = new P.Game();
+    if (!off) off = zeros();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var Wd = S * COLS, Hd = S * ROWS, now = performance.now();
+    var g = ctx.createLinearGradient(0, 0, 0, Hd); g.addColorStop(0, "#1b7f97"); g.addColorStop(1, "#0e4f6a");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, Wd, Hd);
+    ctx.save(); rrect(0, 0, Wd, Hd, 18); ctx.clip();
+    ctx.fillStyle = g; ctx.fillRect(0, 0, Wd, Hd);
+    var pad = Math.max(2, S * 0.06);
+    for (var c = 0; c < COLS; c++) for (var r = 0; r < ROWS; r++) {
+      var k = game.grid[c][r]; if (k < 0) continue;
+      var y = (r + off[c][r]) * S, x = c * S;
+      if (shake && shake.c === c && shake.r === r) x += Math.sin((now - shake.t) / 22) * S * 0.06 * Math.max(0, 1 - (now - shake.t) / 300);
+      ctx.fillStyle = k === SHELL ? "#ffe7a3" : KINDS[k].tint;
+      rrect(x + pad, y + pad, S - pad * 2, S - pad * 2, S * 0.22); ctx.fill();
+      if (k === SHELL) { ctx.strokeStyle = "#f08a1c"; ctx.lineWidth = Math.max(2, S * 0.06); ctx.stroke(); }
+      sprite(k, x + S / 2, y + S / 2, S * 0.74, 1);
+    }
+    pops.forEach(function (p) {
+      var a = Math.min(1, (now - p.t) / 260), s = 1 - a * 0.6;
+      ctx.fillStyle = "rgba(255,255,255," + (0.55 * (1 - a)) + ")";
+      ctx.beginPath(); ctx.arc(p.c * S + S / 2, p.r * S + S / 2, S * (0.3 + a * 0.4), 0, 7); ctx.fill();
+      sprite(p.k, p.c * S + S / 2, p.r * S + S / 2 - a * S * 0.4, S * 0.74 * s, 1 - a);
+    });
+    if (showCursor && state === "run") {
+      ctx.strokeStyle = "#f08a1c"; ctx.lineWidth = 4;
+      rrect(cursor.c * S + 2, cursor.r * S + 2, S - 4, S - 4, S * 0.24); ctx.stroke();
+    }
+    ctx.restore();
+    floats.forEach(function (f) {
+      var a = Math.min(1, (now - f.t) / 900);
+      ctx.globalAlpha = 1 - a * a;
+      ctx.font = "800 " + Math.round(S * f.size) + "px Figtree, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.lineWidth = Math.max(3, S * 0.09); ctx.strokeStyle = "#14284a"; ctx.strokeText(f.text, f.x, f.y - a * S * 0.9);
+      ctx.fillStyle = f.color; ctx.fillText(f.text, f.x, f.y - a * S * 0.9);
+      ctx.globalAlpha = 1;
+    });
+  }
+
+  /* ---------- animation: animals sink into place, caught ones float up and fade ---------- */
+  function animate() { if (!raf) { last = performance.now(); raf = requestAnimationFrame(loop); } }
+  function loop(now) {
+    var dt = Math.min(0.05, (now - last) / 1000); last = now; raf = 0;
+    var moving = false, fall = reduce ? 100 : 11;
+    for (var c = 0; c < COLS; c++) for (var r = 0; r < ROWS; r++) {
+      if (off[c][r] < 0) { off[c][r] = Math.min(0, off[c][r] + fall * dt); moving = true; }
+    }
+    pops = pops.filter(function (p) { return now - p.t < 260; });
+    floats = floats.filter(function (f) { return now - f.t < 900; });
+    if (shake && now - shake.t > 300) shake = null;
+    draw();
+    if (busy && !moving && !pops.length) settle();
+    if (moving || pops.length || floats.length || shake) raf = requestAnimationFrame(loop);
+  }
+  function settle() {
+    busy = false;
+    if (game.over && state === "run") gameOver();
+  }
+
+  /* ---------- playing ---------- */
+  function say(t) { $("live").textContent = t; }
+  function play(c, r) {
+    if (state !== "run" || busy) return;
+    var res = game.tap(c, r);
+    if (!res) { shake = { c: c, r: r, t: performance.now() }; say("Necesitas al menos dos iguales juntos."); animate(); return; }
+    busy = true;
+    var now = performance.now();
+    res.removed.forEach(function (p) { pops.push({ c: p.c, r: p.r, k: p.k, t: now }); });
+    if (res.shuffled) { off = zeros(); for (var cc = 0; cc < COLS; cc++) for (var rr = 0; rr < ROWS; rr++) off[cc][rr] = -ROWS; }
+    else res.moves.forEach(function (m) { off[m.c][m.to] = m.from - m.to; });
+    var cx = c * S + S / 2, cy = r * S + S / 2;
+    floats.push({ text: "+" + res.points, x: cx, y: cy, t: now, size: res.points >= 300 ? 0.75 : 0.55, color: "#ffd59a" });
+    if (res.bonusNets) floats.push({ text: res.bonusNets === 2 ? "¡+2 redes!" : "¡Red extra!", x: S * COLS / 2, y: S * ROWS * 0.45, t: now + 120, size: 0.7, color: "#ffffff" });
+    if (res.shell) floats.push({ text: "¡Concha Spondylus!", x: S * COLS / 2, y: S * ROWS * 0.35, t: now, size: 0.6, color: "#ffffff" });
+    if (res.shuffled) floats.push({ text: "Nuevo cardumen", x: S * COLS / 2, y: S * ROWS * 0.55, t: now + 200, size: 0.55, color: "#ffffff" });
+    var n = res.removed.length, kind = res.removed[0].k;
+    say(res.shell ? "Concha Spondylus: " + n + " animales, " + res.points + " puntos." : "Pescaste " + n + " " + KINDS[kind].many + ", " + res.points + " puntos. Quedan " + game.nets + " redes.");
+    hud(); animate();
+  }
+  function cellAt(e) {
+    var b = canvas.getBoundingClientRect();
+    var c = Math.floor((e.clientX - b.left) / (b.width / COLS)), r = Math.floor((e.clientY - b.top) / (b.height / ROWS));
+    return c >= 0 && c < COLS && r >= 0 && r < ROWS ? { c: c, r: r } : null;
+  }
+  canvas.addEventListener("pointerdown", function (e) { var p = cellAt(e); if (!p) return; e.preventDefault(); showCursor = false; cursor = p; play(p.c, p.r); });
+  canvas.addEventListener("keydown", function (e) {
+    if (state !== "run") return;
+    var d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+    if (d) { e.preventDefault(); showCursor = true; cursor.c = Math.max(0, Math.min(COLS - 1, cursor.c + d[0])); cursor.r = Math.max(0, Math.min(ROWS - 1, cursor.r + d[1]));
+      var k = game.grid[cursor.c][cursor.r]; say(k === SHELL ? "Concha Spondylus" : KINDS[k].one + ", grupo de " + game.group(cursor.c, cursor.r).length); draw(); }
+    else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); showCursor = true; play(cursor.c, cursor.r); }
+  });
+
+  /* ---------- flow ---------- */
+  function start() {
+    game = new P.Game(); off = zeros(); pops = []; floats = []; busy = false; state = "run";
+    for (var c = 0; c < COLS; c++) for (var r = 0; r < ROWS; r++) off[c][r] = reduce ? 0 : -ROWS - (COLS - c) * 0.3;
+    $("start").hidden = true; $("end").hidden = true; hud(); resize(); animate(); canvas.focus({ preventScroll: true });
+  }
+  function gameOver() {
+    state = "over"; overAt = performance.now();
+    var pts = game.score, isBest = pts > best;
+    if (isBest) { best = pts; try { localStorage.setItem("hs-best-pesca", String(best)); } catch (e) {} }
+    showBest();
+    $("end-score").textContent = pts; $("end-best").textContent = best;
+    $("end-best-label").textContent = isBest ? "¡nuevo récord!" : "tu récord";
+    $("end-catch").textContent = "Pescaste " + game.caught + " animales. Tu mejor red atrapó " + game.biggest + " de una vez.";
+    var gr = $("goal-res");
+    if (pts >= GOAL) { gr.textContent = "¡Superaste el récord del mes (" + GOAL + ")! Envía tu captura por WhatsApp para participar."; gr.className = "goal-res win"; }
+    else { gr.textContent = "Te faltaron " + (GOAL - pts) + " puntos para el récord del mes (" + GOAL + "). ¡Otra vez!"; gr.className = "goal-res"; }
+    $("send").href = "https://wa.me/" + WA + "?text=" + encodeURIComponent("Hola, hice " + pts + " puntos en «Pesca en Salinas» y quiero participar en el concurso del mes. (Adjunto mi captura)");
+    var url = location.href.split("#")[0];
+    $("dare").href = "https://wa.me/?text=" + encodeURIComponent("Hice " + pts + " puntos pescando con Jorge A en Salinas. ¿Me ganas? " + url);
+    setTimeout(function () { $("end").hidden = false; $("again").focus(); }, 700);
+  }
+  $("go").addEventListener("click", start);
+  $("again").addEventListener("click", start);
+  resize(); hud();
+
+  if (location.hash === "#prueba") {   // test hook for the automatic playtest
+    window.__estado = function () { return { state: state, busy: busy, score: game.score, nets: game.nets, grid: game.grid.map(function (c) { return c.slice(); }), S: S }; };
+  }
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("/juego/sw.js", { scope: "/juego/" }).catch(function () {});
+})();
+</script>
+</body>
+</html>
