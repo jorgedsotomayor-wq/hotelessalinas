@@ -126,6 +126,8 @@ p { margin: 0; }
   .play-txt b { font-size: 1.02rem; }
   .play-btns a { flex: 1; justify-content: center; padding: 0 .6rem; }
 }
+/* nothing pins the screen: the video stays still and the page slides up over it */
+.hcard { position: relative !important; top: auto !important; min-height: 0 !important; }
 @media (prefers-reduced-motion: reduce) { .kid, .kid.lg, .kid.dive, .play-run .kid { animation: none; } .play-run .kid { left: 1rem; } }
 
 
@@ -584,6 +586,14 @@ a.rating:hover b { text-decoration: underline; }
   .ticker-btn { display: none; }
   *, *::before, *::after { transition-duration: .01ms !important; }
 }
+
+/* nothing pins the screen: the video stays still and the page slides up over it (these win over the older scene rules above) */
+html.motion .doors { height: auto; width: auto; margin-left: 0; }
+html.motion .doors-stage { position: relative; height: auto; overflow: visible; perspective: none; }
+html.motion .doors-back, html.motion .door { display: none; }
+html.motion .doors-copy { position: relative; inset: auto; padding: clamp(3rem, 8vw, 5rem) var(--gutter); margin: 0 auto; max-width: 1100px; }
+html.motion .portal { height: auto; }
+html.motion .portal-stage { position: relative; height: auto; }
 </style>
 </head>
 <body>
@@ -1282,15 +1292,9 @@ a.rating:hover b { text-decoration: underline; }
     // Portal: zoom through the Hotel Salinas window, land on the malecón.
     document.documentElement.classList.add("motion");
     // Doors: the three hotels open like doors onto the sea.
-    var dtl = gsap.timeline({ defaults: { ease: "none" }, scrollTrigger: { trigger: "#doors", start: "top top", end: "bottom bottom", scrub: 0.5 } });
-    dtl.to({}, { duration: 0.08 }, 0)
-       .to(".d-l", { xPercent: -105, rotateY: 18, opacity: 0, ease: "power1.inOut", duration: 0.4 }, 0.08)
-       .to(".d-r", { xPercent: 105, rotateY: -18, opacity: 0, ease: "power1.inOut", duration: 0.4 }, 0.08)
-       .to(".d-c", { scale: 0.9, opacity: 0, ease: "power1.inOut", duration: 0.32 }, 0.1)
-       .fromTo(".doors-back img", { scale: 1.12 }, { scale: 1, duration: 0.6 }, 0.08)
-       .fromTo(".doors-copy .kicker, .doors-copy h2", { opacity: 0, y: 24 }, { opacity: 1, y: 0, stagger: 0.04, duration: 0.12 }, 0.4)
-       .fromTo(".todo", { opacity: 0, y: 24, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, stagger: 0.035, duration: 0.14, ease: "power2.out" }, 0.48)
-       .to({}, { duration: 0.22 }, 0.78);
+    // No pinned scenes: the page simply slides up over the still video. Words and cards fade in as they arrive.
+    gsap.fromTo(".doors-copy .kicker, .doors-copy h2", { opacity: 0, y: 24 }, { opacity: 1, y: 0, stagger: 0.08, duration: 0.8, ease: "power3.out", scrollTrigger: { trigger: "#doors", start: "top 80%", once: true } });
+    gsap.fromTo(".todo", { opacity: 0, y: 24 }, { opacity: 1, y: 0, stagger: 0.06, duration: 0.7, ease: "power2.out", scrollTrigger: { trigger: ".todos", start: "top 88%", once: true } });
 
     // Hero depth: photo and words drift apart with the mouse (desktop only).
     if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
